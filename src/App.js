@@ -1,19 +1,34 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {
+  BrowserRouter as Router,
+  Route,
+  Link
+} from 'react-router-dom';
+
+// components
+import Header from './components/headerComponent/header';
+import Footer from './components/footerComponent/footer';
+import HomePage from './components/pages/homePage';
+import Products from './components/pages/products';
+
+// include minified css
+import './Assets/css/default.min.css';
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
+      <Router>
+        <div className="App">
+
+          <Header />
+
+            <Route exact path='/' component={HomePage} />
+            <Route exact path='/Products' component={Products} />
+
+          <Footer />
+
+        </div>
+      </Router>
     );
   }
 }
