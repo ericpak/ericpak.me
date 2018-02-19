@@ -3,7 +3,7 @@ import ClassNames from "classnames";
 
 class Footer extends Component {
   getClassName() {
-    return ClassNames("Footer")
+    return ClassNames("Footer");
   }
 
   render() {

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 class Nav extends Component {
   getClassName() {
-    return ClassNames("Nav")
+    return ClassNames("Nav");
   }
 
   render() {
