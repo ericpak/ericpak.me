@@ -40,6 +40,11 @@ a {
     color: $red;
     @include transition(.4s ease-in-out);
   }
+
+  &:active {
+    text-decoration: none;
+    color: $white;
+  }
 }
 
 .container-fluid{

@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import {
   BrowserRouter as Router,
-  Route,
-  Link
+  Route
 } from 'react-router-dom';
 
 // components
-import Header from './components/headerComponent/header';
-import Footer from './components/footerComponent/footer';
-import HomePage from './components/pages/homePage';
+import Header from './components/header/header';
+import Footer from './components/footer/footer';
+import Home from './components/pages/home';
 import Products from './components/pages/products';
+import Contact from './components/pages/contact';
 
 // include minified css
 import './Assets/css/default.min.css';
@@ -19,12 +19,10 @@ class App extends Component {
     return (
       <Router>
         <div className="App">
-
           <Header />
-
-            <Route exact path='/' component={HomePage} />
-            <Route exact path='/Products' component={Products} />
-
+          <Route exact path='/' component={Home} />
+          <Route exact path='/Products' component={Products} />
+          <Route exact path='/Contact' component={Contact} />
           <Footer />
 
         </div>

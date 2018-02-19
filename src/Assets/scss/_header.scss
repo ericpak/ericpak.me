@@ -1,0 +1,32 @@
+header {
+  position: relative;
+  display: block;
+  height: 100vh;
+  width: 100%;
+
+    nav,
+    nav ul,
+    nav ul li {
+      margin: 0;
+      padding: 0;
+    }
+
+    nav {
+      position: absolute;
+      top: 50%; right: 15px;
+      @include translateY(-50%);
+
+      ul li {
+        list-style-type: none;
+        display: inline-block;
+        margin-right: 20px;
+
+        a {
+          text-decoration: none;
+          font-size: 19px;
+          line-height: normal;
+          color: $black;
+        }
+      }
+    }
+  }
