@@ -1,22 +1,34 @@
 import React, {Component} from "react";
 import classNames from "classnames";
+import Canvas from './header/canvas';
 
 class Circle extends Component {
   getClassName() {
     return classNames("Circle");
   }
 
-  constructor(c,radius, x, y, dx, dy, color) {
+  constructor(c,radius, enlargedRadius, x, y, dx, dy, color) {
     super();
     this.state = {
       c: c,
       radius: radius,
+      originalRadius: radius,
       x: x,
       y: y,
       dx: dx,
       dy: dy,
       color: color,
+      enlargedRadius: enlargedRadius,
     }
+  }
+
+  enlargeRadius(){
+    if(this.state.radius < this.state.enlargedRadius)
+      this.state.radius += 1;
+  }
+  shrinkRadius(){
+    if(this.state.radius >= this.state.originalRadius)
+      this.state.radius -= 1;
   }
 
   draw() {
