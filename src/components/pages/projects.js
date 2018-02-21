@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 
-class Products extends Component {
+class Projects extends Component {
   render() {
     return (
       <div className="wrap">
 
-        MY Products PAGE
+        <p>MY Projects PAGE</p>
 
       </div>
     );
   }
 }
 
-export default Products;
+export default Projects;

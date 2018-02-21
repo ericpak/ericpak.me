@@ -8,7 +8,7 @@ import {
 import Header from './components/header/header';
 import Footer from './components/footer/footer';
 import Home from './components/pages/home';
-import Products from './components/pages/products';
+import Projects from './components/pages/projects';
 import Contact from './components/pages/contact';
 
 // include minified css
@@ -20,8 +20,8 @@ class App extends Component {
       <Router>
         <div className="App">
           <Header />
-          <Route exact path='/' component={Home} />
-          <Route exact path='/Products' component={Products} />
+          <Route exact path='/' component={Home}/>
+          <Route exact path='/Projects' component={Projects} />
           <Route exact path='/Contact' component={Contact} />
           <Footer />
 
