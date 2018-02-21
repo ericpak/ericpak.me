@@ -8,7 +8,6 @@ class Contact extends Component {
         Contact:<br />
         Eric Pak<br />
         pak.eric@gmail.com<br />
-        (907) 321-3990<br />
         </p>
       </div>
     );
