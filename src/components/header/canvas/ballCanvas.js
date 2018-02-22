@@ -16,7 +16,7 @@ const colors = [
 //////////////////////////////////////////////////////////////////////
 // Turns gravity on [true] or off [false]
 //////////////////////////////////////////////////////////////////////
-var gravity = false;
+var isGravityOn = false;
 
 //////////////////////////////////////////////////////////////////////
 // Variables for the circles
@@ -35,9 +35,9 @@ let selectedColors = Math.floor(Math.random()*colors.length);
 var cursorEventRadius = 100;
 
 
-class Canvas extends Component {
+class BallCanvas extends Component {
   getClassName() {
-    return classNames("Canvas");
+    return classNames("BallCanvas");
   }
 
   constructor() {
@@ -58,7 +58,9 @@ class Canvas extends Component {
 
   // Mouse click event listener
   _onMouseClick(e) {
-    gravity = true;
+    //isGravityOn ? isGravityOn = false : isGravityOn = true;
+    isGravityOn = true;
+    console.log("Gravity On!!");
   }
 
   // If canvas mounts
@@ -78,6 +80,13 @@ class Canvas extends Component {
     this.state.canvas.width = window.innerWidth;
     this.state.canvas.height = window.innerHeight;
     this.createCircles();
+  }
+
+  reset(){
+    isGravityOn = false;
+    selectedColors = Math.floor(Math.random()*colors.length);
+    this.createCircles();
+
   }
 
   // Creates circles
@@ -102,21 +111,21 @@ class Canvas extends Component {
     });
     this.state.c.clearRect(0, 0, window.innerWidth, window.innerHeight);
     for(var i = 0; i < this.state.circleArray.length; i++){
-      if(Math.abs(this.state.x - this.state.circleArray[i].state.x) < cursorEventRadius && Math.abs(this.state.y - this.state.circleArray[i].state.y) < cursorEventRadius && !gravity)
+      if(Math.abs(this.state.x - this.state.circleArray[i].state.x) < cursorEventRadius && Math.abs(this.state.y - this.state.circleArray[i].state.y) < cursorEventRadius && !isGravityOn)
         this.state.circleArray[i].enlargeRadius();
       else
         this.state.circleArray[i].shrinkRadius();
-      this.state.circleArray[i].update(gravity);
+      this.state.circleArray[i].update(isGravityOn);
     }
   }
 
   render() {
     return (
       <div className={this.getClassName()} onMouseMove={this._onMouseMove.bind(this)} onClick={this._onMouseClick.bind(this)}>
-          <canvas ref="canvas" id={this.getClassName() + "_canvas"} className={this.getClassName() + "_canvas"} />
+        <canvas ref="canvas" id={this.getClassName() + "_canvas"} className={this.getClassName() + "_canvas"} />
       </div>
     )
   }
 }
 
-export default Canvas;
+export default BallCanvas;

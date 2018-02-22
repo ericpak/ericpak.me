@@ -1,8 +1,8 @@
-.Canvas {
+.BallCanvas, .PaintCanvas{
   position: absolute;
-  top: 0;
+  top: 0;//-90vh;
   right: 0;
-  bottom: 0;
+  bottom: 0;//90vh;
   left: 0;
   padding: 0;
   margin: 0;

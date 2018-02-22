@@ -22,31 +22,25 @@ $red: #ff1755;
 
 // Styles
 
-body {
+* {
   font-family: 'Open Sans', sans-serif;
-  font-size: 18px;
-  color: $black;
-  font-weight: 400;
   font-style: normal;
+  text-decoration: none;
+  margin: 0;
+  padding: 0;
 }
 
 a {
-  text-decoration: none;
   @include transition(.4s ease-in-out);
   cursor: pointer;
+  color: $black;
 
   &:hover {
-    text-decoration: none;
     color: $red;
     @include transition(.4s ease-in-out);
   }
 
   &:active {
-    text-decoration: none;
     color: $white;
   }
-}
-
-.container-fluid{
-  line-height: 24px;
 }

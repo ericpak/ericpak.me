@@ -1,7 +1,7 @@
 import {Component} from "react";
 import classNames from "classnames";
 
-// gravity[rate of acceleration] and friction
+// gravity(g)[rate of acceleration] and friction
 var g = 1;
 var friction = .75;
 

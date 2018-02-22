@@ -49,6 +49,16 @@ class PaintCanvas extends Component {
     //this.state.c.stroke();
   }
 
+  reset(){
+    this.state.c.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    this.state.c.font = "40px verdana";
+    this.state.c.fillText("Hi,", 100, 100);
+    this.state.c.font = "20px verdana";
+    this.state.c.fillText("my name is", 165, 100);
+    this.state.c.font = "70px verdana";
+    this.state.c.fillText("Eric Pak", 165, 165);
+  }
+
   resizeWindow(){
     this.state.paintCanvas.width = window.innerWidth;
     this.state.paintCanvas.height = window.innerHeight;

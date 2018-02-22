@@ -11,20 +11,20 @@ Footer {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-}
 
-.Footer{
-    &_links{
-      height: 30px;
-    }
 
     &_link{
       height: 30px;
       img{
         height: 30px;
         width: 30px;
-        fill: $lightGrey;
-        margin-left: 10px;
+        padding-left: 10px;
       }
     }
+}
+
+.Footer_links{
+  a {
+    padding-left: 10px;
+  }
 }
