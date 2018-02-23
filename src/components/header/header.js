@@ -11,6 +11,8 @@ var toolbarDivStyle = {
   bottom: 0,
 }
 
+var footerHeight = 43;
+
 class Header extends Component {
   getClassName() {
     return ClassNames("Header");
@@ -20,16 +22,29 @@ class Header extends Component {
     super();
     this.state = {
       showPaintCanvas: true,
-      home: "▴▴Home",
+      home: "▴Home",
       style: {
         color: 'yellow',
       },
+      headerStyle: {
+        height: window.innerHeight - footerHeight,
+        position: 'relative',
+      },
     }
+    window.addEventListener('resize', this.resizeWindow.bind(this));
+  }
+
+  resizeWindow(){
+    this.setState({ headerStyle: { height: window.innerHeight - footerHeight }});
+    if(this.state.home === "▴Home")
+      this.canvasUp();
+    else
+      this.canvasDown();
   }
 
   canvasUp(){
     this.moveToolbarUp();
-    this.setState({ home: "▴Home" });
+    this.setState({ home: "▴Home", headerStyle: { position: 'absolute'} });
     if(this.state.showPaintCanvas)
       this._paintCanvas.moveCanvasUp();
     else
@@ -38,7 +53,7 @@ class Header extends Component {
 
   canvasDown(){
     this.moveToolbarDown();
-    this.setState({ home: "▾Home" });
+    this.setState({ home: "▾Home", headerStyle: { height: window.innerHeight - footerHeight, position: 'relative'} });
     if(this.state.showPaintCanvas)
       this._paintCanvas.moveCanvasDown();
     else
@@ -72,7 +87,7 @@ class Header extends Component {
 
   render() {
     return (
-      <header className={this.getClassName()}>
+      <header style={this.state.headerStyle} className={this.getClassName()}>
         {this.state.showPaintCanvas ?
           (<PaintCanvas style={this.state.style} ref={ref => (this._paintCanvas = ref)} />) :
           (<BallCanvas ref={ref => (this._ballCanvas = ref)} />)

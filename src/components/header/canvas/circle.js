@@ -5,6 +5,8 @@ import classNames from "classnames";
 var g = 1;
 var friction = .75;
 
+const footerHeight = 43;
+
 class Circle extends Component {
   getClassName() {
     return classNames("Circle");
@@ -58,18 +60,18 @@ class Circle extends Component {
     else if(this.state.x - this.state.radius < 0)
       this.state.dx = Math.abs(this.state.dx);
     if(gravity){
-      if(this.state.dy != 0)
+      if(this.state.dy !== 0)
         this.fall();
-      if(this.state.y+this.state.radius >= window.innerHeight){
+      if(this.state.y+this.state.radius >= window.innerHeight - footerHeight - 1){
         this.state.dy = -Math.abs(this.state.dy)*friction;
         if(Math.abs(this.state.dy) < 3){
           this.state.dy = 0;
-          this.state.y = window.innerHeight - this.state.radius;
+          this.state.y = window.innerHeight - footerHeight - this.state.originalRadius;
         }
         this.state.dx = this.state.dx * friction;
       }
     }else{
-      if(this.state.y+this.state.radius > window.innerHeight){
+      if(this.state.y+this.state.radius > window.innerHeight - footerHeight){
         this.state.dy = -Math.abs(this.state.dy);
       }
       else if(this.state.y-this.state.radius < 0){

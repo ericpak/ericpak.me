@@ -34,6 +34,7 @@ let selectedColors = Math.floor(Math.random()*colors.length);
 //////////////////////////////////////////////////////////////////////
 var cursorEventRadius = 100;
 
+const navFooterHeight = 43;
 
 var divStyle = {
   top: 0,
@@ -63,16 +64,14 @@ class BallCanvas extends Component {
 
   // Mouse click event listener
   _onMouseClick(e) {
-    //isGravityOn ? isGravityOn = false : isGravityOn = true;
     isGravityOn = true;
-    console.log("Gravity On!!");
   }
 
   // If canvas mounts
   componentDidMount() {
     this.state.canvas = this.refs.canvas;
     this.state.canvas.width = window.innerWidth;
-    this.state.canvas.height = window.innerHeight;
+    this.state.canvas.height = window.innerHeight - navFooterHeight;
     this.state.c = this.state.canvas.getContext("2d");
 
     this.createCircles();
@@ -83,7 +82,7 @@ class BallCanvas extends Component {
   // Resize canvas to fit window and recreate circles
   resizeWindow(){
     this.state.canvas.width = window.innerWidth;
-    this.state.canvas.height = window.innerHeight;
+    this.state.canvas.height = window.innerHeight - navFooterHeight;
     this.createCircles();
   }
 
@@ -101,7 +100,7 @@ class BallCanvas extends Component {
     for(var i = 0; i < numberOfCircles; i++){
       let radius = (Math.random() * (radiusMax - radiusMin)) + radiusMin;
       let x = Math.random() * (window.innerWidth - radius * 2) + radius;
-      let y = Math.random() * (window.innerHeight - radius * 2) + radius;
+      let y = Math.random() * (window.innerHeight - navFooterHeight - radius * 2) + radius;
       let dx = (Math.random() - 0.5) * maxVelocity;
       let dy = (Math.random() - 0.5) * maxVelocity;
       let color = colors[selectedColors][Math.floor(Math.random()*colors[selectedColors].length)];
@@ -111,8 +110,8 @@ class BallCanvas extends Component {
 
     moveCanvasUp(){
       divStyle = {
-        top: -window.innerHeight+40,
-        bottom: window.innerHeight-40,
+        top: -window.innerHeight,
+        bottom: window.innerHeight - navFooterHeight,
       }
     }
 

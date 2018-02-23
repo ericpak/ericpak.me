@@ -9,6 +9,8 @@ var divStyle = {
   bottom: 0,
 }
 
+const navFooterHeight = 43;
+
 class PaintCanvas extends Component {
   getClassName() {
     return classNames("PaintCanvas");
@@ -27,8 +29,8 @@ class PaintCanvas extends Component {
 
   moveCanvasUp(){
     divStyle = {
-      top: -window.innerHeight+40,
-      bottom: window.innerHeight-40,
+      top: -window.innerHeight + navFooterHeight,
+      bottom: window.innerHeight - navFooterHeight,
     }
   }
 
@@ -51,7 +53,7 @@ class PaintCanvas extends Component {
   componentDidMount() {
     this.state.paintCanvas = this.refs.paintCanvas;
     this.state.paintCanvas.width = window.innerWidth;
-    this.state.paintCanvas.height = window.innerHeight;
+    this.state.paintCanvas.height = window.innerHeight - navFooterHeight;
     this.state.c = this.state.paintCanvas.getContext("2d");
 
     //////////////////////////////////////////////////////////////////////
@@ -121,20 +123,9 @@ class PaintCanvas extends Component {
 
   resizeWindow(){
     this.state.paintCanvas.width = window.innerWidth;
-    this.state.paintCanvas.height = window.innerHeight;
+    this.state.paintCanvas.height = window.innerHeight - navFooterHeight;
     this.defaultText();
   }
-  //
-  // animate(cursorEventRadius) {
-  //   window.requestAnimationFrame(() => {
-  //     this.animate(cursorEventRadius);
-  //   });
-  //   this.state.c.clearRect(0, 0, window.innerWidth, window.innerHeight);
-  //   this.state.c.beginPath();
-  //   this.state.c.arc(this.state.x, this.state.y, this.state.cursorEventRadius, 0, Math.PI *2, false);
-  //   this.state.c.strokeStyle = this.state.color;
-  //   this.state.c.stroke();
-  // }
 
   render() {
     return (
