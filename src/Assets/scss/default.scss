@@ -10,6 +10,6 @@
   top: 40px;
   max-width: 1000px;
   margin: 0 auto;
-  min-height: calc(100vh - #{$navHeight - $footerHeight} - 130px);
+  min-height: calc(100vh - #{$navHeight - $footerHeight} - 124px);
   @include animation(fadein 2s);
 }

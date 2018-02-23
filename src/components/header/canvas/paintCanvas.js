@@ -91,7 +91,7 @@ class PaintCanvas extends Component {
     this.state.c.stroke();
     this.state.c.fillText("blah blah blah", window.innerWidth-200, 230);
 
-    this.state.c.moveTo(window.innerWidth-90, window.innerHeight-40-navFooterHeight);
+    this.state.c.moveTo(window.innerWidth-90, window.innerHeight-41-navFooterHeight);
     this.state.c.quadraticCurveTo(window.innerWidth-80, window.innerHeight-80-navFooterHeight, window.innerWidth-120, window.innerHeight-100-navFooterHeight);
     this.state.c.stroke();
     this.state.c.fillText("Contact me!", window.innerWidth-248, window.innerHeight-95-navFooterHeight);

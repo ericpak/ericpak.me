@@ -11,7 +11,7 @@ var toolbarDivStyle = {
   bottom: 0,
 }
 
-var footerHeight = 43;
+var footerHeight = 44;
 
 class Header extends Component {
   getClassName() {
