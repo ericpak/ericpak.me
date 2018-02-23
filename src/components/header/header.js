@@ -6,7 +6,10 @@ import { Link } from 'react-router-dom';
 import BallCanvas from './canvas/ballCanvas';
 import PaintCanvas from './canvas/paintCanvas';
 
-// var showPaintCanvas = true;
+var toolbarDivStyle = {
+  top: 10,
+  bottom: 0,
+}
 
 class Header extends Component {
   getClassName() {
@@ -17,11 +20,47 @@ class Header extends Component {
     super();
     this.state = {
       showPaintCanvas: true,
+      home: "▴▴Home",
+      style: {
+        color: 'yellow',
+      },
+    }
+  }
+
+  canvasUp(){
+    this.moveToolbarUp();
+    this.setState({ home: "▴Home" });
+    if(this.state.showPaintCanvas)
+      this._paintCanvas.moveCanvasUp();
+    else
+      this._ballCanvas.moveCanvasUp();
+  }
+
+  canvasDown(){
+    this.moveToolbarDown();
+    this.setState({ home: "▾Home" });
+    if(this.state.showPaintCanvas)
+      this._paintCanvas.moveCanvasDown();
+    else
+      this._ballCanvas.moveCanvasDown();
+  }
+
+  moveToolbarUp(){
+    toolbarDivStyle = {
+      top: -40,
+      bottom: 40,
+    }
+  }
+
+  moveToolbarDown(){
+    toolbarDivStyle = {
+      top: 10,
+      bottom: 0,
     }
   }
 
   switchCanvas(){
-    this.setState({ showPaintCanvas: !this.state.showPaintCanvas});
+    this.setState({ showPaintCanvas: !this.state.showPaintCanvas });
   }
 
   reset(){
@@ -35,18 +74,18 @@ class Header extends Component {
     return (
       <header className={this.getClassName()}>
         {this.state.showPaintCanvas ?
-          (<PaintCanvas ref={ref => (this._paintCanvas = ref)} />) :
+          (<PaintCanvas style={this.state.style} ref={ref => (this._paintCanvas = ref)} />) :
           (<BallCanvas ref={ref => (this._ballCanvas = ref)} />)
         }
         <nav>
-          <ul className="toolbar">
+          <ul style={toolbarDivStyle} className="toolbar">
             <li><a onClick={this.reset.bind(this)}>Reset</a></li>
             <li><a onClick={this.switchCanvas.bind(this)}>Switch Canvas</a></li>
           </ul>
           <ul className="Nav_Bar">
-            <li><Link to='/'>Home</Link></li>
-            <li><Link to="/Projects">Projects</Link></li>
-            <li><Link to="/Contact">Contact</Link></li>
+            <li><Link onClick={this.canvasDown.bind(this)} to='/'>{this.state.home}</Link></li>
+            <li><Link onClick={this.canvasUp.bind(this)} to="/Projects">Projects</Link></li>
+            <li><Link onClick={this.canvasUp.bind(this)} to="/Contact">Contact</Link></li>
           </ul>
         </nav>
       </header>

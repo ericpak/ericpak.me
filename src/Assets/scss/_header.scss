@@ -21,16 +21,15 @@ header {
     }
   }
 }
-//
-// .Nav_Bar{
-//   position: relative;
-//   top: 10px; right: 0px;
-//   z-index: 1000;
-// }
-//
-// .toolbar{
-//   position: fixed;
-//   top: 10px; right: -10px;
-//   width: 100%;
-//   z-index: 1000;
-// }
+
+.Nav_Bar{
+  position: absolute;
+  top: 10px; right: 0;
+}
+
+.toolbar{
+  position: absolute;
+  left: 10px;
+
+  @include transition(all .5s ease .5s);
+}

@@ -35,6 +35,11 @@ let selectedColors = Math.floor(Math.random()*colors.length);
 var cursorEventRadius = 100;
 
 
+var divStyle = {
+  top: 0,
+  bottom: 0,
+}
+
 class BallCanvas extends Component {
   getClassName() {
     return classNames("BallCanvas");
@@ -104,6 +109,20 @@ class BallCanvas extends Component {
     }
   }
 
+    moveCanvasUp(){
+      divStyle = {
+        top: -window.innerHeight+40,
+        bottom: window.innerHeight-40,
+      }
+    }
+
+    moveCanvasDown(){
+      divStyle = {
+        top: 0,
+        bottom: 0,
+      }
+    }
+
   // Recursive method
   animate(cursorEventRadius) {
     window.requestAnimationFrame(() => {
@@ -121,7 +140,7 @@ class BallCanvas extends Component {
 
   render() {
     return (
-      <div className={this.getClassName()} onMouseMove={this._onMouseMove.bind(this)} onClick={this._onMouseClick.bind(this)}>
+      <div style={divStyle} className={this.getClassName()} onMouseMove={this._onMouseMove.bind(this)} onClick={this._onMouseClick.bind(this)}>
         <canvas ref="canvas" id={this.getClassName() + "_canvas"} className={this.getClassName() + "_canvas"} />
       </div>
     )

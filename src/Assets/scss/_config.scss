@@ -17,6 +17,8 @@ $red: #ff1755;
 @mixin transition($e) {
   -webkit-transition: $e;
   -moz-transition: $e;
+  -ms-transition:$e;
+  -o-transition:$e;
   transition: $e;
 }
 
@@ -31,13 +33,13 @@ $red: #ff1755;
 }
 
 a {
-  @include transition(.4s ease-in-out);
+  @include transition(.2s ease-in-out);
   cursor: pointer;
   color: $black;
 
   &:hover {
     color: $red;
-    @include transition(.4s ease-in-out);
+    @include transition(.2s ease-in-out);
   }
 
   &:active {

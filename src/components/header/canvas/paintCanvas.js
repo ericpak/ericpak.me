@@ -2,8 +2,12 @@ import React, {Component} from "react";
 import classNames from "classnames";
 
 var brushRadius = 20;
-var brushColor = 'green';
 var mouse_down = false;
+
+var divStyle = {
+  top: 0,
+  bottom: 0,
+}
 
 class PaintCanvas extends Component {
   getClassName() {
@@ -18,7 +22,20 @@ class PaintCanvas extends Component {
       paintCanvas: this.refs.paintCanvas,
       c: undefined,
       cursorEventRadius: 20,
-      color: 'green',
+    }
+  }
+
+  moveCanvasUp(){
+    divStyle = {
+      top: -window.innerHeight+40,
+      bottom: window.innerHeight-40,
+    }
+  }
+
+  moveCanvasDown(){
+    divStyle = {
+      top: 0,
+      bottom: 0,
     }
   }
 
@@ -98,7 +115,7 @@ class PaintCanvas extends Component {
   drawCircle(){
     this.state.c.beginPath();
     this.state.c.arc(this.state.x, this.state.y, brushRadius, 0, Math.PI*2, false);
-    this.state.c.fillStyle = brushColor;
+    this.state.c.fillStyle = this.props.style.color;
     this.state.c.fill();
   }
 
@@ -107,21 +124,21 @@ class PaintCanvas extends Component {
     this.state.paintCanvas.height = window.innerHeight;
     this.defaultText();
   }
-
-  animate(cursorEventRadius) {
-    window.requestAnimationFrame(() => {
-      this.animate(cursorEventRadius);
-    });
-    this.state.c.clearRect(0, 0, window.innerWidth, window.innerHeight);
-    this.state.c.beginPath();
-    this.state.c.arc(this.state.x, this.state.y, this.state.cursorEventRadius, 0, Math.PI *2, false);
-    this.state.c.strokeStyle = this.state.color;
-    this.state.c.stroke();
-  }
+  //
+  // animate(cursorEventRadius) {
+  //   window.requestAnimationFrame(() => {
+  //     this.animate(cursorEventRadius);
+  //   });
+  //   this.state.c.clearRect(0, 0, window.innerWidth, window.innerHeight);
+  //   this.state.c.beginPath();
+  //   this.state.c.arc(this.state.x, this.state.y, this.state.cursorEventRadius, 0, Math.PI *2, false);
+  //   this.state.c.strokeStyle = this.state.color;
+  //   this.state.c.stroke();
+  // }
 
   render() {
     return (
-      <div className={this.getClassName()} onMouseMove={this._onMouseMove.bind(this)}>
+      <div style={divStyle} className={this.getClassName()} onMouseMove={this._onMouseMove.bind(this)}>
           <canvas ref="paintCanvas" id={this.getClassName() + "_canvas"} className={this.getClassName() + "_canvas"} />
       </div>
     )
