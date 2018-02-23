@@ -9,7 +9,7 @@
   padding: 40px;
   top: 40px;
   max-width: 1000px;
-  border: 3px solid black;
   margin: 0 auto;
   min-height: calc(100vh - #{$navHeight - $footerHeight} - 130px);
+  @include animation(fadein 2s);
 }

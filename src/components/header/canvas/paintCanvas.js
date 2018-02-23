@@ -91,13 +91,13 @@ class PaintCanvas extends Component {
     this.state.c.stroke();
     this.state.c.fillText("blah blah blah", window.innerWidth-200, 230);
 
-    this.state.c.moveTo(window.innerWidth-90, window.innerHeight-10);
-    this.state.c.quadraticCurveTo(window.innerWidth-80, window.innerHeight-80, window.innerWidth-120, window.innerHeight-100);
+    this.state.c.moveTo(window.innerWidth-90, window.innerHeight-40-navFooterHeight);
+    this.state.c.quadraticCurveTo(window.innerWidth-80, window.innerHeight-80-navFooterHeight, window.innerWidth-120, window.innerHeight-100-navFooterHeight);
     this.state.c.stroke();
-    this.state.c.fillText("Contact me!", window.innerWidth-250, window.innerHeight-95);
+    this.state.c.fillText("Contact me!", window.innerWidth-248, window.innerHeight-95-navFooterHeight);
 
     this.state.c.font = "italic 13px verdana";
-    this.state.c.fillText("[Disclaimer: resizing the window resets the page]", 10, window.innerHeight-50);
+    this.state.c.fillText("[Disclaimer: resizing the window resets the page]", 10, window.innerHeight-50-navFooterHeight);
   }
 
   reset(){
