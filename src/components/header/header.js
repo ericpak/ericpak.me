@@ -22,7 +22,7 @@ class Header extends Component {
     super();
     this.state = {
       showPaintCanvas: true,
-      home: "▴Home",
+      home: "▾Home",
       style: {
         color: 'yellow',
       },
@@ -92,7 +92,7 @@ class Header extends Component {
           (<PaintCanvas style={this.state.style} ref={ref => (this._paintCanvas = ref)} />) :
           (<BallCanvas ref={ref => (this._ballCanvas = ref)} />)
         }
-        <nav>
+        <nav className="NavBar">
           <ul style={toolbarDivStyle} className="toolbar">
             <li><a onClick={this.reset.bind(this)}>Reset</a></li>
             <li><a onClick={this.switchCanvas.bind(this)}>Switch Canvas</a></li>

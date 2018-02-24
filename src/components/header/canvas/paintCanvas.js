@@ -2,7 +2,9 @@ import React, {Component} from "react";
 import classNames from "classnames";
 
 var brushRadius = 20;
+var brushColor = 'black';
 var mouse_down = false;
+var mouse_in = false;
 
 var divStyle = {
   top: 0,
@@ -56,15 +58,13 @@ class PaintCanvas extends Component {
     this.state.paintCanvas.height = window.innerHeight - navFooterHeight;
     this.state.c = this.state.paintCanvas.getContext("2d");
 
-    //////////////////////////////////////////////////////////////////////
-    // the radius around the cursor that will interact with the canvas
-    //////////////////////////////////////////////////////////////////////
-    //var cursorEventRadius = 100;
-
     window.addEventListener('resize', this.resizeWindow.bind(this));
-    window.addEventListener('mousedown', this.click.bind(this));
-    window.addEventListener('mouseup', this.unclick.bind(this));
+    window.addEventListener('drag', this.hi.bind(this));
     this.defaultText();
+  }
+
+  hi(e){
+    console.log('enter');
   }
 
   defaultText(){
@@ -76,28 +76,29 @@ class PaintCanvas extends Component {
     this.state.c.font = "20px verdana";
     this.state.c.fillText("my name is", 165, 100);
 
+    this.state.c.beginPath();
     this.state.c.moveTo(window.innerWidth-235, 50);
     this.state.c.quadraticCurveTo(window.innerWidth-235, 150, window.innerWidth-350, 200);
-    this.state.c.stroke();
     this.state.c.fillText("This Page!", window.innerWidth-460, 208);
 
     this.state.c.moveTo(window.innerWidth-150, 50);
     this.state.c.quadraticCurveTo(window.innerWidth-200, 200, window.innerWidth-300, 250);
-    this.state.c.stroke();
     this.state.c.fillText("Check out my projects!", window.innerWidth-540, 260);
 
     this.state.c.moveTo(window.innerWidth-60, 50);
     this.state.c.quadraticCurveTo(window.innerWidth-50, 120, window.innerWidth-120, 200);
-    this.state.c.stroke();
     this.state.c.fillText("blah blah blah", window.innerWidth-200, 230);
 
     this.state.c.moveTo(window.innerWidth-90, window.innerHeight-41-navFooterHeight);
     this.state.c.quadraticCurveTo(window.innerWidth-80, window.innerHeight-80-navFooterHeight, window.innerWidth-120, window.innerHeight-100-navFooterHeight);
-    this.state.c.stroke();
     this.state.c.fillText("Contact me!", window.innerWidth-248, window.innerHeight-95-navFooterHeight);
 
+    this.state.c.stroke();
+
+    this.state.c.font = "24px verdana";
+    this.state.c.fillText("[Click to paint]", 70, window.innerHeight-80-navFooterHeight);
     this.state.c.font = "italic 13px verdana";
-    this.state.c.fillText("[Disclaimer: resizing the window resets the page]", 10, window.innerHeight-50-navFooterHeight);
+    this.state.c.fillText("*Disclaimer: resizing the window resets the page", 70, window.innerHeight-50-navFooterHeight);
   }
 
   reset(){
@@ -105,7 +106,7 @@ class PaintCanvas extends Component {
     this.defaultText();
   }
 
-  click(e){
+  click(){
     mouse_down = true;
     this.drawCircle();
   }
@@ -129,8 +130,15 @@ class PaintCanvas extends Component {
 
   render() {
     return (
-      <div style={divStyle} className={this.getClassName()} onMouseMove={this._onMouseMove.bind(this)}>
-          <canvas ref="paintCanvas" id={this.getClassName() + "_canvas"} className={this.getClassName() + "_canvas"} />
+      <div style={divStyle} className={this.getClassName()}>
+        <canvas
+          ref="paintCanvas"
+          id={this.getClassName() + "_canvas"}
+          onMouseDown={this.click.bind(this)}
+          onMouseUp={this.unclick.bind(this)}
+          onMouseMove={this._onMouseMove.bind(this)}
+          className={this.getClassName() + "_canvas"}
+        />
       </div>
     )
   }

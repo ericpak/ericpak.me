@@ -13,3 +13,8 @@
   min-height: calc(100vh - #{$navHeight - $footerHeight} - 124px);
   @include animation(fadein 2s);
 }
+
+// .NavBar{
+//   margin: 0 auto;
+//   max-width: 1000px;
+// }

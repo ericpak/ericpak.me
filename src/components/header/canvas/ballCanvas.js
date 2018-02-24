@@ -139,7 +139,12 @@ class BallCanvas extends Component {
 
   render() {
     return (
-      <div style={divStyle} className={this.getClassName()} onMouseMove={this._onMouseMove.bind(this)} onClick={this._onMouseClick.bind(this)}>
+      <div
+        style={divStyle}
+        className={this.getClassName()}
+        onMouseMove={this._onMouseMove.bind(this)}
+        onClick={this._onMouseClick.bind(this)}
+      >
         <canvas ref="canvas" id={this.getClassName() + "_canvas"} className={this.getClassName() + "_canvas"} />
       </div>
     )
