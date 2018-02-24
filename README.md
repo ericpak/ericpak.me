@@ -1,4 +1,7 @@
-This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
+A personal portfolio webstie project made using React, Sass, Gulp, and hosted on Aws s3.
+Website can be found at [ericpak.me](http://ericpak.me).
+
+his project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>
 You can find the most recent version of this guide [here](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md).
