@@ -4,7 +4,6 @@ import classNames from "classnames";
 var brushRadius = 20;
 var brushColor = 'black';
 var mouse_down = false;
-var mouse_in = false;
 
 var divStyle = {
   top: 0,
@@ -59,12 +58,7 @@ class PaintCanvas extends Component {
     this.state.c = this.state.paintCanvas.getContext("2d");
 
     window.addEventListener('resize', this.resizeWindow.bind(this));
-    window.addEventListener('drag', this.hi.bind(this));
     this.defaultText();
-  }
-
-  hi(e){
-    console.log('enter');
   }
 
   defaultText(){
@@ -98,7 +92,7 @@ class PaintCanvas extends Component {
     this.state.c.font = "24px verdana";
     this.state.c.fillText("[Click to paint]", 70, window.innerHeight-80-navFooterHeight);
     this.state.c.font = "italic 13px verdana";
-    this.state.c.fillText("*Disclaimer: resizing the window resets the page", 70, window.innerHeight-50-navFooterHeight);
+    this.state.c.fillText("*Disclaimer: resizing the window resets the canvas", 70, window.innerHeight-50-navFooterHeight);
   }
 
   reset(){

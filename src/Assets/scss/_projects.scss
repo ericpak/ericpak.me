@@ -1,0 +1,76 @@
+
+.project_title{
+  text-align: center;
+}
+
+.project_technologies_label{
+  text-align: left;
+}
+
+.project_technologies{
+  float: left;
+  min-width: 100px;
+  background-color: $lightGrey;
+  padding: 10px;
+  li{
+    padding: 5px;
+  }
+}
+
+.project_description{
+  padding-left: 140px;
+  text-align: left;
+}
+
+.images{
+  max-width: 100%;
+}
+
+.image_left, .image_right, .image_button {
+  cursor: pointer;
+}
+
+.leftArrow{
+  float: left;
+  font-size: 30px;
+  cursor: pointer;
+  color: $darkGrey;
+}
+
+.rightArrow{
+  float: right;
+  font-size: 30px;
+  cursor: pointer;
+  color: $darkGrey;
+}
+
+.imageDescription{
+  text-align: center;
+}
+
+.image_button{
+  height: 13px;
+  width: 13px;
+}
+
+.ProjectItem{
+  padding-bottom: 100px;
+  text-align: center;
+}
+
+.dot{
+  background-color: transparent;
+  height: 13px;
+  width: 13px;
+  display: inline-block;
+  border-radius: 50%;
+  border: 1px solid $darkGrey;
+  margin-left: 10px;
+  cursor: pointer;
+  &:hover{
+    background-color: $darkGrey;
+  }
+}
+.fill{
+  background-color: $darkGrey;
+}
