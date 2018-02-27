@@ -66,20 +66,23 @@ class ProjectItem extends Component {
 
   render() {
     slideName = ("images mySlides_"+this.props.project.title);
-    slideDesc = ("imageDescription description_"+this.props.project.title);
+    slideDesc = ("image_description description_"+this.props.project.title);
     dotClass = ("dot dot_"+this.props.project.title);
 
     return (
       <div className={this.getClassName()}>
-        <h2 className="project_title">{this.props.project.title}</h2>
-        <h3 className="project_technologies_label">Technologies</h3><ul className="project_technologies">{this.props.project.technologies.map(this.renderTechnology.bind(this))}</ul>
-        <p className="project_description">{this.props.project.description}</p>
-        <div className="project_gallery">{this.props.project.images.map(this.renderImage.bind(this))}
-          <div className="leftArrow" onClick={this.minusDivs.bind(this)}>&#10094;</div>
-          <div className="rightArrow" onClick={this.plusDivs.bind(this)}>&#10095;</div>
-          <div className="gallery_dots">{this.props.project.images.map(this.renderDots.bind(this))}</div>
+        <div className="project_info">
+          <h2 className="project_title">{this.props.project.title}</h2>
+          <h3 className="project_technologies_label">Technologies</h3><ul className="project_technologies">{this.props.project.technologies.map(this.renderTechnology.bind(this))}</ul>
+          <p className="project_description">{this.props.project.description}</p>
         </div>
-        <div>{this.props.project.images.map(this.renderImageDescription.bind(this))}</div>
+        <div className="project_gallery">
+          <div className="leftArrow" onClick={this.minusDivs.bind(this)}><span>&#10094;</span></div>
+          {this.props.project.images.map(this.renderImage.bind(this))}
+          <div className="rightArrow" onClick={this.plusDivs.bind(this)}><span>&#10095;</span></div>
+          <div className="gallery_dots">{this.props.project.images.map(this.renderDots.bind(this))}</div>
+          <div>{this.props.project.images.map(this.renderImageDescription.bind(this))}</div>
+        </div>
       </div>
     );
   }

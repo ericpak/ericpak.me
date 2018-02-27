@@ -15,7 +15,147 @@
   @include animation(fadein 2s);
 }
 
+.App{
+  min-width: 320px;
+}
+
 // .NavBar{
 //   margin: 0 auto;
 //   max-width: 1000px;
 // }
+// 56b8f6
+
+
+.project_title{
+  text-align: center;
+}
+
+.project_info{
+  height: auto;
+  overflow: auto;
+  margin-bottom: 20px;
+}
+
+.project_technologies_label{
+  text-align: left;
+}
+
+.project_technologies{
+  float: left;
+  min-width: 120px;
+  background-color: $lightGrey;
+  padding: 10px;
+  li{
+    padding: 5px;
+  }
+}
+
+.project_description{
+  margin-left: 150px;
+  text-align: left;
+}
+
+///////////////
+
+.project_gallery{
+  position: relative;
+  background: 'lightgreen';
+  width: 100%;
+  height: 500px;
+}
+
+.images{
+  margin: 0 auto;
+  max-width: 100%;
+  height: 100%;
+}
+
+.image_left, .image_right, .image_button {
+  cursor: pointer;
+}
+
+.leftArrow{
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  height: 100%;
+  width: 25px;
+
+  font-size: 30px;
+  cursor: pointer;
+  color: $darkGrey;
+  @include transition(.4s ease);
+
+  &:hover{
+    background: 'grey';
+    @include transition(.4s ease);
+  }
+
+  & span{
+    position: absolute;
+    top: 45%;
+    left: 0;
+  }
+}
+
+.rightArrow{
+  position: absolute;
+  top: 0%;
+  right: 0%;
+  height: 100%;
+  width: 25px;
+
+  font-size: 30px;
+  cursor: pointer;
+  color: $darkGrey;
+  @include transition(.4s ease);
+
+  &:hover{
+    background: 'grey';
+    @include transition(.4s ease);
+  }
+
+  & span{
+    position: absolute;
+    top: 45%;
+    right: 0%;
+  }
+}
+
+.image_description{
+  text-align: center;
+}
+
+.image_button{
+  height: 13px;
+  width: 13px;
+}
+
+.ProjectItem{
+  padding-bottom: 100px;
+  text-align: center;
+}
+
+.gallery_dots{
+  position: absolute;
+  bottom: 5px;
+  width: 100%;
+  margin: auto;
+}
+
+.dot{
+  background-color: transparent;
+  height: 13px;
+  width: 13px;
+  display: inline-block;
+  border-radius: 50%;
+  border: 1px solid $white;
+  margin-left: 10px;
+  cursor: pointer;
+  &:hover{
+    background-color: $white;
+  }
+}
+.fill{
+  background-color: $white;
+}

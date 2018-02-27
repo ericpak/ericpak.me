@@ -31,7 +31,7 @@ class Projects extends Component {
         {
           title: 'ericpak.me',
           technologies: ['HTML', 'React', 'Sass', 'Gulp', 'AWS', 'HTML Canvas'],
-          description: 'This was a personal project of mine to create an online portfolio using React, Sass, and Gulp. It is currently being hosted on AWS S3 using AWS route 53. This is my current project and is still being updated.',
+          description: 'This is a project of mine to create an online portfolio using React, Sass, and Gulp. It is currently being hosted on AWS S3 using AWS route 53. This is my current project and is still being updated.',
           images: [
             {
               image: hi,
@@ -48,7 +48,7 @@ class Projects extends Component {
           ],
         },
         {
-          title: 'Semantic Newtwork Analysis Pineline',
+          title: 'Semantic Newtwork Analysis Pipeline',
           technologies: ['Python', 'Java', 'NLTK', 'Javascript', 'PHP', 'HTML', 'Partiview', 'Gephi'],
           description: 'This project was on blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah',
           images: [
@@ -115,7 +115,7 @@ class Projects extends Component {
       );
     });
     return (
-      <div className="wrap">
+      <div className="wrap projects">
         <h1>Projects</h1>
           {projectItems}
       </div>

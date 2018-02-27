@@ -10,7 +10,7 @@ var divStyle = {
   bottom: 0,
 }
 
-const navFooterHeight = 43;
+const navFooterHeight = 44;
 
 class PaintCanvas extends Component {
   getClassName() {

@@ -34,7 +34,7 @@ let selectedColors = Math.floor(Math.random()*colors.length);
 //////////////////////////////////////////////////////////////////////
 var cursorEventRadius = 100;
 
-const navFooterHeight = 43;
+const navFooterHeight = 44;
 
 var divStyle = {
   top: 0,
