@@ -5,8 +5,14 @@ $white: #ffffff;
 $lightGrey: #e6e6e6;
 $darkGrey: #333333;
 $red: #ff1755;
+$orange: #E8A87C;
+$darkGreen: #41B3A3;
+$cobalt: #2D5673;
+$maroon: #AC3B61;
+
 $navHeight: 43px;
 $footerHeight: 43px;
+
 
 // Mixins
 
@@ -71,14 +77,10 @@ $footerHeight: 43px;
 a {
   @include transition(.2s ease-in-out);
   cursor: pointer;
-  color: $black;
+  color: $cobalt;
 
   &:hover {
     color: $red;
     @include transition(.2s ease-in-out);
-  }
-
-  &:active {
-    color: $white;
   }
 }

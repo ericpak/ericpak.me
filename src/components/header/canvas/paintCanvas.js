@@ -1,15 +1,33 @@
 import React, {Component} from "react";
 import classNames from "classnames";
+import backgroundImage from "../../../Assets/media/images/mountainBear2.png";
 
-var brushRadius = 20;
-var brushColor = 'black';
+
+//////////////////////////////////////////////////////////////////////
+// Variables for the brush
+//////////////////////////////////////////////////////////////////////
+var brushRadius = 10;
+var brushColor = 'pink'; // Not being used. Getting color from header
 var mouse_down = false;
 
+// Colors
+var mutedGreen = "#7DC2AF";
+var lightPurple = "#92A7C9";
+var mutedBlue = "#7DB8C2";
+var cobalt = '#2D5673';
+
+// Paint Canvas default style
 var divStyle = {
   top: 0,
   bottom: 0,
 }
 
+// Circle varialbes
+const numberOfCircles = 30;
+const radiusMin = 10;
+const radiusMax = 30;
+
+// Nav and footer height
 const navFooterHeight = 44;
 
 class PaintCanvas extends Component {
@@ -23,7 +41,7 @@ class PaintCanvas extends Component {
       x: 0,
       y: 0,
       paintCanvas: this.refs.paintCanvas,
-      c: undefined,
+      ctx: undefined,
       cursorEventRadius: 20,
     }
   }
@@ -55,48 +73,71 @@ class PaintCanvas extends Component {
     this.state.paintCanvas = this.refs.paintCanvas;
     this.state.paintCanvas.width = window.innerWidth;
     this.state.paintCanvas.height = window.innerHeight - navFooterHeight;
-    this.state.c = this.state.paintCanvas.getContext("2d");
+    this.state.ctx = this.state.paintCanvas.getContext("2d");
 
     window.addEventListener('resize', this.resizeWindow.bind(this));
     this.defaultText();
   }
 
   defaultText(){
-    this.state.c.fillStyle = 'black';
-    this.state.c.font = "40px verdana";
-    this.state.c.fillText("Hi,", 100, 100);
-    this.state.c.font = "70px verdana";
-    this.state.c.fillText("Eric Pak", 165, 165);
-    this.state.c.font = "20px verdana";
-    this.state.c.fillText("my name is", 165, 100);
+    // Creating inital background color/pattern
+    this.state.ctx.fillStyle = mutedBlue;
+    this.state.ctx.fillRect(0, 0, this.state.paintCanvas.width, this.state.paintCanvas.height);
+    var gradient = this.state.ctx.createLinearGradient(0, 0, this.state.paintCanvas.width, this.state.paintCanvas.height);
+    gradient.addColorStop(1, lightPurple);
+    gradient.addColorStop(0, mutedGreen);
+    for (var i = 0; i < this.state.paintCanvas.height/25; i++) {
+      for (var j = 0; j < this.state.paintCanvas.width/25; j++) {
+        this.state.ctx.strokeStyle = gradient;
+        this.state.ctx.beginPath();
+        this.state.ctx.arc(12.5 + j * 25, 12.5 + i * 25, 10, 0, Math.PI * 2, true);
+        this.state.ctx.lineWidth = 3;
+        this.state.ctx.stroke();
+      }
+    }
 
-    this.state.c.beginPath();
-    this.state.c.moveTo(window.innerWidth-235, 50);
-    this.state.c.quadraticCurveTo(window.innerWidth-235, 150, window.innerWidth-350, 200);
-    this.state.c.fillText("This Page!", window.innerWidth-460, 208);
+    // Background Image
+    let img = new Image();
+    img.src = backgroundImage;
+    this.state.ctx.drawImage(img, (this.state.paintCanvas.width/2 - img.width/2), (this.state.paintCanvas.height/2 - img.height/2));
 
-    this.state.c.moveTo(window.innerWidth-150, 50);
-    this.state.c.quadraticCurveTo(window.innerWidth-200, 200, window.innerWidth-300, 250);
-    this.state.c.fillText("Check out my projects!", window.innerWidth-540, 260);
+    // Creating text and lines
+    this.state.ctx.fillStyle = cobalt;
+    this.state.ctx.font = "40px verdana";
+    this.state.ctx.fillText("Hi,", 100, 100);
+    this.state.ctx.font = "70px verdana";
+    this.state.ctx.fillText("Eric Pak", 165, 165);
+    this.state.ctx.font = "20px verdana";
+    this.state.ctx.fillText("my name is", 165, 100);
 
-    this.state.c.moveTo(window.innerWidth-60, 50);
-    this.state.c.quadraticCurveTo(window.innerWidth-50, 120, window.innerWidth-120, 200);
-    this.state.c.fillText("blah blah blah", window.innerWidth-200, 230);
+    this.state.ctx.beginPath();
+    this.state.ctx.moveTo(window.innerWidth-235, 50);
+    this.state.ctx.quadraticCurveTo(window.innerWidth-235, 150, window.innerWidth-350, 200);
+    this.state.ctx.fillText("This Page!", window.innerWidth-460, 208);
 
-    this.state.c.moveTo(window.innerWidth-90, window.innerHeight-41-navFooterHeight);
-    this.state.c.quadraticCurveTo(window.innerWidth-80, window.innerHeight-80-navFooterHeight, window.innerWidth-120, window.innerHeight-100-navFooterHeight);
-    this.state.c.fillText("Contact me!", window.innerWidth-248, window.innerHeight-95-navFooterHeight);
+    this.state.ctx.moveTo(window.innerWidth-150, 50);
+    this.state.ctx.quadraticCurveTo(window.innerWidth-200, 200, window.innerWidth-300, 250);
+    this.state.ctx.fillText("Check out my projects!", window.innerWidth-540, 260);
 
-    this.state.c.stroke();
+    this.state.ctx.moveTo(window.innerWidth-60, 50);
+    this.state.ctx.quadraticCurveTo(window.innerWidth-50, 120, window.innerWidth-120, 200);
+    this.state.ctx.fillText("blah blah blah", window.innerWidth-200, 230);
 
-    this.state.c.font = "24px verdana";
-    this.state.c.fillText("[Click to paint]", 70, window.innerHeight-80-navFooterHeight);
-    this.state.c.font = "italic 13px verdana";
-    this.state.c.fillText("*Disclaimer: resizing the window resets the canvas", 70, window.innerHeight-50-navFooterHeight);
+    this.state.ctx.moveTo(window.innerWidth-90, window.innerHeight-41-navFooterHeight);
+    this.state.ctx.quadraticCurveTo(window.innerWidth-80, window.innerHeight-80-navFooterHeight, window.innerWidth-120, window.innerHeight-100-navFooterHeight);
+    this.state.ctx.fillText("Contact me!", window.innerWidth-248, window.innerHeight-95-navFooterHeight);
+
+    this.state.ctx.strokeStyle = cobalt;
+    this.state.ctx.stroke();
+
+    this.state.ctx.font = "24px verdana";
+    this.state.ctx.fillText("[Click to paint]", 70, window.innerHeight-80-navFooterHeight);
+    this.state.ctx.font = "italic 13px verdana";
+    this.state.ctx.fillText("*Disclaimer: resizing the window resets the canvas", 70, window.innerHeight-50-navFooterHeight);
   }
 
   reset(){
-    this.state.c.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    this.state.ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
     this.defaultText();
   }
 
@@ -110,10 +151,10 @@ class PaintCanvas extends Component {
   }
 
   drawCircle(){
-    this.state.c.beginPath();
-    this.state.c.arc(this.state.x, this.state.y, brushRadius, 0, Math.PI*2, false);
-    this.state.c.fillStyle = this.props.style.color;
-    this.state.c.fill();
+    this.state.ctx.beginPath();
+    this.state.ctx.arc(this.state.x, this.state.y, brushRadius, 0, Math.PI*2, false);
+    this.state.ctx.fillStyle = this.props.style.color;
+    this.state.ctx.fill();
   }
 
   resizeWindow(){

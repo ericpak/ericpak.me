@@ -24,7 +24,7 @@ class Header extends Component {
       showPaintCanvas: true,
       home: "▾Home",
       style: {
-        color: 'yellow',
+        color: '#FFBC67',
       },
       headerStyle: {
         height: window.innerHeight - footerHeight,

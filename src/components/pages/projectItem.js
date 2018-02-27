@@ -77,9 +77,9 @@ class ProjectItem extends Component {
           <p className="project_description">{this.props.project.description}</p>
         </div>
         <div className="project_gallery">
-          <div className="leftArrow" onClick={this.minusDivs.bind(this)}><span>&#10094;</span></div>
+          <div className="leftArrow" onClick={this.minusDivs.bind(this)}><span className="arrow">&#10094;</span></div>
           {this.props.project.images.map(this.renderImage.bind(this))}
-          <div className="rightArrow" onClick={this.plusDivs.bind(this)}><span>&#10095;</span></div>
+          <div className="rightArrow" onClick={this.plusDivs.bind(this)}><span className="arrow">&#10095;</span></div>
           <div className="gallery_dots">{this.props.project.images.map(this.renderDots.bind(this))}</div>
           <div>{this.props.project.images.map(this.renderImageDescription.bind(this))}</div>
         </div>

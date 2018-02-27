@@ -13,6 +13,12 @@ import snap_zoom2 from "../../Assets/media/images/snap/snap_zoomed2.png";
 import snap_solid from "../../Assets/media/images/snap/solid_layout.png";
 import rilke from "../../Assets/media/images/rilke-schule/rilke_homepage.png";
 
+// Colors
+var mutedGreen = "#7DC2AF";
+var lightPurple = "#92A7C9";
+var mutedBlue = "#7DB8C2";
+var cobalt = '#2D5673';
+
 class Projects extends Component {
   getClassName() {
     return classNames("Projects");
