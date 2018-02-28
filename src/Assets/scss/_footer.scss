@@ -1,7 +1,7 @@
 Footer {
   position: relative;
-  background: $lightGrey;
-  color: $darkGrey;
+  background: #999;
+  color: $lightGrey;
   text-align: left;
   font-size: 12px;
   height: 40px;
@@ -12,11 +12,22 @@ Footer {
   justify-content: space-between;
   align-items: center;
 
+  a{
+    color: #333;
+  }
+
   @include transition(all 1s ease);
 }
 
 .Footer_links{
   a {
     padding-left: 10px;
+
+    &:hover{
+      color: $lightGrey;
+    }
+  }
+  a svg:hover{
+    fill: $white;
   }
 }

@@ -5,19 +5,23 @@ import ProjectItem from "./projectItem";
 // Images for project
 import redBeanie from "../../Assets/media/images/ericpak/redBeanie.png";
 import hi from "../../Assets/media/images/ericpak/hi.png";
+import mtBear from "../../Assets/media/images/mountainBear2.png";
+
 import snap from "../../Assets/media/images/snap/SNAP.png";
 import snap_moby from "../../Assets/media/images/snap/moby_dick.png";
 import snap_frontend from "../../Assets/media/images/snap/snap_frontEnd.png";
 import snap_zoom1 from "../../Assets/media/images/snap/snap_zoomed1.png";
 import snap_zoom2 from "../../Assets/media/images/snap/snap_zoomed2.png";
 import snap_solid from "../../Assets/media/images/snap/solid_layout.png";
-import rilke from "../../Assets/media/images/rilke-schule/rilke_homepage.png";
 
-// Colors
-var mutedGreen = "#7DC2AF";
-var lightPurple = "#92A7C9";
-var mutedBlue = "#7DB8C2";
-var cobalt = '#2D5673';
+import rilke from "../../Assets/media/images/rilke/rilke_homepage.png";
+import management from "../../Assets/media/images/rilke/rilke_adminFieldtripManagement.png";
+import viewTrips from "../../Assets/media/images/rilke/rilke_viewAllTrips.png";
+import addTrip from "../../Assets/media/images/rilke/rilke_addTrip.png";
+import rilkeLogin from "../../Assets/media/images/rilke/rilke_login.png";
+import manageStudent from "../../Assets/media/images/rilke/rilke_manageStudent.png";
+import slip from "../../Assets/media/images/rilke/rilke_permissionSlip.png";
+import selectTrip from "../../Assets/media/images/rilke/rilke_selectFieldTrip.png";
 
 class Projects extends Component {
   getClassName() {
@@ -51,12 +55,18 @@ class Projects extends Component {
               imageTitle: 'redbeanie',
               description: 'I wear beanies very often so i drew a red beanie for my favicon.',
             },
+            {
+              image: mtBear,
+              imageAlt: 'Mountain Bear',
+              imageTitle: 'mtBear',
+              description: 'A bear under some mountains.',
+            },
           ],
         },
         {
           title: 'Semantic Newtwork Analysis Pipeline',
           technologies: ['Python', 'Java', 'NLTK', 'Javascript', 'PHP', 'HTML', 'Partiview', 'Gephi'],
-          description: 'This project was on blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah',
+          description: 'Semantic Network Analysi Pipeline (SNAP) is a data visualization tool. By rendering many 2D networks as a 3D network visualization, a user can view changes in a network by seeing communities of nodes growing and shrinking over periods of time. With 3D representation, the user should be able to find patterns of growth and change in time within a given subject that would not be apparent when viewing a single document\'s semantic network at a time. SNAP is a website that ties together four modules for a user to upload raw timestamped text documents and perform: Natural Language Processing, Undirected Graph Network Generation, Network Analysis, and 3D Network Visualization. Each module takes the output of the preceding module as input.',
           images: [
             {
               image: snap_frontend,
@@ -99,14 +109,50 @@ class Projects extends Component {
         {
           title: 'Rilke Schule Field Trip Permission Slip',
           technologies: ['HTML', 'ASP.NET MVC', 'SQL', 'C#', 'Bootstrap'],
-          description: 'blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah',
+          description: 'Rilke Schule is a German school of arts and science charter school. The presented problem was managing student permission slips to be more convenient for all parties. The purposed solution was to make a web app where parents could sign off on their child(ren). The online solution removes the student as the middle man, which removes the unreliable delivery of the permission slip to and from the parent. It also reduces the use of paper.\n To develop our web app we decided to use ASP.NET MVC because the school district uses ASP.NET.',
           images: [
             {
-              image: redBeanie,
-              imageAlt: 'Red Beanie',
-              imageTitle: 'Huzzah',
-              description: 'snap picture',
-            }
+              image: rilke,
+              imageAlt: 'homepage',
+              imageTitle: 'rilke',
+              description: 'The homepage for Rilke Schule Permission Slip',
+            },
+            {
+              image: management,
+              imageAlt: 'management',
+              imageTitle: 'management',
+              description: 'The admin field trip management page.',
+            },
+            {
+              image: viewTrips,
+              imageAlt: 'view current field trips',
+              imageTitle: 'viewTrips',
+              description: 'The admin view of the trips. Here you can see who has signed their permission slip.',
+            },
+            {
+              image: addTrip,
+              imageAlt: 'add trip',
+              imageTitle: 'addTrip',
+              description: 'The admin add trip page. The admin can create new field trips here to be sent out to the parents of the appropriate class.',
+            },
+            {
+              image: rilkeLogin,
+              imageAlt: 'Rilke Schule login page',
+              imageTitle: 'rilkeLogin',
+              description: 'The Rilke Schule login page.',
+            },
+            {
+              image: manageStudent,
+              imageAlt: 'Manage Student Page',
+              imageTitle: 'manageStudent',
+              description: 'The users manage student page. Here you can view the students assigned to your account. You can also delete a student or add a new student of you know the correct credentials for the student.',
+            },
+            {
+              image: slip,
+              imageAlt: 'Permission slip page',
+              imageTitle: 'slip',
+              description: 'The permission slip page.',
+            },
           ],
         },
       ]

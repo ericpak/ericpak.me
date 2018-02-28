@@ -99,7 +99,9 @@ class PaintCanvas extends Component {
     // Background Image
     let img = new Image();
     img.src = backgroundImage;
-    this.state.ctx.drawImage(img, (this.state.paintCanvas.width/2 - img.width/2), (this.state.paintCanvas.height/2 - img.height/2));
+    img.onload = () => {
+      this.state.ctx.drawImage(img, (this.state.paintCanvas.width/2 - img.width/2), (this.state.paintCanvas.height/2 - img.height/2));
+    }
 
     // Creating text and lines
     this.state.ctx.fillStyle = cobalt;
@@ -123,7 +125,7 @@ class PaintCanvas extends Component {
     this.state.ctx.quadraticCurveTo(window.innerWidth-50, 120, window.innerWidth-120, 200);
     this.state.ctx.fillText("blah blah blah", window.innerWidth-200, 230);
 
-    this.state.ctx.moveTo(window.innerWidth-90, window.innerHeight-41-navFooterHeight);
+    this.state.ctx.moveTo(window.innerWidth-90, window.innerHeight-43-navFooterHeight);
     this.state.ctx.quadraticCurveTo(window.innerWidth-80, window.innerHeight-80-navFooterHeight, window.innerWidth-120, window.innerHeight-100-navFooterHeight);
     this.state.ctx.fillText("Contact me!", window.innerWidth-248, window.innerHeight-95-navFooterHeight);
 

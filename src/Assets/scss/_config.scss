@@ -2,15 +2,17 @@
 // Vars
 $black: #010000;
 $white: #ffffff;
-$lightGrey: #e6e6e6;
-$darkGrey: #333333;
+$lightGrey: #e9e7e9;
+$darkGrey: #5e6264;
+$grey: #cccdd6;
 $red: #ff1755;
 $orange: #E8A87C;
 $darkGreen: #41B3A3;
 $cobalt: #2D5673;
-$maroon: #AC3B61;
+$maroon: #9b4447;
+$greyBlue: #4A7082;
 
-$navHeight: 43px;
+$navHeight: 44px;
 $footerHeight: 43px;
 
 
@@ -80,7 +82,7 @@ a {
   color: $cobalt;
 
   &:hover {
-    color: $red;
+    color: #CC0000;
     @include transition(.2s ease-in-out);
   }
 }

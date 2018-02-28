@@ -5,10 +5,14 @@
 @import "footer";
 @import "projects";
 
+body{
+  background: $lightGrey;
+}
+
 .wrap {
   position: relative;
   padding: 40px;
-  top: 40px;
+  top: $navHeight;
   max-width: 1000px;
   margin: 0 auto;
   min-height: calc(100vh - #{$navHeight - $footerHeight} - 124px);
@@ -25,140 +29,44 @@
 // }
 // 56b8f6
 
-
-.project_title{
-  text-align: center;
-}
-
-.project_info{
-  height: auto;
-  overflow: auto;
-  margin-bottom: 20px;
-}
-
-.project_technologies_label{
-  text-align: left;
-}
-
-.project_technologies{
-  float: left;
-  min-width: 120px;
-  background-color: $lightGrey;
-  padding: 10px;
-  li{
-    padding: 5px;
-  }
-}
-
-.project_description{
-  margin-left: 150px;
-  text-align: left;
-}
-
-///////////////
-
-.project_gallery{
+Footer {
   position: relative;
   background: #999;
-  width: 100%;
-  height: 500px;
-}
+  color: $lightGrey;
+  text-align: left;
+  font-size: 12px;
+  height: 40px;
+  padding-right: 40px;
+  padding-left: 40px;
+  padding-top: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-.images{
-  margin: 0 auto;
-  max-width: 100%;
-  height: 100%;
-}
-
-.image_left, .image_right, .image_button {
-  cursor: pointer;
-}
-
-.leftArrow{
-  position: absolute;
-  top: 0%;
-  left: 0%;
-  height: 100%;
-  width: 25px;
-
-  font-size: 30px;
-  cursor: pointer;
-  color: $darkGrey;
-  @include transition(.4s ease);
-  &:hover{
-    opacity: 0.5;
-    background: 'grey';
-    @include transition(.4s ease);
-    color: $white;
+  a{
+    color: #333;
   }
-
-  & span{
-    position: absolute;
-    top: 45%;
-    left: 0;
-  }
+  @include transition(all 1s ease);
 }
 
-.rightArrow{
-  position: absolute;
-  top: 0%;
-  right: 0%;
-  height: 100%;
-  width: 25px;
-
-  font-size: 30px;
-  cursor: pointer;
-  color: $darkGrey;
-  @include transition(.4s ease);
-
-  &:hover{
-    opacity: 0.5;
-    background: 'grey';
-    @include transition(.4s ease);
-    color: $white;
-  }
-
-  & span{
-    position: absolute;
-    top: 45%;
-    right: 0%;
-  }
+.Footer_links{
+  padding-left: 10px;
 }
 
-.image_description{
+.contact{
   text-align: center;
-}
-
-.image_button{
-  height: 13px;
-  width: 13px;
-}
-
-.ProjectItem{
-  padding-bottom: 100px;
-  text-align: center;
-}
-
-.gallery_dots{
-  position: absolute;
-  bottom: 5px;
-  width: 100%;
-  margin: auto;
-}
-
-.dot{
-  background-color: transparent;
-  height: 13px;
-  width: 13px;
-  display: inline-block;
-  border-radius: 50%;
-  border: 1px solid $lightGrey;
-  margin-left: 10px;
-  cursor: pointer;
-  &:hover{
-    background-color: $white;
+  h1{
+    padding-bottom: 20px;
+    color: $orange;
+    text-decoration: underline;
   }
-}
-.fill{
-  background-color: $white;
+  a{
+    color: $darkGreen;
+    &:hover{
+      color: $orange;
+    }
+  }
+  p{
+    color: $greyBlue;
+  }
 }
