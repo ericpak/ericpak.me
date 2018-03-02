@@ -15,14 +15,23 @@ import Contact from './components/pages/contact';
 import './Assets/css/default.min.css';
 
 class App extends Component {
+  hi(string){
+    console.log(string);
+  }
+
   render() {
+    const myHome = (props) => {
+      return (
+        <Home test={this.hi.bind(this)} />
+      )
+    }
     return (
       <Router>
         <div className="App">
-          <Header />
-          <Route exact path='/' component={Home}/>
-          <Route exact path='/Projects' component={Projects} />
-          <Route exact path='/Contact' component={Contact} />
+          <Header props={this.state}/>
+          <Route exact path='/' component={myHome} />
+          <Route exact path='/Projects' component={Projects} props={this.state} />
+          <Route exact path='/Contact' component={Contact} props={this.state} />
           <Footer />
 
         </div>

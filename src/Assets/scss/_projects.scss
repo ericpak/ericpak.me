@@ -77,7 +77,7 @@
 
   font-size: 30px;
   cursor: pointer;
-  color: $black;
+  color: $greyBlue;
   @include transition(.4s ease);
   &:hover{
     opacity: 0.5;
@@ -102,7 +102,7 @@
 
   font-size: 30px;
   cursor: pointer;
-  color: $black;
+  color: $greyBlue;
   @include transition(.4s ease);
 
   &:hover{
@@ -146,14 +146,15 @@
   width: 13px;
   display: inline-block;
   border-radius: 50%;
-  border: 1px solid $lightGrey;
+  border: 1px solid $greyBlue;
   margin-left: 10px;
   cursor: pointer;
   &:hover{
-    background-color: $white;
+    background-color: $cobalt;
+    border: 1px solid $cobalt;
   }
 }
 
 .fill{
-  background-color: $white;
+  background-color: $greyBlue;
 }

@@ -112,25 +112,25 @@ class PaintCanvas extends Component {
     this.state.ctx.font = "20px verdana";
     this.state.ctx.fillText("my name is", 165, 100);
 
-    this.state.ctx.beginPath();
-    this.state.ctx.moveTo(window.innerWidth-235, 50);
-    this.state.ctx.quadraticCurveTo(window.innerWidth-235, 150, window.innerWidth-350, 200);
-    this.state.ctx.fillText("This Page!", window.innerWidth-460, 208);
+    // this.state.ctx.beginPath();
+    // this.state.ctx.moveTo(window.innerWidth-235, 50);
+    // this.state.ctx.quadraticCurveTo(window.innerWidth-235, 150, window.innerWidth-350, 200);
+    // this.state.ctx.fillText("This Page!", window.innerWidth-460, 208);
+    //
+    // this.state.ctx.moveTo(window.innerWidth-150, 50);
+    // this.state.ctx.quadraticCurveTo(window.innerWidth-200, 200, window.innerWidth-300, 250);
+    // this.state.ctx.fillText("Check out my projects!", window.innerWidth-540, 260);
+    //
+    // this.state.ctx.moveTo(window.innerWidth-60, 50);
+    // this.state.ctx.quadraticCurveTo(window.innerWidth-50, 120, window.innerWidth-120, 200);
+    // this.state.ctx.fillText("blah blah blah", window.innerWidth-200, 230);
+    //
+    // this.state.ctx.moveTo(window.innerWidth-90, window.innerHeight-43-navFooterHeight);
+    // this.state.ctx.quadraticCurveTo(window.innerWidth-80, window.innerHeight-80-navFooterHeight, window.innerWidth-120, window.innerHeight-100-navFooterHeight);
+    // this.state.ctx.fillText("Contact me!", window.innerWidth-248, window.innerHeight-95-navFooterHeight);
 
-    this.state.ctx.moveTo(window.innerWidth-150, 50);
-    this.state.ctx.quadraticCurveTo(window.innerWidth-200, 200, window.innerWidth-300, 250);
-    this.state.ctx.fillText("Check out my projects!", window.innerWidth-540, 260);
-
-    this.state.ctx.moveTo(window.innerWidth-60, 50);
-    this.state.ctx.quadraticCurveTo(window.innerWidth-50, 120, window.innerWidth-120, 200);
-    this.state.ctx.fillText("blah blah blah", window.innerWidth-200, 230);
-
-    this.state.ctx.moveTo(window.innerWidth-90, window.innerHeight-43-navFooterHeight);
-    this.state.ctx.quadraticCurveTo(window.innerWidth-80, window.innerHeight-80-navFooterHeight, window.innerWidth-120, window.innerHeight-100-navFooterHeight);
-    this.state.ctx.fillText("Contact me!", window.innerWidth-248, window.innerHeight-95-navFooterHeight);
-
-    this.state.ctx.strokeStyle = cobalt;
-    this.state.ctx.stroke();
+    // this.state.ctx.strokeStyle = cobalt;
+    // this.state.ctx.stroke();
 
     this.state.ctx.font = "24px verdana";
     this.state.ctx.fillText("[Click to paint]", 70, window.innerHeight-80-navFooterHeight);
