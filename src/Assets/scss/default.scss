@@ -48,6 +48,9 @@ $toolbarWidth: 235px;
 
 .brushSize{
   width: 100%;
+  height: 15px;
+  margin-top: 5px;
+  border-radius: 5px;
 }
 
 .brushSizeLi{
@@ -56,20 +59,57 @@ $toolbarWidth: 235px;
 
 .brushSizeLabel{
   background: rgba(255,255,255,0.8);
+  border-radius: 5px;
   color: black;
   text-align: center;
   width: $toolbarWidth - 10px;
 }
 
 .switchCanvasButton{
-  right: 0px;
+  float: right;
+  margin-right: 10px;
+}
+
+.resetButton{
+  float: left;
+  margin-left: 10px;
+}
+
+.saveButton{
+  width: 100%;
+}
+
+.resetBtn, .switchBtn, .saveBtn{
+    border: none;
+    border-radius: 5px;
+    color: white;
+    padding: 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.saveBtn{
+  width: $toolbarWidth - 10px;
+    background-color: #4CAF50;
+}
+
+.resetBtn{
+    background-color: #F44336;
+}
+
+.switchBtn{
+    background-color: #4CAF50;
 }
 
 .toolbarChild{
-  visibility: hidden;
-  opacity: 0;
+  // visibility: hidden;
+  // opacity: 0;
   position: absolute;
   background: rgba(255,255,255,0.7);
+  border-radius: 5px;
   // background: rgba(0,0,0,0.3);
   padding: 10px;
   display: inline-block;

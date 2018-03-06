@@ -110,6 +110,10 @@ class Header extends Component {
     console.log(this.state.paintCanvasBrush);
   }
 
+  saveCanvas(){
+    this._paintCanvas.saveCanvas();
+  }
+
   render() {
     return (
       <header style={this.state.headerStyle} className={this.getClassName()}>
@@ -141,8 +145,9 @@ class Header extends Component {
                   onChangeComplete={this.handleColorChange.bind(this)}
                 />
               </li>
-                <li className="resetButton"><button onClick={this.reset.bind(this)}>Reset</button></li>
-                <li className="switchCanvasButton"><button onClick={this.switchCanvas.bind(this)}>Switch Canvas</button></li>
+              <li className="saveButton"><button className="saveBtn" onClick={this.saveCanvas.bind(this)}>Save</button></li>
+              <li className="resetButton"><button className="resetBtn" onClick={this.reset.bind(this)}>Reset</button></li>
+              <li className="switchCanvasButton"><button className="switchBtn" onClick={this.switchCanvas.bind(this)}>Switch Canvas</button></li>
             </ul>
           </ul>
           <ul className="Nav_Bar">

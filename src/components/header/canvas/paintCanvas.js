@@ -163,6 +163,12 @@ class PaintCanvas extends Component {
     this.defaultText();
   }
 
+  saveCanvas(){
+    console.log("SAVE")
+    var image = this.state.paintCanvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+    window.location.href=image;
+  }
+
   render() {
     return (
       <div style={divStyle} className={this.getClassName()}>
