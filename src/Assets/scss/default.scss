@@ -1,9 +1,9 @@
-
 @import "config";
 @import "header";
 @import "canvas";
 @import "footer";
 @import "projects";
+@import "contact";
 
 body{
   background: $lightGrey;
@@ -27,46 +27,72 @@ body{
 //   margin: 0 auto;
 //   max-width: 1000px;
 // }
-// 56b8f6
 
-Footer {
+$toolbarWidth: 235px;
+
+.toolbarParent{
+  // background: rgba(255,255,255,0.3);
   position: relative;
-  background: #999;
-  color: $lightGrey;
-  text-align: left;
-  font-size: 12px;
-  height: 40px;
-  padding-right: 40px;
-  padding-left: 40px;
-  padding-top: 4px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  a{
-    color: #333;
-  }
-  @include transition(all 1s ease);
-}
-
-.Footer_links{
-  padding-left: 10px;
-}
-
-.contact{
+  padding-bottom: 7px;
+  padding-right: 0px;
+  // width: $toolbarWidth;
   text-align: center;
-  h1{
-    padding-bottom: 20px;
-    color: $orange;
-    text-decoration: underline;
-  }
+}
+
+.toolbarParent:hover{
+  // background: rgba(255,255,255,0.3);
   a{
-    color: $darkGreen;
-    &:hover{
-      color: $orange;
-    }
+    color: $maroon;
   }
-  p{
-    color: $greyBlue;
+}
+
+.brushSize{
+  width: 100%;
+}
+
+.brushSizeLi{
+  width: $toolbarWidth - 10px;
+}
+
+.brushSizeLabel{
+  background: rgba(255,255,255,0.8);
+  color: black;
+  text-align: center;
+  width: $toolbarWidth - 10px;
+}
+
+.switchCanvasButton{
+  right: 0px;
+}
+
+.toolbarChild{
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  background: rgba(255,255,255,0.7);
+  // background: rgba(0,0,0,0.3);
+  padding: 10px;
+  display: inline-block;
+  // float: left;
+  top: 30px;
+  left: 0;
+  width: $toolbarWidth;
+  transform: translateY(1em);
+  z-index: -1;
+  transition: all 0.3s ease-in-out 0s, visibility 0s linear 0.3s, z-index 0s linear 0.01s;
+
+  li{
+    padding: 5px;
   }
+}
+
+.toolbarParent:focus + .toolbarChild,
+.toolbarParent:focus-within + .toolbarChild,
+.toolbarParent:hover + .toolbarChild,
+.toolbarChild:hover{
+  visibility: visible;
+  opacity: 1;
+  z-index: 1;
+  transform: translateY(0%);
+  transition-delay: 0s, 0s, 0.3s;
 }

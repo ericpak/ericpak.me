@@ -1,6 +1,6 @@
 Footer {
   position: relative;
-  background: #999;
+  background: #aaa;
   color: $lightGrey;
   text-align: left;
   font-size: 12px;
@@ -15,19 +15,11 @@ Footer {
   a{
     color: #333;
   }
-
   @include transition(all 1s ease);
 }
 
 .Footer_links{
-  a {
-    padding-left: 10px;
-
-    &:hover{
-      color: $lightGrey;
-    }
-  }
-  a svg:hover{
-    fill: $white;
+  a{
+    margin-left: 10px;
   }
 }

@@ -6,8 +6,6 @@ import backgroundImage from "../../../Assets/media/images/mountainBear2.png";
 //////////////////////////////////////////////////////////////////////
 // Variables for the brush
 //////////////////////////////////////////////////////////////////////
-var brushRadius = 10;
-var brushColor = 'pink'; // Not being used. Getting color from header
 var mouse_down = false;
 
 // Colors
@@ -154,7 +152,7 @@ class PaintCanvas extends Component {
 
   drawCircle(){
     this.state.ctx.beginPath();
-    this.state.ctx.arc(this.state.x, this.state.y, brushRadius, 0, Math.PI*2, false);
+    this.state.ctx.arc(this.state.x, this.state.y, this.props.style.size, 0, Math.PI*2, false);
     this.state.ctx.fillStyle = this.props.style.color;
     this.state.ctx.fill();
   }
