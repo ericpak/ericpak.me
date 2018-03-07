@@ -21,7 +21,6 @@ import addTrip from "../../Assets/media/images/rilke/rilke_addTrip.png";
 import rilkeLogin from "../../Assets/media/images/rilke/rilke_login.png";
 import manageStudent from "../../Assets/media/images/rilke/rilke_manageStudent.png";
 import slip from "../../Assets/media/images/rilke/rilke_permissionSlip.png";
-import selectTrip from "../../Assets/media/images/rilke/rilke_selectFieldTrip.png";
 
 class Projects extends Component {
   getClassName() {

@@ -106,6 +106,15 @@ class PaintCanvas extends Component {
     this.state.ctx.fillText("my name is", 165, 100);
 
     // this.state.ctx.beginPath();
+    // this.state.ctx.moveTo(18, 50);
+    // this.state.ctx.quadraticCurveTo(20, 100, 80, 200);
+    // this.state.ctx.strokeStyle = cobalt;
+    // this.state.ctx.stroke();
+    // this.state.ctx.font = "12px verdana";
+    // this.state.ctx.fillText("Check out the Menu!", 50, 220);
+
+
+    // this.state.ctx.beginPath();
     // this.state.ctx.moveTo(window.innerWidth-235, 50);
     // this.state.ctx.quadraticCurveTo(window.innerWidth-235, 150, window.innerWidth-350, 200);
     // this.state.ctx.fillText("This Page!", window.innerWidth-460, 208);
@@ -149,7 +158,7 @@ class PaintCanvas extends Component {
     this.state.ctx.beginPath();
     this.state.ctx.arc(this.state.x, this.state.y, this.props.style.size, 0, Math.PI*2, false);
     var rgb = this.props.style.rgb
-    var srgb = 'rgb('+rgb.r+', '+rgb.g+', '+rgb.b+', '+rgb.a+')'
+    var srgb = 'rgba('+rgb.r+', '+rgb.g+', '+rgb.b+', '+rgb.a+')'
     this.state.ctx.fillStyle = srgb;
     this.state.ctx.fill();
   }
