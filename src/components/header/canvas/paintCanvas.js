@@ -18,6 +18,8 @@ var cobalt = '#2D5673';
 var divStyle = {
   top: 0,
   bottom: 0,
+  visibility: 'visible',
+  opacity: 1,
 }
 
 // Nav and footer height
@@ -41,6 +43,7 @@ class PaintCanvas extends Component {
 
   moveCanvasUp(){
     divStyle = {
+      ...divStyle,
       top: -window.innerHeight + navFooterHeight,
       bottom: window.innerHeight - navFooterHeight,
     }
@@ -48,8 +51,25 @@ class PaintCanvas extends Component {
 
   moveCanvasDown(){
     divStyle = {
+      ...divStyle,
       top: 0,
       bottom: 0,
+    }
+  }
+
+  makeVisible(){
+    divStyle = {
+      ...divStyle,
+      visibility: 'visible',
+      opacity: 1,
+    }
+  }
+
+  makeHidden(){
+    divStyle = {
+      ...divStyle,
+      visibility: 'hidden',
+      opacity: 0,
     }
   }
 
@@ -94,16 +114,23 @@ class PaintCanvas extends Component {
     img.src = backgroundImage;
     img.onload = () => {
       this.state.ctx.drawImage(img, (this.state.paintCanvas.width/2 - img.width/2), (this.state.paintCanvas.height/2 - img.height/2));
+      this.state.ctx.fillStyle = cobalt;
+      this.state.ctx.font = "40px verdana";
+      this.state.ctx.fillText("Hi,", 80, 100);
+      this.state.ctx.font = "70px verdana";
+      this.state.ctx.fillText("Eric Pak", 145, 165);
+      this.state.ctx.font = "20px verdana";
+      this.state.ctx.fillText("my name is", 145, 100);
     }
 
     // Creating text and lines
     this.state.ctx.fillStyle = cobalt;
     this.state.ctx.font = "40px verdana";
-    this.state.ctx.fillText("Hi,", 100, 100);
+    this.state.ctx.fillText("Hi,", 80, 100);
     this.state.ctx.font = "70px verdana";
-    this.state.ctx.fillText("Eric Pak", 165, 165);
+    this.state.ctx.fillText("Eric Pak", 145, 165);
     this.state.ctx.font = "20px verdana";
-    this.state.ctx.fillText("my name is", 165, 100);
+    this.state.ctx.fillText("my name is", 145, 100);
 
     // this.state.ctx.beginPath();
     // this.state.ctx.moveTo(18, 50);

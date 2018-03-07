@@ -5,7 +5,8 @@ import ProjectItem from "./projectItem";
 // Images for project
 import redBeanie from "../../Assets/media/images/ericpak/redBeanie.png";
 import hi from "../../Assets/media/images/ericpak/hi.png";
-import mtBear from "../../Assets/media/images/mountainBear2.png";
+import mtBear from "../../Assets/media/images/ericpak/mountainBear3.png";
+import toolbar from "../../Assets/media/images/ericpak/toolbar.png";
 
 import snap from "../../Assets/media/images/snap/SNAP.png";
 import snap_moby from "../../Assets/media/images/snap/moby_dick.png";
@@ -59,6 +60,12 @@ class Projects extends Component {
               imageAlt: 'Mountain Bear',
               imageTitle: 'mtBear',
               description: 'A bear under some mountains.',
+            },
+            {
+              image: toolbar,
+              imageAlt: 'Toolbar',
+              imageTitle: 'toolbar',
+              description: 'The toolbars for the canvas',
             },
           ],
         },

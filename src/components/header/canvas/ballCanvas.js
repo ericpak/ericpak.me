@@ -33,6 +33,8 @@ const navFooterHeight = 44;
 var divStyle = {
   top: 0,
   bottom: 0,
+  visibility: 'hidden',
+  opacity: 0,
 }
 
 class BallCanvas extends Component {
@@ -104,6 +106,7 @@ class BallCanvas extends Component {
 
     moveCanvasUp(){
       divStyle = {
+        ...divStyle,
         top: -window.innerHeight,
         bottom: window.innerHeight - navFooterHeight,
       }
@@ -111,8 +114,25 @@ class BallCanvas extends Component {
 
     moveCanvasDown(){
       divStyle = {
+        ...divStyle,
         top: 0,
         bottom: 0,
+      }
+    }
+
+    makeVisible(){
+      divStyle = {
+        ...divStyle,
+        visibility: 'visible',
+        opacity: 1,
+      }
+    }
+
+    makeHidden(){
+      divStyle = {
+        ...divStyle,
+        visibility: 'hidden',
+        opacity: 0,
       }
     }
 

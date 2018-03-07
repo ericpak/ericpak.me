@@ -89,16 +89,16 @@ class Header extends Component {
     }
   }
 
-  switchCanvas(){
-    this.setState({ showPaintCanvas: !this.state.showPaintCanvas });
-  }
-
   switchToPaint(){
     this.setState({ showPaintCanvas: true });
+    this._paintCanvas.makeVisible();
+    this._ballCanvas.makeHidden();
   }
 
   switchToBall(){
     this.setState({ showPaintCanvas: false });
+    this._paintCanvas.makeHidden();
+    this._ballCanvas.makeVisible();
   }
 
   reset(){
@@ -166,10 +166,8 @@ class Header extends Component {
   render() {
     return (
       <header style={this.state.headerStyle} className={this.getClassName()}>
-        {this.state.showPaintCanvas ?
-          (<PaintCanvas style={this.state.paintCanvasBrush} ref={ref => (this._paintCanvas = ref)} />) :
-          (<BallCanvas variables={this.state.ballCanvasVar} ref={ref => (this._ballCanvas = ref)} />)
-        }
+        <PaintCanvas style={this.state.paintCanvasBrush} ref={ref => (this._paintCanvas = ref)} />
+        <BallCanvas variables={this.state.ballCanvasVar} ref={ref => (this._ballCanvas = ref)} />
         <nav className="NavBar">
           <ul style={toolbarDivStyle} className="toolbar">
             <li className="toolbarParent"><a> + </a></li>
