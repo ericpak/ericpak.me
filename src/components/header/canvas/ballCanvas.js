@@ -21,12 +21,6 @@ var isGravityOn = false;
 //////////////////////////////////////////////////////////////////////
 // Variables for the circles
 //////////////////////////////////////////////////////////////////////
-let numberOfCircles = 100;
-let maxVelocity = 3;
-let radiusMax = 40;
-let radiusMin = 10;
-let enlargedRadius = 100;
-let stroke = false;
 let selectedColors = Math.floor(Math.random()*colors.length);
 
 //////////////////////////////////////////////////////////////////////
@@ -97,14 +91,14 @@ class BallCanvas extends Component {
   createCircles(){
     this.state.circleArray = [];
 
-    for(var i = 0; i < numberOfCircles; i++){
-      let radius = (Math.random() * (radiusMax - radiusMin)) + radiusMin;
+    for(var i = 0; i < this.props.variables.numberOfBalls; i++){
+      let radius = (Math.random() * (this.props.variables.maxRadius - this.props.variables.minRadius)) + this.props.variables.minRadius;
       let x = Math.random() * (window.innerWidth - radius * 2) + radius;
       let y = Math.random() * (window.innerHeight - navFooterHeight - radius * 2) + radius;
-      let dx = (Math.random() - 0.5) * maxVelocity;
-      let dy = (Math.random() - 0.5) * maxVelocity;
+      let dx = (Math.random() - 0.5) * this.props.variables.maxVelocity;
+      let dy = (Math.random() - 0.5) * this.props.variables.maxVelocity;
       let color = colors[selectedColors][Math.floor(Math.random()*colors[selectedColors].length)];
-      this.state.circleArray.push(new Circle(this.state.c, radius, enlargedRadius, x, y, dx, dy, color));
+      this.state.circleArray.push(new Circle(this.state.c, radius, this.props.variables.enlargedRadius, x, y, dx, dy, color, this.props.variables.stroke));
     }
   }
 

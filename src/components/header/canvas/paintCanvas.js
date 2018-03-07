@@ -20,11 +20,6 @@ var divStyle = {
   bottom: 0,
 }
 
-// Circle varialbes
-const numberOfCircles = 30;
-const radiusMin = 10;
-const radiusMax = 30;
-
 // Nav and footer height
 const navFooterHeight = 44;
 

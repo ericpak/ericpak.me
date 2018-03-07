@@ -101,6 +101,10 @@ $toolbarWidth: 235px;
     background-color: #4CAF50;
 }
 
+.numberOfBalls, .maxVelocity, .maxRadius, .enlargedRadius{
+  width: 50px;
+}
+
 .toolbarChild{
   visibility: hidden;
   opacity: 0;

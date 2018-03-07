@@ -26,9 +26,16 @@ class Header extends Component {
       showPaintCanvas: true,
       home: "▾Home",
       paintCanvasBrush: {
-        color: '#FFBC67',
         rgb: { r: 255, g: 188, b: 103, a: 1 },
         size: 10,
+      },
+      ballCanvasVar: {
+        numberOfBalls: 100,
+        maxVelocity: 3,
+        maxRadius: 40,
+        minRadius: 11,
+        stroke: false,
+        enlargedRadius: 100,
       },
       headerStyle: {
         height: window.innerHeight - footerHeight,
@@ -97,7 +104,7 @@ class Header extends Component {
     if(isFinite(String(number))){
       if(number >= 1 && number <= 100){
         this.setState({ paintCanvasBrush:
-          { size: number, color: this.state.paintCanvasBrush.color, }
+          { size: number, rgb: this.state.paintCanvasBrush.rgb, }
         });
       }
     }
@@ -113,12 +120,43 @@ class Header extends Component {
     this._paintCanvas.saveCanvas();
   }
 
+  handleNumbeBallChange(value){
+    this.setState({ ballCanvasVar:
+      {...this.state.ballCanvasVar, numberOfBalls: this.refs.numberOfBalls.value}
+    });
+  }
+
+  handleVelocityChange(value){
+    this.setState({ ballCanvasVar:
+      {...this.state.ballCanvasVar, maxVelocity: this.refs.maxVelocity.value}
+    });
+  }
+
+  handleMaxRadiusChange(value){
+    this.setState({ ballCanvasVar:
+      {...this.state.ballCanvasVar, maxRadius: this.refs.maxRadius.value}
+    });
+  }
+
+  handleMinRadiusChange(value){
+    this.setState({ ballCanvasVar:
+      {...this.state.ballCanvasVar, minRadius: this.refs.minRadius.value}
+    });
+    console.log(this.state.ballCanvasVar.minRadius);
+  }
+
+  handleEnlargeChange(value){
+    this.setState({ ballCanvasVar:
+      {...this.state.ballCanvasVar, enlargedRadius: this.refs.enlargedRadius.value}
+    });
+  }
+
   render() {
     return (
       <header style={this.state.headerStyle} className={this.getClassName()}>
         {this.state.showPaintCanvas ?
           (<PaintCanvas style={this.state.paintCanvasBrush} ref={ref => (this._paintCanvas = ref)} />) :
-          (<BallCanvas ref={ref => (this._ballCanvas = ref)} />)
+          (<BallCanvas variables={this.state.ballCanvasVar} ref={ref => (this._ballCanvas = ref)} />)
         }
         <nav className="NavBar">
           <ul style={toolbarDivStyle} className="toolbar">
@@ -148,9 +186,37 @@ class Header extends Component {
                 <li className="saveButton"><button className="saveBtn" onClick={this.saveCanvas.bind(this)}>Save</button></li></div>) :
                 (<div>
                   <li>Number of Balls</li>
+                  <li><input
+                    ref="numberOfBalls"
+                    className="numberOfBalls"
+                    type="number"
+                    value={this.state.ballCanvasVar.numberOfBalls}
+                    onChange={this.handleNumbeBallChange.bind(this)}
+                  /></li>
                   <li>Max Velociy</li>
+                  <li><input
+                    ref="maxVelocity"
+                    className="maxVelocity"
+                    type="number"
+                    value={this.state.ballCanvasVar.maxVelocity}
+                    onChange={this.handleVelocityChange.bind(this)}
+                  /></li>
                   <li>Max Radius</li>
-                  <li>Min Velociy</li>
+                  <li><input
+                    ref="maxRadius"
+                    className="maxRadius"
+                    type="number"
+                    value={this.state.ballCanvasVar.maxRadius}
+                    onChange={this.handleMaxRadiusChange.bind(this)}
+                  /></li>
+                  <li>Hover Max Radius</li>
+                  <li><input
+                    ref="enlargedRadius"
+                    className="enlargedRadius"
+                    type="number"
+                    value={this.state.ballCanvasVar.enlargedRadius}
+                    onChange={this.handleEnlargeChange.bind(this)}
+                  /></li>
                 </div>)
               }
               <li className="resetButton"><button className="resetBtn" onClick={this.reset.bind(this)}>Reset</button></li>
