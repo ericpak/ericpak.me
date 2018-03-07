@@ -31,16 +31,13 @@ body{
 $toolbarWidth: 235px;
 
 .toolbarParent{
-  // background: rgba(255,255,255,0.3);
   position: relative;
   padding-bottom: 7px;
   padding-right: 0px;
-  // width: $toolbarWidth;
   text-align: center;
 }
 
 .toolbarParent:hover{
-  // background: rgba(255,255,255,0.3);
   a{
     color: $maroon;
   }
@@ -105,15 +102,13 @@ $toolbarWidth: 235px;
 }
 
 .toolbarChild{
-  // visibility: hidden;
-  // opacity: 0;
+  visibility: hidden;
+  opacity: 0;
   position: absolute;
   background: rgba(255,255,255,0.7);
   border-radius: 5px;
-  // background: rgba(0,0,0,0.3);
   padding: 10px;
   display: inline-block;
-  // float: left;
   top: 30px;
   left: 0;
   width: $toolbarWidth;

@@ -27,6 +27,7 @@ class Header extends Component {
       home: "▾Home",
       paintCanvasBrush: {
         color: '#FFBC67',
+        rgb: { r: 255, g: 188, b: 103, a: 1 },
         size: 10,
       },
       headerStyle: {
@@ -95,7 +96,6 @@ class Header extends Component {
   setBrushSize(number){
     if(isFinite(String(number))){
       if(number >= 1 && number <= 100){
-        console.log(this.state.paintCanvasBrush);
         this.setState({ paintCanvasBrush:
           { size: number, color: this.state.paintCanvasBrush.color, }
         });
@@ -105,9 +105,8 @@ class Header extends Component {
 
   handleColorChange(color){
     this.setState({ paintCanvasBrush:
-      {...this.state.paintCanvasBrush, color: color.hex}
+      {...this.state.paintCanvasBrush, rgb: color.rgb}
     });
-    console.log(this.state.paintCanvasBrush);
   }
 
   saveCanvas(){
@@ -123,29 +122,37 @@ class Header extends Component {
         }
         <nav className="NavBar">
           <ul style={toolbarDivStyle} className="toolbar">
-            <li class="toolbarParent"><a>+</a></li>
-            <ul class="toolbarChild">
-              <li className="brushSizeLabel">Brush Size: {this.state.paintCanvasBrush.size}</li>
-              <li className="brushSizeLi">
-                <input
-                  ref="brushSize"
-                  className="brushSize"
-                  type="range"
-                  name="number"
-                  value={this.state.paintCanvasBrush.size}
-                  min="1"
-                  max="100"
-                  onChange={this.handleSizeChange.bind(this)}
-                  oninput={this.handleSizeChange.bind(this)}
-                />
-              </li>
-              <li>
-                <ChromePicker
-                  color={this.state.paintCanvasBrush.color}
-                  onChangeComplete={this.handleColorChange.bind(this)}
-                />
-              </li>
-              <li className="saveButton"><button className="saveBtn" onClick={this.saveCanvas.bind(this)}>Save</button></li>
+            <li className="toolbarParent"><a>+</a></li>
+            <ul className="toolbarChild">
+              {this.state.showPaintCanvas ?
+                (<div><li className="brushSizeLabel">Brush Size: {this.state.paintCanvasBrush.size}</li>
+                <li className="brushSizeLi">
+                  <input
+                    ref="brushSize"
+                    className="brushSize"
+                    type="range"
+                    name="number"
+                    value={this.state.paintCanvasBrush.size}
+                    min="1"
+                    max="100"
+                    onChange={this.handleSizeChange.bind(this)}
+                    onInput={this.handleSizeChange.bind(this)}
+                  />
+                </li>
+                <li>
+                  <ChromePicker
+                    color={this.state.paintCanvasBrush.rgb}
+                    onChangeComplete={this.handleColorChange.bind(this)}
+                  />
+                </li>
+                <li className="saveButton"><button className="saveBtn" onClick={this.saveCanvas.bind(this)}>Save</button></li></div>) :
+                (<div>
+                  <li>Number of Balls</li>
+                  <li>Max Velociy</li>
+                  <li>Max Radius</li>
+                  <li>Min Velociy</li>
+                </div>)
+              }
               <li className="resetButton"><button className="resetBtn" onClick={this.reset.bind(this)}>Reset</button></li>
               <li className="switchCanvasButton"><button className="switchBtn" onClick={this.switchCanvas.bind(this)}>Switch Canvas</button></li>
             </ul>

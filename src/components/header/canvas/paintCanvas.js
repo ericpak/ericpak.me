@@ -153,7 +153,9 @@ class PaintCanvas extends Component {
   drawCircle(){
     this.state.ctx.beginPath();
     this.state.ctx.arc(this.state.x, this.state.y, this.props.style.size, 0, Math.PI*2, false);
-    this.state.ctx.fillStyle = this.props.style.color;
+    var rgb = this.props.style.rgb
+    var srgb = 'rgb('+rgb.r+', '+rgb.g+', '+rgb.b+', '+rgb.a+')'
+    this.state.ctx.fillStyle = srgb;
     this.state.ctx.fill();
   }
 
