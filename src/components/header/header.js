@@ -7,6 +7,10 @@ import { SketchPicker, ChromePicker } from 'react-color';
 import BallCanvas from './canvas/ballCanvas';
 import PaintCanvas from './canvas/paintCanvas';
 
+// = Button Images
+import paintBtnImg from '../../Assets/media/images/btnImg/paintBtnImg.png';
+import ballBtnImg from '../../Assets/media/images/btnImg/ballBtnImg.png';
+
 var toolbarDivStyle = {
   top: 10,
   bottom: 0,
@@ -89,6 +93,14 @@ class Header extends Component {
     this.setState({ showPaintCanvas: !this.state.showPaintCanvas });
   }
 
+  switchToPaint(){
+    this.setState({ showPaintCanvas: true });
+  }
+
+  switchToBall(){
+    this.setState({ showPaintCanvas: false });
+  }
+
   reset(){
     if(this.state.showPaintCanvas)
       this._paintCanvas.reset();
@@ -160,7 +172,7 @@ class Header extends Component {
         }
         <nav className="NavBar">
           <ul style={toolbarDivStyle} className="toolbar">
-            <li className="toolbarParent"><a>+</a></li>
+            <li className="toolbarParent"><a> + </a></li>
             <ul className="toolbarChild">
               {this.state.showPaintCanvas ?
                 (<div><li className="brushSizeLabel">Brush Size: {this.state.paintCanvasBrush.size}</li>
@@ -220,7 +232,11 @@ class Header extends Component {
                 </div>)
               }
               <li className="resetButton"><button className="resetBtn" onClick={this.reset.bind(this)}>Reset</button></li>
-              <li className="switchCanvasButton"><button className="switchBtn" onClick={this.switchCanvas.bind(this)}>Switch Canvas</button></li>
+            </ul>
+            <li className="toolbarParent"><a> = </a></li>
+            <ul className="toolbarChild">
+              <li><img className='canvasBtnImg' src={paintBtnImg} alt='paintBtnImg' onClick={this.switchToPaint.bind(this)} /></li>
+              <li><img className='canvasBtnImg' src={ballBtnImg} alt='ballBtnImg' onClick={this.switchToBall.bind(this)} /></li>
             </ul>
           </ul>
           <ul className="Nav_Bar">

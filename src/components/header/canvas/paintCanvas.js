@@ -110,8 +110,8 @@ class PaintCanvas extends Component {
     // this.state.ctx.quadraticCurveTo(20, 100, 80, 200);
     // this.state.ctx.strokeStyle = cobalt;
     // this.state.ctx.stroke();
-    // this.state.ctx.font = "12px verdana";
-    // this.state.ctx.fillText("Check out the Menu!", 50, 220);
+    // this.state.ctx.font = "14px verdana";
+    // this.state.ctx.fillText("Brush Settings!", 50, 220);
 
 
     // this.state.ctx.beginPath();

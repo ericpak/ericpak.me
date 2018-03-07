@@ -35,6 +35,19 @@ $toolbarWidth: 235px;
   padding-bottom: 7px;
   padding-right: 0px;
   text-align: center;
+  width: 50px;
+  a{
+    font-size: 25px;
+  }
+}
+
+.canvasBtnImg{
+  width: $toolbarWidth - 10px;
+  height: 50px;
+  padding: 0px;
+  cursor: pointer;
+  border: 1px #888 solid;
+  box-shadow: 2px 2px 5px;
 }
 
 .toolbarParent:hover{
@@ -67,16 +80,7 @@ $toolbarWidth: 235px;
   margin-right: 10px;
 }
 
-.resetButton{
-  float: left;
-  margin-left: 10px;
-}
-
-.saveButton{
-  width: 100%;
-}
-
-.resetBtn, .switchBtn, .saveBtn{
+.resetBtn, .saveBtn{
     border: none;
     border-radius: 5px;
     color: white;
@@ -86,21 +90,18 @@ $toolbarWidth: 235px;
     display: inline-block;
     font-size: 16px;
     cursor: pointer;
+    width: 100%;
 }
 
 .saveBtn{
   width: $toolbarWidth - 10px;
-    background-color: #4CAF50;
+  background-color: #4CAF50;
 }
 
 .resetBtn{
-    background-color: #F44336;
+  width: $toolbarWidth - 10px;
+  background-color: #F44336;
 }
-
-.switchBtn{
-    background-color: #4CAF50;
-}
-
 .numberOfBalls, .maxVelocity, .maxRadius, .enlargedRadius{
   width: 50px;
 }
