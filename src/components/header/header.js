@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ClassNames from 'classnames';
 import { Link } from 'react-router-dom';
-import { SketchPicker, ChromePicker } from 'react-color';
+import { ChromePicker } from 'react-color';
 
 // components
 import BallCanvas from './canvas/ballCanvas';
@@ -16,10 +16,9 @@ var toolbarDivStyle = {
   bottom: 0,
 }
 
-var footerHeight = 44;
-var slider = document.getElementsByClassName("brushSize");
+const footerHeight = 44;
 
-var selectedCanvas = {
+const selectedCanvas = {
   background: 'rgba(244,67,54,0.5)',
   borderRadius: 5,
 }
@@ -56,7 +55,7 @@ class Header extends Component {
 
   resizeWindow(){
     this.setState({ headerStyle: { height: window.innerHeight - footerHeight }});
-    if(this.state.home === "▴Home")
+    if(this.props.isCanvasDown)
       this.canvasUp();
     else
       this.canvasDown();
@@ -65,19 +64,19 @@ class Header extends Component {
   canvasUp(){
     this.moveToolbarUp();
     this.setState({ home: "▴Home", headerStyle: { position: 'absolute'} });
-    if(this.state.showPaintCanvas)
-      this._paintCanvas.moveCanvasUp();
-    else
-      this._ballCanvas.moveCanvasUp();
+    // if(this.state.showPaintCanvas)
+    //   this._paintCanvas.moveCanvasUp();
+    // else
+    //   this._ballCanvas.moveCanvasUp();
   }
 
   canvasDown(){
     this.moveToolbarDown();
     this.setState({ home: "▾Home", headerStyle: { height: window.innerHeight - footerHeight, position: 'relative'} });
-    if(this.state.showPaintCanvas)
-      this._paintCanvas.moveCanvasDown();
-    else
-      this._ballCanvas.moveCanvasDown();
+    // if(this.state.showPaintCanvas)
+    //   this._paintCanvas.moveCanvasDown();
+    // else
+    //   this._ballCanvas.moveCanvasDown();
   }
 
   moveToolbarUp(){

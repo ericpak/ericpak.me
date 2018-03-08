@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import classNames from "classnames";
-import test from "../../Assets/media/images/snap/SNAP.png";
 
 var slideIndex = 1;
 var slideName = "";
@@ -27,7 +26,7 @@ class ProjectItem extends Component {
     return <li key={idx} className="project_technology">{technology}</li>;
   }
   renderDots(image, idx){
-    return <span className={dotClass} onClick={this.currentDiv.bind(this, idx)}></span>
+    return <span key={idx} className={dotClass} onClick={this.currentDiv.bind(this, idx)}></span>
   }
 
   // showDivs helper methods

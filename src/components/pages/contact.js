@@ -1,6 +1,21 @@
 import React, { Component } from 'react';
 
+// Nav and footer height
+const navFooterHeight = 44;
+
 class Contact extends Component {
+
+  componentDidMount(){
+    var paintCanvas = document.getElementsByClassName("PaintCanvas")[0].style;
+    paintCanvas.top = (-window.innerHeight + navFooterHeight) + "px";
+    paintCanvas.bottom = (window.innerHeight - navFooterHeight) + "px";
+    console.log(paintCanvas);
+
+    var header = document.getElementsByClassName("Header")[0].style;
+    header.position = "absolute";
+    header.height = "100vh";
+  }
+
   render() {
     return (
       <div className="wrap contact">

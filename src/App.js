@@ -14,21 +14,25 @@ import Contact from './components/pages/contact';
 // include minified css
 import './Assets/css/default.min.css';
 
+var isCanvasDown = true;
+
 class App extends Component {
-  hi(string){
-    console.log(string);
+
+  setIsCanvasDown(bool){
+    isCanvasDown = bool;
+    console.log(isCanvasDown);
   }
 
   render() {
     const myHome = (props) => {
       return (
-        <Home test={this.hi.bind(this)} />
+        <Home isCanvasDown={this.setIsCanvasDown.bind(this)} />
       )
     }
     return (
       <Router>
         <div className="App">
-          <Header props={this.state}/>
+          <Header isCanvasDown={isCanvasDown}/>
           <Route exact path='/' component={myHome} />
           <Route exact path='/Projects' component={Projects} props={this.state} />
           <Route exact path='/Contact' component={Contact} props={this.state} />

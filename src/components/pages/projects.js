@@ -23,6 +23,9 @@ import rilkeLogin from "../../Assets/media/images/rilke/rilke_login.png";
 import manageStudent from "../../Assets/media/images/rilke/rilke_manageStudent.png";
 import slip from "../../Assets/media/images/rilke/rilke_permissionSlip.png";
 
+// Nav and footer height
+const navFooterHeight = 44;
+
 class Projects extends Component {
   getClassName() {
     return classNames("Projects");
@@ -33,6 +36,17 @@ class Projects extends Component {
     this.state = {
       projects: [],
     }
+  }
+
+  componentDidMount(){
+    var paintCanvas = document.getElementsByClassName("PaintCanvas")[0].style;
+    paintCanvas.top = (-window.innerHeight + navFooterHeight) + "px";
+    paintCanvas.bottom = (window.innerHeight - navFooterHeight) + "px";
+    console.log(paintCanvas);
+
+    var header = document.getElementsByClassName("Header")[0].style;
+    header.position = "absolute";
+    header.height = "100vh";
   }
 
   componentWillMount(){
