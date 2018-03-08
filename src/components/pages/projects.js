@@ -42,7 +42,10 @@ class Projects extends Component {
     var paintCanvas = document.getElementsByClassName("PaintCanvas")[0].style;
     paintCanvas.top = (-window.innerHeight + navFooterHeight) + "px";
     paintCanvas.bottom = (window.innerHeight - navFooterHeight) + "px";
-    console.log(paintCanvas);
+
+    var ballCanvas = document.getElementsByClassName("BallCanvas")[0].style;
+    ballCanvas.top = (-window.innerHeight + navFooterHeight) + "px";
+    ballCanvas.bottom = (window.innerHeight - navFooterHeight) + "px";
 
     var header = document.getElementsByClassName("Header")[0].style;
     header.position = "absolute";

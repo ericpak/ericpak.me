@@ -10,7 +10,10 @@ class HomePage extends Component {
     var paintCanvas = document.getElementsByClassName("PaintCanvas")[0].style;
     paintCanvas.top = 0;
     paintCanvas.bottom = 0;
-    console.log(paintCanvas);
+
+    var ballCanvas = document.getElementsByClassName("BallCanvas")[0].style;
+    ballCanvas.top = 0;
+    ballCanvas.bottom = 0;
 
     var header = document.getElementsByClassName("Header")[0].style;
     header.position = "relative";
