@@ -11,13 +11,10 @@ import PaintCanvas from './canvas/paintCanvas';
 import paintBtnImg from '../../Assets/media/images/btnImg/paintBtnImg.png';
 import ballBtnImg from '../../Assets/media/images/btnImg/ballBtnImg.png';
 
-var toolbarDivStyle = {
-  top: 10,
-  bottom: 0,
-}
-
+// Size of footer in pixels
 const footerHeight = 44;
 
+// Style for the canvas currently selected
 const selectedCanvas = {
   background: 'rgba(244,67,54,0.5)',
   borderRadius: 5,
@@ -32,7 +29,6 @@ class Header extends Component {
     super();
     this.state = {
       showPaintCanvas: true,
-      home: "▾Home",
       paintCanvasBrush: {
         rgb: { r: 255, g: 188, b: 103, a: 1 },
         size: 10,
@@ -47,7 +43,6 @@ class Header extends Component {
       },
       headerStyle: {
         height: window.innerHeight - footerHeight,
-        position: 'relative',
       },
     }
     window.addEventListener('resize', this.resizeWindow.bind(this));
@@ -55,42 +50,6 @@ class Header extends Component {
 
   resizeWindow(){
     this.setState({ headerStyle: { height: window.innerHeight - footerHeight }});
-    if(this.props.isCanvasDown)
-      this.canvasUp();
-    else
-      this.canvasDown();
-  }
-
-  canvasUp(){
-    this.moveToolbarUp();
-    this.setState({ home: "▴Home", headerStyle: { position: 'absolute'} });
-    // if(this.state.showPaintCanvas)
-    //   this._paintCanvas.moveCanvasUp();
-    // else
-    //   this._ballCanvas.moveCanvasUp();
-  }
-
-  canvasDown(){
-    this.moveToolbarDown();
-    this.setState({ home: "▾Home", headerStyle: { height: window.innerHeight - footerHeight, position: 'relative'} });
-    // if(this.state.showPaintCanvas)
-    //   this._paintCanvas.moveCanvasDown();
-    // else
-    //   this._ballCanvas.moveCanvasDown();
-  }
-
-  moveToolbarUp(){
-    toolbarDivStyle = {
-      top: -40,
-      bottom: 40,
-    }
-  }
-
-  moveToolbarDown(){
-    toolbarDivStyle = {
-      top: 10,
-      bottom: 0,
-    }
   }
 
   switchToPaint(){
@@ -173,7 +132,7 @@ class Header extends Component {
         <PaintCanvas style={this.state.paintCanvasBrush} ref={ref => (this._paintCanvas = ref)} />
         <BallCanvas variables={this.state.ballCanvasVar} ref={ref => (this._ballCanvas = ref)} />
         <nav className="NavBar">
-          <ul style={toolbarDivStyle} className="toolbar">
+          <ul className="toolbar">
             <li className="toolbarParent"><a> + </a></li>
             <ul className="toolbarChild">
               {this.state.showPaintCanvas ?
@@ -242,9 +201,9 @@ class Header extends Component {
             </ul>
           </ul>
           <ul className="Nav_Bar">
-            <li><Link onClick={this.canvasDown.bind(this)} to='/'>{this.state.home}</Link></li>
-            <li><Link onClick={this.canvasUp.bind(this)} to="/Projects">Projects</Link></li>
-            <li><Link onClick={this.canvasUp.bind(this)} to="/Contact">Contact</Link></li>
+            <li><Link to='/'>Home</Link></li>
+            <li><Link to="/Projects">Projects</Link></li>
+            <li><Link to="/Contact">Contact</Link></li>
           </ul>
         </nav>
       </header>

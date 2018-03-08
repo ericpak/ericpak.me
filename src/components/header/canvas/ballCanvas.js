@@ -30,6 +30,7 @@ var cursorEventRadius = 100;
 
 const navFooterHeight = 44;
 
+// ballCanvas default style
 var divStyle = {
   top: 0,
   bottom: 0,
@@ -86,7 +87,6 @@ class BallCanvas extends Component {
     isGravityOn = false;
     selectedColors = Math.floor(Math.random()*colors.length);
     this.createCircles();
-
   }
 
   // Creates circles
@@ -103,22 +103,6 @@ class BallCanvas extends Component {
       this.state.circleArray.push(new Circle(this.state.c, radius, this.props.variables.enlargedRadius, x, y, dx, dy, color, this.props.variables.stroke));
     }
   }
-
-    moveCanvasUp(){
-      divStyle = {
-        ...divStyle,
-        top: -window.innerHeight,
-        bottom: window.innerHeight - navFooterHeight,
-      }
-    }
-
-    moveCanvasDown(){
-      divStyle = {
-        ...divStyle,
-        top: 0,
-        bottom: 0,
-      }
-    }
 
     makeVisible(){
       divStyle = {

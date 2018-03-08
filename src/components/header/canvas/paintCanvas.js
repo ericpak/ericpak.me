@@ -41,22 +41,6 @@ class PaintCanvas extends Component {
     }
   }
 
-  moveCanvasUp(){
-    divStyle = {
-      ...divStyle,
-      top: -window.innerHeight + navFooterHeight,
-      bottom: window.innerHeight - navFooterHeight,
-    }
-  }
-
-  moveCanvasDown(){
-    divStyle = {
-      ...divStyle,
-      top: 0,
-      bottom: 0,
-    }
-  }
-
   makeVisible(){
     divStyle = {
       ...divStyle,
@@ -76,7 +60,6 @@ class PaintCanvas extends Component {
   // Mousemove event listener
   _onMouseMove(e) {
     this.setState({ x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY });
-    // console.log(this.state.x + " " + this.state.y);
     if(mouse_down)
       this.drawCircle();
   }
@@ -132,35 +115,6 @@ class PaintCanvas extends Component {
     this.state.ctx.font = "20px verdana";
     this.state.ctx.fillText("my name is", 145, 100);
 
-    // this.state.ctx.beginPath();
-    // this.state.ctx.moveTo(18, 50);
-    // this.state.ctx.quadraticCurveTo(20, 100, 80, 200);
-    // this.state.ctx.strokeStyle = cobalt;
-    // this.state.ctx.stroke();
-    // this.state.ctx.font = "14px verdana";
-    // this.state.ctx.fillText("Brush Settings!", 50, 220);
-
-
-    // this.state.ctx.beginPath();
-    // this.state.ctx.moveTo(window.innerWidth-235, 50);
-    // this.state.ctx.quadraticCurveTo(window.innerWidth-235, 150, window.innerWidth-350, 200);
-    // this.state.ctx.fillText("This Page!", window.innerWidth-460, 208);
-    //
-    // this.state.ctx.moveTo(window.innerWidth-150, 50);
-    // this.state.ctx.quadraticCurveTo(window.innerWidth-200, 200, window.innerWidth-300, 250);
-    // this.state.ctx.fillText("Check out my projects!", window.innerWidth-540, 260);
-    //
-    // this.state.ctx.moveTo(window.innerWidth-60, 50);
-    // this.state.ctx.quadraticCurveTo(window.innerWidth-50, 120, window.innerWidth-120, 200);
-    // this.state.ctx.fillText("blah blah blah", window.innerWidth-200, 230);
-    //
-    // this.state.ctx.moveTo(window.innerWidth-90, window.innerHeight-43-navFooterHeight);
-    // this.state.ctx.quadraticCurveTo(window.innerWidth-80, window.innerHeight-80-navFooterHeight, window.innerWidth-120, window.innerHeight-100-navFooterHeight);
-    // this.state.ctx.fillText("Contact me!", window.innerWidth-248, window.innerHeight-95-navFooterHeight);
-
-    // this.state.ctx.strokeStyle = cobalt;
-    // this.state.ctx.stroke();
-
     this.state.ctx.font = "24px verdana";
     this.state.ctx.fillText("[Click to paint]", 70, window.innerHeight-80-navFooterHeight);
     this.state.ctx.font = "italic 13px verdana";
@@ -197,7 +151,6 @@ class PaintCanvas extends Component {
   }
 
   saveCanvas(){
-    console.log("SAVE")
     var image = this.state.paintCanvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
     window.location.href=image;
   }
