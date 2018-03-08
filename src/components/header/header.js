@@ -19,6 +19,11 @@ var toolbarDivStyle = {
 var footerHeight = 44;
 var slider = document.getElementsByClassName("brushSize");
 
+var selectedCanvas = {
+  background: 'rgba(244,67,54,0.5)',
+  borderRadius: 5,
+}
+
 class Header extends Component {
   getClassName() {
     return ClassNames("Header");
@@ -229,12 +234,12 @@ class Header extends Component {
                   /></li>
                 </div>)
               }
-              <li className="resetButton"><button className="resetBtn" onClick={this.reset.bind(this)}>Reset</button></li>
+              {this.state.showPaintCanvas ? <li className="resetButton"><button className="resetBtn" onClick={this.reset.bind(this)}>Reset</button></li> : <li className="saveButton"><button className="saveBtn" onClick={this.reset.bind(this)}>Refresh</button></li>}
             </ul>
             <li className="toolbarParent"><a> = </a></li>
             <ul className="toolbarChild">
-              <li><img className='canvasBtnImg' src={paintBtnImg} alt='paintBtnImg' onClick={this.switchToPaint.bind(this)} /></li>
-              <li><img className='canvasBtnImg' src={ballBtnImg} alt='ballBtnImg' onClick={this.switchToBall.bind(this)} /></li>
+              {this.state.showPaintCanvas ? <li style={selectedCanvas}><img className='canvasBtnImg' src={paintBtnImg} alt='paintBtnImg' onClick={this.switchToPaint.bind(this)} /></li> : <li><img className='canvasBtnImg' src={paintBtnImg} alt='paintBtnImg' onClick={this.switchToPaint.bind(this)} /></li>}
+              {this.state.showPaintCanvas ? <li><img className='canvasBtnImg' src={ballBtnImg} alt='ballBtnImg' onClick={this.switchToBall.bind(this)} /></li> : <li style={selectedCanvas}><img className='canvasBtnImg' src={ballBtnImg} alt='ballBtnImg' onClick={this.switchToBall.bind(this)} /></li>}
             </ul>
           </ul>
           <ul className="Nav_Bar">
