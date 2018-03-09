@@ -18,8 +18,10 @@ var life = 3;
 var maxLife = 3;
 var lifeDisplay = "[III]";
 var kills = 0;
-var start = false;
+var firstTime = true;
 var wave = 1;
+var roundStartTime = 0;
+var roundStarted = false;
 
 
 class BallCanvas extends Component {
@@ -55,6 +57,7 @@ class BallCanvas extends Component {
     this.state.ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
     this.state.ctx.fillStyle = "rgba(0, 0, 0, 0.7)"
     this.state.ctx.font = "40px verdana";
+    this.state.ctx.fillText("Alpha version", ((window.innerWidth/2) - 140), window.innerHeight/2 - 140);
     this.state.ctx.fillText("Click the squares to kill them", ((window.innerWidth/2) - 295), window.innerHeight/2);
     this.state.ctx.fillText("Protect the left side", ((window.innerWidth/2) - 210), window.innerHeight/2 + 40);
     this.state.ctx.fillText("Click to start", ((window.innerWidth/2) - 150), ((window.innerHeight/2) + 80));
@@ -85,8 +88,8 @@ class BallCanvas extends Component {
         }
       }
     }
-    if(this.state.gameover || !start){
-      start = true;
+    if(this.state.gameover || firstTime){
+      firstTime = false;
       this.reset();
     }
   }
@@ -105,13 +108,16 @@ class BallCanvas extends Component {
 
   waveBanner(time){
     let wtime = time;
-    console.log(time);
-    if(time > 1 && time < 2)
-      wtime = 1;
-    if(time >= 2)
-      wtime = 3 - time;
+    if(time >= 300)
+      wtime = 0;
+    else if(time >= 200 && time < 300)
+      wtime = 300 - time;
+    else if(time >= 100 && time < 200)
+      wtime = 100;
+    else if(time < 100)
+      wtime = time;
     this.state.ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-    this.state.ctx.fillRect(0, ((window.innerHeight/2) - (100 * wtime)), window.innerWidth, (200 * wtime));
+    this.state.ctx.fillRect(0, ((window.innerHeight/2) - wtime), window.innerWidth, (2 * wtime));
     this.state.ctx.fillStyle = "rgba(0, 0, 0,"+ (0.7 * wtime) + ")";
     this.state.ctx.font = "80px verdana";
     if(wave%10 === 0)
@@ -133,27 +139,31 @@ class BallCanvas extends Component {
   ///////////////////////////////////////////////////
 
   // Basic Enemy Creator
-  createEnemy(height, width, maxVelocity, minVelocity, life, color){
-    let x = Math.random() * window.innerWidth + window.innerWidth;
+  createEnemy(xAdjust, height, width, maxVelocity, minVelocity, life, damage, color){
+    let x = Math.random() * (window.innerWidth - xAdjust) + window.innerWidth;
     let y = Math.random() * (window.innerHeight - navFooterHeight - height * 2) + height;
     let dx = (Math.random() - 1) * maxVelocity - minVelocity;
     let dy = (Math.random() - 0.5) * maxVelocity;
-    this.state.enemyArray.push(new Square(this.state.ctx, x, y, width, height, dx, dy, life, color));
+    this.state.enemyArray.push(new Square(this.state.ctx, x, y, width, height, dx, dy, life, damage, color));
   }
 
-  basicEnemy(){
-    this.createEnemy(40, 40, 1, 1, 1, 'blue');
-  }
-
-  tankEnemy(){
-    this.createEnemy(60, 60, 1, .5, 2, 'green');
-  }
+  basicEnemy(){this.createEnemy(0, 40, 40, 1, 1, 1, 1, 'blue')}
+  tankEnemy(){this.createEnemy(window.innerWidth/3, 60, 60, 1, .5, 2, 1, 'green')}
+  fastEnemy(){this.createEnemy(0, 40, 40, 2, 2, 1, 1, 'red')}
+  smallEnemy(){this.createEnemy(0, 20, 20, 1, 1, 1, 1, 'yellow')}
+  bossEnemy(){this.createEnemy(0, 80, 80, .5, .5, 20, 5, 'white')}
 
   newWave(){
     for(var i = 0; i < (wave * 8); i++)
       this.basicEnemy();
     for(var i = 0; i < (wave * 2); i++)
       this.tankEnemy();
+    for(var i = 0; i < (wave * 2); i++)
+      this.fastEnemy();
+    for(var i = 0; i < (wave * 2); i++)
+      this.smallEnemy();
+    for(var i = 0; i < (wave * 2); i++)
+      this.bossEnemy();
     wave++;
   }
 
@@ -193,11 +203,17 @@ class BallCanvas extends Component {
       }
     }
 
-    if(score%2000 < 300){
-      this.waveBanner(score%1000/100);
+    if(this.state.enemyArray.length == 0 && !roundStarted){
+      roundStartTime = score + 500;
+      roundStarted = true;
     }
-    if(score%2000 === 300){
+
+    if(roundStartTime > score){
+      this.waveBanner(roundStartTime - score);
+    }
+    if(roundStartTime === score){
       this.newWave();
+      roundStarted = false;
     }
 
     // Score

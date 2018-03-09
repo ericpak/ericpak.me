@@ -8,7 +8,7 @@ class Square extends Component {
     return classNames("Square");
   }
 
-  constructor(ctx, x, y, width, height, dx, dy, life, color) {
+  constructor(ctx, x, y, width, height, dx, dy, life, damage, color) {
     super();
     this.state = {
       ctx: ctx,
@@ -19,6 +19,7 @@ class Square extends Component {
       dx: dx,
       dy: dy,
       life: life,
+      damage: damage,
       color: color,
     }
   }
