@@ -6,10 +6,12 @@ import { ChromePicker } from 'react-color';
 // components
 import BallCanvas from './canvas/ballCanvas';
 import PaintCanvas from './canvas/paintCanvas';
+import CDefense from './canvas/cDefense';
 
 // = Button Images
 import paintBtnImg from '../../Assets/media/images/btnImg/paintBtnImg.png';
 import ballBtnImg from '../../Assets/media/images/btnImg/ballBtnImg.png';
+import cDefenseBtnImg from '../../Assets/media/images/btnImg/cDefenseBtnImg.png';
 
 // Size of footer in pixels
 const footerHeight = 44;
@@ -28,7 +30,7 @@ class Header extends Component {
   constructor(){
     super();
     this.state = {
-      showPaintCanvas: true,
+      canvasState: 'paint',
       paintCanvasBrush: {
         rgb: { r: 255, g: 188, b: 103, a: 1 },
         size: 10,
@@ -53,21 +55,30 @@ class Header extends Component {
   }
 
   switchToPaint(){
-    this.setState({ showPaintCanvas: true });
+    this.setState({ canvasState: 'paint' });
     this._paintCanvas.makeVisible();
     this._ballCanvas.makeHidden();
+    this._cDefense.makeHidden();
   }
 
   switchToBall(){
-    this.setState({ showPaintCanvas: false });
+    this.setState({ canvasState: 'ball' });
     this._paintCanvas.makeHidden();
     this._ballCanvas.makeVisible();
+    this._cDefense.makeHidden();
+  }
+
+  switchToCDefense(){
+    this.setState({ canvasState: 'cDefense' });
+    this._paintCanvas.makeHidden();
+    this._ballCanvas.makeHidden();
+    this._cDefense.makeVisible();
   }
 
   reset(){
-    if(this.state.showPaintCanvas)
+    if(this.state.canvasState === 'paint')
       this._paintCanvas.reset();
-    else
+    else if(this.state.canvasState === 'ball')
       this._ballCanvas.reset();
   }
 
@@ -131,11 +142,12 @@ class Header extends Component {
       <header style={this.state.headerStyle} className={this.getClassName()}>
         <PaintCanvas style={this.state.paintCanvasBrush} ref={ref => (this._paintCanvas = ref)} />
         <BallCanvas variables={this.state.ballCanvasVar} ref={ref => (this._ballCanvas = ref)} />
+        <CDefense variables={this.state.canvasState} ref={ref => (this._cDefense = ref)} />
         <nav className="NavBar">
           <ul className="toolbar">
             <li className="toolbarParent"><a> + </a></li>
             <ul className="toolbarChild">
-              {this.state.showPaintCanvas ?
+              {this.state.canvasState === 'paint' ?
                 (<div><li className="brushSizeLabel">Brush Size: {this.state.paintCanvasBrush.size}</li>
                 <li className="brushSizeLi">
                   <input
@@ -156,7 +168,8 @@ class Header extends Component {
                     onChangeComplete={this.handleColorChange.bind(this)}
                   />
                 </li>
-                <li className="saveButton"><button className="saveBtn" onClick={this.saveCanvas.bind(this)}>Save</button></li></div>) :
+                <li className="saveButton"><button className="saveBtn" onClick={this.saveCanvas.bind(this)}>Save</button></li></div>) : <div></div>}
+                {this.state.canvasState === 'ball' ?
                 (<div>
                   <li>Number of Balls</li>
                   <li><input
@@ -190,15 +203,17 @@ class Header extends Component {
                     value={this.state.ballCanvasVar.enlargedRadius}
                     onChange={this.handleEnlargeChange.bind(this)}
                   /></li>
-                </div>)
+                </div>) : <div></div>
               }
-              {this.state.showPaintCanvas ? <li className="resetButton"><button className="resetBtn" onClick={this.reset.bind(this)}>Reset</button></li> : <li className="saveButton"><button className="saveBtn" onClick={this.reset.bind(this)}>Refresh</button></li>}
+              {this.state.canvasState === 'paint' ? <li className="resetButton"><button className="resetBtn" onClick={this.reset.bind(this)}>Reset</button></li> : <div></div> }
+              {this.state.canvasState === 'ball' ? <li className="saveButton"><button className="saveBtn" onClick={this.reset.bind(this)}>Refresh</button></li> : <div></div> }
             </ul>
             <li className="toolbarParent"><a> = </a></li>
             <ul className="toolbarChild">
-              {this.state.showPaintCanvas ? <li style={selectedCanvas}><img className='canvasBtnImg' src={paintBtnImg} alt='paintBtnImg' onClick={this.switchToPaint.bind(this)} /></li> : <li><img className='canvasBtnImg' src={paintBtnImg} alt='paintBtnImg' onClick={this.switchToPaint.bind(this)} /></li>}
-              {this.state.showPaintCanvas ? <li><img className='canvasBtnImg' src={ballBtnImg} alt='ballBtnImg' onClick={this.switchToBall.bind(this)} /></li> : <li style={selectedCanvas}><img className='canvasBtnImg' src={ballBtnImg} alt='ballBtnImg' onClick={this.switchToBall.bind(this)} /></li>}
-            </ul>
+              {this.state.canvasState === 'paint' ? <li style={selectedCanvas}><img className='canvasBtnImg' src={paintBtnImg} alt='paintBtnImg' onClick={this.switchToPaint.bind(this)} /></li> : <li><img className='canvasBtnImg' src={paintBtnImg} alt='paintBtnImg' onClick={this.switchToPaint.bind(this)} /></li>}
+              {this.state.canvasState === 'ball' ? <li style={selectedCanvas}><img className='canvasBtnImg' src={ballBtnImg} alt='ballBtnImg' onClick={this.switchToBall.bind(this)} /></li> : <li><img className='canvasBtnImg' src={ballBtnImg} alt='ballBtnImg' onClick={this.switchToBall.bind(this)} /></li>}
+              {this.state.canvasState === 'cDefense' ? <li style={selectedCanvas}><img className='canvasBtnImg' src={cDefenseBtnImg} alt='cDefenseBtnImg' onClick={this.switchToCDefense.bind(this)} /></li> : <li><img className='canvasBtnImg' src={cDefenseBtnImg} alt='cDefenseBtnImg' onClick={this.switchToCDefense.bind(this)} /></li>}
+          </ul>
           </ul>
           <ul className="Nav_Bar">
             <li><Link to='/'>Home</Link></li>
