@@ -80,6 +80,8 @@ class Header extends Component {
       this._paintCanvas.reset();
     else if(this.state.canvasState === 'ball')
       this._ballCanvas.reset();
+    else if(this.state.canvasState === 'cDefense')
+      this._cDefense.reset();
   }
 
   handleSizeChange(){
@@ -207,6 +209,7 @@ class Header extends Component {
               }
               {this.state.canvasState === 'paint' ? <li className="resetButton"><button className="resetBtn" onClick={this.reset.bind(this)}>Reset</button></li> : <div></div> }
               {this.state.canvasState === 'ball' ? <li className="saveButton"><button className="saveBtn" onClick={this.reset.bind(this)}>Refresh</button></li> : <div></div> }
+              {this.state.canvasState === 'cDefense' ? <li className="resetButton"><button className="resetBtn" onClick={this.reset.bind(this)}>Restart</button></li> : <div></div> }
             </ul>
             <li className="toolbarParent"><a> = </a></li>
             <ul className="toolbarChild">
