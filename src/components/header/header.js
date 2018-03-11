@@ -6,7 +6,7 @@ import { ChromePicker } from 'react-color';
 // components
 import BallCanvas from './canvas/ballCanvas';
 import PaintCanvas from './canvas/paintCanvas';
-import CDefense from './canvas/cDefense';
+// import CDefense from '../game/cDefense';
 
 // = Button Images
 import paintBtnImg from '../../Assets/media/images/btnImg/paintBtnImg.png';

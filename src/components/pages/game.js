@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import CDefense from '../header/canvas/cDefense';
+import CDefense from '../game/cDefense';
 
 // Nav and footer height
 const navFooterHeight = 44;
