@@ -215,7 +215,6 @@ class Header extends Component {
               {this.state.canvasState === 'paint' ? <li style={selectedCanvas}><img className='canvasBtnImg' src={paintBtnImg} alt='paintBtnImg' onClick={this.switchToPaint.bind(this)} /></li> : <li><img className='canvasBtnImg' src={paintBtnImg} alt='paintBtnImg' onClick={this.switchToPaint.bind(this)} /></li>}
               {this.state.canvasState === 'ball' ? <li style={selectedCanvas}><img className='canvasBtnImg' src={ballBtnImg} alt='ballBtnImg' onClick={this.switchToBall.bind(this)} /></li> : <li><img className='canvasBtnImg' src={ballBtnImg} alt='ballBtnImg' onClick={this.switchToBall.bind(this)} /></li>}
               {this.state.canvasState === 'cDefense' ? <li style={selectedCanvas}><Link to="/Game"><img className='canvasBtnImg' src={cDefenseBtnImg} alt='cDefenseBtnImg' onClick={this.switchToCDefense.bind(this)} /></Link></li> : <li><Link to="/Game"><img className='canvasBtnImg' src={cDefenseBtnImg} alt='cDefenseBtnImg' onClick={this.switchToCDefense.bind(this)} /></Link></li>}
-
           </ul>
           </ul>
           <ul className="Nav_Bar">

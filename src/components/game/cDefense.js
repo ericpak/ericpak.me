@@ -57,17 +57,55 @@ class CDefense extends Component {
     return classNames("CDefense");
   }
 
-  // If canvas mounts
   componentDidMount() {
     canvas = this.refs.canvas;
-    // Default Values
     firstTime = true;
-    waitForPerk = false;
+    this.setDefaults();
+    this.adjustHpDisplay();
+    window.addEventListener('keydown',this._onKeyDown,false);
+    // Game Size
+    canvas.width = 1400;
+    canvas.height = 900;
+    ctx = canvas.getContext("2d");
+    ctx.fillStyle = "rgba(0, 0, 0, 1)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Start screen
+    ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    startSquare = new Square(ctx, ((canvas.width/2) - 75), ((canvas.height/2) + 50), 150, 50, 0, 0, 1, 1, 'rgba(255, 255, 255, 0.5)');
+    startSquare.update();
+    ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+    ctx.font = "40px verdana";
+    ctx.fillText("Alpha version", ((canvas.width/2) - 140), canvas.height/2 - 140);
+    ctx.fillText("Click the squares to kill them", ((canvas.width/2) - 290), canvas.height/2);
+    ctx.fillText("Protect the left side", ((canvas.width/2) - 205), canvas.height/2 + 40);
+    ctx.fillText("Start", ((canvas.width/2) - 55), ((canvas.height/2) + 90));
+  }
+
+  reset(){
+    this.setDefaults();
+
+    this.orbitalPerk();
+    this.orbitalPerk();
+    this.orbitalPerk();
+    this.orbitalPerk();
+
+    this.adjustHpDisplay();
+    if(gameover || firstTime || waitForPerk)
+      gameover = false;
+      waitForPerk = false;
+      this.animate();
+  }
+
+  setDefaults(){
+    // Default Game Variables
     enemyArray = [];
     textArray = [];
     perkArray = [];
     orbitArray = [];
     waveStarted = false;
+    waitForPerk = false;
     time = 0;
     kills = 0;
     wave = 1;
@@ -78,38 +116,18 @@ class CDefense extends Component {
     hasPierce = false;
     damage = 1;
     regen = 0;
-    // Default States
-    this.adjustHpDisplay();
-    this.setState({ gameover: false });
-
-    window.addEventListener('keydown',this._onKeyDown,false);
-
-    canvas.width = 1400;//window.innerWidth;
-    canvas.height = 900;// window.innerHeight - navFooterHeight;
-    ctx = canvas.getContext("2d");
-    ctx.fillStyle = "rgba(0, 0, 0, 1)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Start screen
-    ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
-    ctx.font = "40px verdana";
-    ctx.fillText("Alpha version", ((canvas.width/2) - 140), canvas.height/2 - 140);
-    ctx.fillText("Click the squares to kill them", ((canvas.width/2) - 290), canvas.height/2);
-    ctx.fillText("Protect the left side", ((canvas.width/2) - 205), canvas.height/2 + 40);
-    startSquare = new Square(ctx, ((canvas.width/2) - 75), ((canvas.height/2) + 50), 150, 50, 0, 0, 1, 1, 'white');
-    startSquare.update();
-    ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
-    ctx.fillText("Start", ((canvas.width/2) - 55), ((canvas.height/2) + 90));
   }
 
-  // Mousemove event
+  ///////////////////////////////////////////////////////////////////////
+  // Event Handler
+  ///////////////////////////////////////////////////////////////////////
+
+  // Mousemove
   _onMouseMove(e) {
     x = e.nativeEvent.offsetX;
     y = e.nativeEvent.offsetY;
   }
-  // Mouse click event
+  // Mouse click
   _onMouseClick(e) {
     if(waitForPerk){
       for(var i = 0; i < perkArray.length; i+=2){
@@ -124,21 +142,7 @@ class CDefense extends Component {
       }
     } else {
       this.aoeExplosion(e.nativeEvent.offsetX, e.nativeEvent.offsetY, time);
-      for(i = enemyArray.length - 1; i >= 0; i--){
-        if(e.nativeEvent.offsetX + aoeSize >= enemyArray[i].state.x && e.nativeEvent.offsetX - aoeSize <= enemyArray[i].state.x + enemyArray[i].state.width){
-          if(e.nativeEvent.offsetY + aoeSize >= enemyArray[i].state.y && e.nativeEvent.offsetY - aoeSize <= enemyArray[i].state.y + enemyArray[i].state.height){
-            enemyArray[i].state.hp -= damage;
-            textArray.push(new Txt(ctx, damage, enemyArray[i].state.x + Math.random()*10, enemyArray[i].state.y + Math.random()*10, damage+11, 'red', time+100));
-            if(enemyArray[i].state.hp <= 0){
-              enemyArray.splice(i,1);
-              kills++;
-            }
-            if(!hasPierce){
-              break;
-            }
-          }
-        }
-      }
+      this.damageEnemy(e.nativeEvent.offsetX, e.nativeEvent.offsetY, aoeSize, aoeSize, damage, hasPierce);
       if(gameover || firstTime){
         if(e.nativeEvent.offsetX >= startSquare.state.x && e.nativeEvent.offsetX <= startSquare.state.x + startSquare.state.width){
           if(e.nativeEvent.offsetY >= startSquare.state.y && e.nativeEvent.offsetY <= startSquare.state.y + startSquare.state.height){
@@ -156,35 +160,25 @@ class CDefense extends Component {
     }
   }
 
-  reset(){
-    enemyArray = [];
-    textArray = [];
-    perkArray = [];
-    orbitArray = [];
-    waveStarted = false;
-    waitForPerk = false;
-    time = 0;
-    kills = 0;
-    wave = 1;
-
-    // reset perks
-    hp = 3;
-    maxHp = 3;
-    aoeSize = 0;
-    hasPierce = false;
-    damage = 1;
-    regen = 0;
-
-    this.orbitalPerk();
-        this.orbitalPerk();
-            this.orbitalPerk();
-                this.orbitalPerk();
-
-    this.adjustHpDisplay();
-    if(gameover || firstTime || waitForPerk)
-      gameover = false;
-      waitForPerk = false;
-      this.animate();
+  damageEnemy(x, y, width, height, dmg, pierce){
+    var hit = false;
+    for(var i = enemyArray.length - 1; i >= 0; i--){
+      if(x + width >= enemyArray[i].state.x && x - width <= enemyArray[i].state.x + enemyArray[i].state.width){
+        if(y + height >= enemyArray[i].state.y && y - height <= enemyArray[i].state.y + enemyArray[i].state.height){
+          enemyArray[i].state.hp -= dmg;
+          hit = true;
+          textArray.push(new Txt(ctx, dmg, enemyArray[i].state.x + Math.random()*10, enemyArray[i].state.y + Math.random()*10, damage+11, 'red', time+100));
+          if(enemyArray[i].state.hp <= 0){
+            enemyArray.splice(i,1);
+            kills++;
+          }
+          if(!pierce){
+            break;
+          }
+        }
+      }
+    }
+    return hit;
   }
 
   ///////////////////////////////////////////////////////////////////////
@@ -408,6 +402,7 @@ class CDefense extends Component {
     if(orbitArray.length > 0){
       for(var i = 0; i < orbitArray.length; i++){
         orbitArray[i].update(x, y, time/10);
+
       }
     }
 
@@ -467,13 +462,12 @@ class CDefense extends Component {
     if(gameover){
       ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
+      startSquare = new Square(ctx, ((canvas.width/2) - 80), ((canvas.height/2) + 25), 160, 50, 0, 0, 1, 1, 'rgba(255, 255, 255, 0.5)');
+      startSquare.update();
       ctx.fillStyle = "rgba(0, 0, 0, 0.7)"
       ctx.font = "100px verdana";
       ctx.fillText("Game Over", ((canvas.width/2) - 285), canvas.height/2);
       ctx.font = "40px verdana";
-      startSquare = new Square(ctx, ((canvas.width/2) - 80), ((canvas.height/2) + 25), 160, 50, 0, 0, 1, 1, 'white');
-      startSquare.update();
-      ctx.fillStyle = "rgba(0, 0, 0, 0.7)"
       ctx.fillText("Restart", ((canvas.width/2) - 80), ((canvas.height/2) + 65));
     }
   }
