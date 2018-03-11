@@ -16,10 +16,32 @@ body{
   top: $navHeight;
   max-width: 1000px;
   margin: 0 auto;
-  min-height: calc(100vh - #{$navHeight - $footerHeight} - 124px);
+  min-height: calc(100vh - #{$navHeight - $footerHeight} - 123px);
   @include animation(fadein 2s);
 }
 
 .App{
   min-width: 320px;
 }
+
+
+.game {
+  position: relative;
+  padding: 40px;
+  top: $navHeight;
+  margin: 0 auto;
+  min-height: calc(100vh - #{$navHeight - $footerHeight} - 123px);
+  @include animation(fadein 2s);
+}
+
+.CDefense_canvas{
+  margin: auto;
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  @include transition(all 1s ease);
+  }

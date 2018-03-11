@@ -58,21 +58,21 @@ class Header extends Component {
     this.setState({ canvasState: 'paint' });
     this._paintCanvas.makeVisible();
     this._ballCanvas.makeHidden();
-    this._cDefense.makeHidden();
+    // this._cDefense.makeHidden();
   }
 
   switchToBall(){
     this.setState({ canvasState: 'ball' });
     this._paintCanvas.makeHidden();
     this._ballCanvas.makeVisible();
-    this._cDefense.makeHidden();
+    // this._cDefense.makeHidden();
   }
 
   switchToCDefense(){
-    this.setState({ canvasState: 'cDefense' });
-    this._paintCanvas.makeHidden();
-    this._ballCanvas.makeHidden();
-    this._cDefense.makeVisible();
+    // this.setState({ canvasState: 'cDefense' });
+    // this._paintCanvas.makeHidden();
+    // this._ballCanvas.makeHidden();
+    // this._cDefense.makeVisible();
   }
 
   reset(){
@@ -144,7 +144,6 @@ class Header extends Component {
       <header style={this.state.headerStyle} className={this.getClassName()}>
         <PaintCanvas style={this.state.paintCanvasBrush} ref={ref => (this._paintCanvas = ref)} />
         <BallCanvas variables={this.state.ballCanvasVar} ref={ref => (this._ballCanvas = ref)} />
-        <CDefense variables={this.state.canvasState} ref={ref => (this._cDefense = ref)} />
         <nav className="NavBar">
           <ul className="toolbar">
             <li className="toolbarParent"><a> + </a></li>
@@ -215,7 +214,8 @@ class Header extends Component {
             <ul className="toolbarChild">
               {this.state.canvasState === 'paint' ? <li style={selectedCanvas}><img className='canvasBtnImg' src={paintBtnImg} alt='paintBtnImg' onClick={this.switchToPaint.bind(this)} /></li> : <li><img className='canvasBtnImg' src={paintBtnImg} alt='paintBtnImg' onClick={this.switchToPaint.bind(this)} /></li>}
               {this.state.canvasState === 'ball' ? <li style={selectedCanvas}><img className='canvasBtnImg' src={ballBtnImg} alt='ballBtnImg' onClick={this.switchToBall.bind(this)} /></li> : <li><img className='canvasBtnImg' src={ballBtnImg} alt='ballBtnImg' onClick={this.switchToBall.bind(this)} /></li>}
-              {this.state.canvasState === 'cDefense' ? <li style={selectedCanvas}><img className='canvasBtnImg' src={cDefenseBtnImg} alt='cDefenseBtnImg' onClick={this.switchToCDefense.bind(this)} /></li> : <li><img className='canvasBtnImg' src={cDefenseBtnImg} alt='cDefenseBtnImg' onClick={this.switchToCDefense.bind(this)} /></li>}
+              {this.state.canvasState === 'cDefense' ? <li style={selectedCanvas}><Link to="/Game"><img className='canvasBtnImg' src={cDefenseBtnImg} alt='cDefenseBtnImg' onClick={this.switchToCDefense.bind(this)} /></Link></li> : <li><Link to="/Game"><img className='canvasBtnImg' src={cDefenseBtnImg} alt='cDefenseBtnImg' onClick={this.switchToCDefense.bind(this)} /></Link></li>}
+
           </ul>
           </ul>
           <ul className="Nav_Bar">
@@ -228,5 +228,5 @@ class Header extends Component {
     );
   }
 }
-
+// {this.state.canvasState === 'cDefense' ? <li style={selectedCanvas}><img className='canvasBtnImg' src={cDefenseBtnImg} alt='cDefenseBtnImg' onClick={this.switchToCDefense.bind(this)} /></li> : <li><img className='canvasBtnImg' src={cDefenseBtnImg} alt='cDefenseBtnImg' onClick={this.switchToCDefense.bind(this)} /></li>}
 export default Header;

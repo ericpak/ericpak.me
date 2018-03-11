@@ -1,14 +1,12 @@
 import {Component} from "react";
 import classNames from "classnames";
 
-const footerHeight = 43;
-
 class Square extends Component {
   getClassName() {
     return classNames("Square");
   }
 
-  constructor(ctx, x, y, width, height, dx, dy, life, damage, color) {
+  constructor(ctx, x, y, width, height, dx, dy, hp, damage, color) {
     super();
     this.state = {
       ctx: ctx,
@@ -18,7 +16,7 @@ class Square extends Component {
       height: height,
       dx: dx,
       dy: dy,
-      life: life,
+      hp: hp,
       damage: damage,
       color: color,
     }

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import ClassNames from "classnames";
 import github from "../../Assets/media/images/footer/github.svg";
 import linkedin from "../../Assets/media/images/footer/linkedin.svg";
-import facebook from "../../Assets/media/images/footer/facebook.svg";
+// import facebook from "../../Assets/media/images/footer/facebook.svg";
 import email from "../../Assets/media/images/footer/email.svg";
 
 const links = [
