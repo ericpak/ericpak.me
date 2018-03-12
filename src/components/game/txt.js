@@ -11,8 +11,8 @@ class Txt extends Component {
     this.state = {
       ctx: ctx,
       text: text,
-      x: x,
-      y: y,
+      x: x + (Math.random()-0.5)*30,
+      y: y + (Math.random()-0.5)*30,
       size: size,
       color: color,
       time: time,

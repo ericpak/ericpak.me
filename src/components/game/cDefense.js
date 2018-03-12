@@ -114,7 +114,7 @@ class CDefense extends Component {
     damage = 1;
     regen = 0;
     orbitalLevel = 1;
-    regenTime = 1000;
+    regenTime = 1425;
   }
 
   ///////////////////////////////////////////////////////////////////////
@@ -166,7 +166,7 @@ class CDefense extends Component {
         if(y + height >= enemyArray[i].state.y && y - height <= enemyArray[i].state.y + enemyArray[i].state.height){
           enemyArray[i].state.hp -= dmg;
           hit = true;
-          textArray.push(new Txt(ctx, dmg, enemyArray[i].state.x + Math.random()*10, enemyArray[i].state.y + Math.random()*10, damage+11, 'red', time+100));
+          textArray.push(new Txt(ctx, dmg, x, y, damage+11, 'red', time+100));
           if(enemyArray[i].state.hp <= 0){
             enemyArray.splice(i,1);
             kills++;
@@ -400,7 +400,7 @@ class CDefense extends Component {
       console.log(regenTime)
       if(hp < maxHp){
         hp += regen;
-        textArray.push(new Txt(ctx,'+'+regen, 14+(11*hp)+Math.random()*20, 100 + Math.random()*20, (regen*2)+16, 'green', time+100));
+        textArray.push(new Txt(ctx,'+'+regen, 14+(11*hp), 20, (regen*2)+16, 'green', time+100));
         if(hp > maxHp)
           hp = maxHp;
         this.adjustHpDisplay();
@@ -450,19 +450,18 @@ class CDefense extends Component {
       ctx.fillRect(aoeX - aoeSize, aoeY - aoeSize, 2 * aoeSize, 2 * aoeSize);
     }
 
-    // Score
+    // HUD
     ctx.fillStyle = "white";
     ctx.font = "20px verdana";
-    ctx.fillText("Time: " + time, 10, 80);
+    ctx.fillText("Wave: " + (wave-1), 10, 25);
+    ctx.fillText("Kills: " + kills, 120, 25);
+    ctx.fillText("Time: " + time, 240, 25);
     time++;
-
-    // Kills
-    ctx.fillText("Kills: " + kills, 180, 80);
 
     // Hp Display
     ctx.fillStyle = "lightgreen";
     ctx.font = "20px courier";
-    ctx.fillText(hpDisplay, 10, 100);
+    ctx.fillText(hpDisplay, 10, 50);
 
     // Create Text/Dmg number
     if(textArray.length > 0){
