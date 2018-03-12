@@ -104,7 +104,7 @@ class CDefense extends Component {
   	for(var i = 0; i < numStars; i++) {
   		var x = Math.round(Math.random() * canvas.width);
   		var y = Math.round(Math.random() * canvas.height);
-  		var star = new Star(ctx, x, y, Math.floor(Math.random()*10)+1);
+  		var star = new Star(ctx, x, y, Math.floor(Math.random()*10)+4);
   		stars.push(star);
   	}
 
@@ -492,7 +492,7 @@ class CDefense extends Component {
 
     // Stars
     for(var i = 0; i < stars.length; i++){
-      stars[i].draw();
+      stars[i].update();
     }
 
     // Regen

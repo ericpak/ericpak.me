@@ -20,7 +20,7 @@ class Orbital {
       height: level+4,
       dx: Math.random()*0.5+0.5,
       dy: Math.random()*0.5+0.5,
-      radius: Math.random()*50+50,
+      radius: Math.random()*75+25,
       damage: level,
       originalColor: colorArray[level-1],
       color: colorArray[level-1],
