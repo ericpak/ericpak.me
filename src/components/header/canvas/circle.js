@@ -1,19 +1,11 @@
-import {Component} from "react";
-import classNames from "classnames";
-
 // gravity(g)[rate of acceleration] and friction
 var g = 1;
 var friction = .75;
 
 const footerHeight = 43;
 
-class Circle extends Component {
-  getClassName() {
-    return classNames("Circle");
-  }
-
+class Circle{
   constructor(c, radius, enlargedRadius, x, y, dx, dy, color, stroke) {
-    super();
     this.state = {
       c: c,
       radius: radius,

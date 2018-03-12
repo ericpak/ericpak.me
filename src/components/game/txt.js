@@ -1,13 +1,5 @@
-import {Component} from "react";
-import classNames from "classnames";
-
-class Txt extends Component {
-  getClassName() {
-    return classNames("Txt");
-  }
-
+class Txt {
   constructor(ctx, text, x, y, size, color, time) {
-    super();
     this.state = {
       ctx: ctx,
       text: text,

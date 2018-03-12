@@ -3,6 +3,7 @@ import classNames from "classnames";
 import Square from "./square";
 import Txt from "./txt";
 import Orbital from "./orbital";
+import Turret from "./turret";
 
 const navFooterHeight = 44;
 
@@ -19,21 +20,24 @@ var x = 0;
 var y = 0;
 var time = 0;
 var hpDisplay = "[III]";
+var cdDisplay = "";
 var kills = 0;
 var firstTime = true;
 var wave = 1;
 var waveStartTime = 0;
 var waveStarted = false;
 var waitForPerk = false;
-var wavesTilPerk = 1;
 var canvas = undefined;
 var ctx = undefined;
 var startSquare = undefined;
 var enemyArray = [];
-var perkArray = [];
+var slotArray = [];
 var textArray = [];
 var orbitArray = [];
+var turretArray = [];
 var availablePerks = ['aoe', 'pierce', 'maxhp', 'dmg +1', 'orbital', 'regen'];
+var availableSkills = ['turret', 'laser', 'bomb'];
+var skill = '';
 var gameover = false;
 
 // Wave Banner DisplayTime
@@ -49,6 +53,12 @@ var regen = 0;
 var orbitalLevel = 1;
 var regenTime = 1425;
 
+// Skill variables
+var cd = 0;
+var maxCd = 0;
+var cdRegen = 0;
+var skillLevel = 0;
+
 // aoe variables
 var aoeX = 0;
 var aoeY = 0;
@@ -59,12 +69,28 @@ class CDefense extends Component {
     return classNames("CDefense");
   }
 
+  makeVisible(){
+    divStyle = {
+      ...divStyle,
+      visibility: 'visible',
+      opacity: 1,
+    }
+    this.forceUpdate();
+  }
+  makeHidden(){
+    divStyle = {
+      ...divStyle,
+      visibility: 'hidden',
+      opacity: 0,
+    }
+  }
+
   componentDidMount() {
     canvas = this.refs.canvas;
     firstTime = true;
     this.setDefaults();
     this.adjustHpDisplay();
-    window.addEventListener('keydown',this._onKeyDown,false);
+    window.addEventListener('keydown',this._onKeyDown.bind(this),false);
     // Game Size
     canvas.width = 1400;
     canvas.height = 900;
@@ -99,14 +125,18 @@ class CDefense extends Component {
     // Default Game Variables
     enemyArray = [];
     textArray = [];
-    perkArray = [];
+    slotArray = [];
     orbitArray = [];
+    turretArray = [];
     waveStarted = false;
     waitForPerk = false;
     time = 0;
     kills = 0;
     wave = 1;
+    cdDisplay = "";
     // Default Perks
+    availablePerks = ['aoe', 'pierce', 'maxhp', 'dmg +1', 'orbital', 'regen'];
+    availableSkills = ['turret', 'laser', 'bomb'];
     hp = 3;
     maxHp = 3;
     aoeSize = 0;
@@ -115,6 +145,11 @@ class CDefense extends Component {
     regen = 0;
     orbitalLevel = 1;
     regenTime = 1425;
+    // Default Skills
+    cd = 0;
+    maxCd = 0;
+    cdRegen = 0;
+    skillLevel = 0;
   }
 
   ///////////////////////////////////////////////////////////////////////
@@ -129,11 +164,11 @@ class CDefense extends Component {
   // Mouse click
   _onMouseClick(e) {
     if(waitForPerk){
-      for(var i = 0; i < perkArray.length; i+=2){
-        if(e.nativeEvent.offsetX >= perkArray[i].state.x && e.nativeEvent.offsetX <= perkArray[i].state.x + perkArray[i].state.width){
-          if(e.nativeEvent.offsetY >= perkArray[i].state.y && e.nativeEvent.offsetY <= perkArray[i].state.y + perkArray[i].state.height){
-            this.activatePerk(perkArray[i+1]);
-            perkArray = [];
+      for(var i = 0; i < slotArray.length; i+=2){
+        if(e.nativeEvent.offsetX >= slotArray[i].state.x && e.nativeEvent.offsetX <= slotArray[i].state.x + slotArray[i].state.width){
+          if(e.nativeEvent.offsetY >= slotArray[i].state.y && e.nativeEvent.offsetY <= slotArray[i].state.y + slotArray[i].state.height){
+            this.activatePerkSkill(slotArray[i+1]);
+            slotArray = [];
             waitForPerk = false;
             this.animate();
           }
@@ -141,7 +176,7 @@ class CDefense extends Component {
       }
     } else {
       this.aoeExplosion(e.nativeEvent.offsetX, e.nativeEvent.offsetY, time);
-      this.damageEnemy(e.nativeEvent.offsetX, e.nativeEvent.offsetY, aoeSize, aoeSize, damage, hasPierce);
+      this.collisionDetection(enemyArray, e.nativeEvent.offsetX-aoeSize, e.nativeEvent.offsetY-aoeSize, 2*aoeSize, 2*aoeSize, damage, hasPierce, true);
       if(gameover || firstTime){
         if(e.nativeEvent.offsetX >= startSquare.state.x && e.nativeEvent.offsetX <= startSquare.state.x + startSquare.state.width){
           if(e.nativeEvent.offsetY >= startSquare.state.y && e.nativeEvent.offsetY <= startSquare.state.y + startSquare.state.height){
@@ -154,22 +189,28 @@ class CDefense extends Component {
     }
   }
   _onKeyDown(e){
-    if(e.key === ' '){
-      console.log('space')
+    if(skill !== '' && e.key === ' '){
+      switch(skill){
+        case 'turret': this.placeTurret(); break;
+        case 'laser': this.shootLaser(); break;
+        case 'bomb': this.dropBomb(); break;
+        default: break;
+      }
     }
   }
 
-  damageEnemy(x, y, width, height, dmg, pierce){
+  collisionDetection(array, x, y, width, height, dmg, pierce, isEnemy){
     var hit = false;
-    for(var i = enemyArray.length - 1; i >= 0; i--){
-      if(x + width >= enemyArray[i].state.x && x - width <= enemyArray[i].state.x + enemyArray[i].state.width){
-        if(y + height >= enemyArray[i].state.y && y - height <= enemyArray[i].state.y + enemyArray[i].state.height){
-          enemyArray[i].state.hp -= dmg;
+    for(var i = array.length - 1; i >= 0; i--){
+      if(x + width >= array[i].state.x && x <= array[i].state.x + array[i].state.width){
+        if(y + height >= array[i].state.y && y <= array[i].state.y + array[i].state.height){
+          array[i].state.hp -= dmg;
           hit = true;
           textArray.push(new Txt(ctx, dmg, x, y, damage+11, 'red', time+100));
-          if(enemyArray[i].state.hp <= 0){
-            enemyArray.splice(i,1);
-            kills++;
+          if(array[i].state.hp <= 0){
+            array.splice(i,1);
+            if(isEnemy)
+              kills++;
           }
           if(!pierce){
             break;
@@ -207,10 +248,7 @@ class CDefense extends Component {
 
   // New Wave mechanics
   newWave(){
-    // Check for perk
-    if((wave)%wavesTilPerk === 0){
-      this.newPerk();
-    }
+    this.newPerkSkill();
     // Wave 1 or 5+
     if((wave)%10 === 1 || (wave)%10 >= 5){
       let numberOfEnimies = 10;
@@ -244,6 +282,10 @@ class CDefense extends Component {
     wave++;
   }
 
+  ///////////////////////////////////////////////////////////////////////
+  // Hp / Cd HUD
+  ///////////////////////////////////////////////////////////////////////
+
   adjustHpDisplay(){
     hpDisplay = "[";
     for(var i = 0; i < hp; i++)
@@ -252,7 +294,16 @@ class CDefense extends Component {
       hpDisplay += " ";
     hpDisplay += "]";
   }
-
+  adjustCdDisplay(){
+    if(maxCd > 0){
+      cdDisplay = "[";
+      for(var i = 0; i < cd; i++)
+        cdDisplay += "I";
+      for(i = 0; i < (maxCd - cd); i++)
+        cdDisplay += " ";
+      cdDisplay += "]";
+    }
+  }
   ///////////////////////////////////////////////////////////////////////
   // Enemies
   ///////////////////////////////////////////////////////////////////////
@@ -275,47 +326,58 @@ class CDefense extends Component {
 
 
   ///////////////////////////////////////////////////////////////////////
-  // Perks
+  // Perks / Skills
   ///////////////////////////////////////////////////////////////////////
 
-  // New Perk Screen
-  newPerk(){
+  // New Perk/Skill Screen
+  newPerkSkill(){
     waitForPerk = true;
 
-    // New perk screen
+    // New perk/skill screen
     ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
     ctx.font = "40px verdana";
     ctx.fillText("Choose a Perk", ((canvas.width/2) - 140), canvas.height/2 - 140);
 
-    // Randomize which perks are available
+    // Randomize which perks/skills are available
     let width = 120;
     let height = width;
-    let perk1 = availablePerks[Math.floor(Math.random() * availablePerks.length)];
-    let perk2 = availablePerks[Math.floor(Math.random() * availablePerks.length)];
-    while(perk2 === perk1){perk2 = availablePerks[Math.floor(Math.random() * availablePerks.length)]}
-    let perk3 = availablePerks[Math.floor(Math.random() * availablePerks.length)];
-    while(perk3 === perk1 || perk3 === perk2){perk3 = availablePerks[Math.floor(Math.random() * availablePerks.length)]}
+    var slot1;
+    var slot2;
+    var slot3;
+    if(wave%5===0){
+      slot1 = availableSkills[Math.floor(Math.random() * availableSkills.length)];
+      slot2 = availableSkills[Math.floor(Math.random() * availableSkills.length)];
+      while(slot2 === slot1){slot2 = availableSkills[Math.floor(Math.random() * availableSkills.length)]}
+      slot3 = availableSkills[Math.floor(Math.random() * availableSkills.length)];
+      while(slot3 === slot1 || slot3 === slot2){slot3 = availableSkills[Math.floor(Math.random() * availableSkills.length)]}
+    } else{
+      slot1 = availablePerks[Math.floor(Math.random() * availablePerks.length)];
+      slot2 = availablePerks[Math.floor(Math.random() * availablePerks.length)];
+      while(slot2 === slot1){slot2 = availablePerks[Math.floor(Math.random() * availablePerks.length)]}
+      slot3 = availablePerks[Math.floor(Math.random() * availablePerks.length)];
+      while(slot3 === slot1 || slot3 === slot2){slot3 = availablePerks[Math.floor(Math.random() * availablePerks.length)]}
+    }
 
-    // Display chosen random perks
-    perkArray.push(new Square(ctx, ((canvas.width/4)-(width/2)), canvas.height/2, width, width, 0, 0, 1, 0, 'yellow'), perk1);
-    perkArray.push(new Square(ctx, ((canvas.width/4)*2-(width/2)), canvas.height/2, width, width, 0, 0, 1, 0, 'green'), perk2);
-    perkArray.push(new Square(ctx, ((canvas.width/4)*3-(width/2)), canvas.height/2, width, width, 0, 0, 1, 0, 'blue'), perk3);
-    perkArray[0].update();
+    // Display chosen random perks/skills
+    slotArray.push(new Square(ctx, ((canvas.width/4)-(width/2)), canvas.height/2, width, width, 0, 0, 1, 0, 'yellow'), slot1);
+    slotArray.push(new Square(ctx, ((canvas.width/4)*2-(width/2)), canvas.height/2, width, width, 0, 0, 1, 0, 'green'), slot2);
+    slotArray.push(new Square(ctx, ((canvas.width/4)*3-(width/2)), canvas.height/2, width, width, 0, 0, 1, 0, 'blue'), slot3);
+    slotArray[0].update();
     ctx.fillStyle = "black";
-    ctx.fillText(perk1, (canvas.width/4)-(width/2), (canvas.height/2 + height));
-    perkArray[2].update();
+    ctx.fillText(slot1, (canvas.width/4)-(width/2), (canvas.height/2 + height));
+    slotArray[2].update();
     ctx.fillStyle = "black";
-    ctx.fillText(perk2, (canvas.width/4)*2-(width/2), (canvas.height/2 + height));
-    perkArray[4].update();
+    ctx.fillText(slot2, (canvas.width/4)*2-(width/2), (canvas.height/2 + height));
+    slotArray[4].update();
     ctx.fillStyle = "black";
-    ctx.fillText(perk3, (canvas.width/4)*3-(width/2), (canvas.height/2 + height));
+    ctx.fillText(slot3, (canvas.width/4)*3-(width/2), (canvas.height/2 + height));
   }
 
   // Perk Switch Statement
-  activatePerk(perk){
-    switch(perk){
+  activatePerkSkill(perkSkill){
+    switch(perkSkill){
       case 'aoe': this.aoePerk(); break;
       case 'pierce': this.piercePerk(); break;
       case 'maxhp': this.maxhpPerk(); break;
@@ -323,6 +385,9 @@ class CDefense extends Component {
       case 'orbital': this.orbitalPerk(); break;
       case 'regen': this.regenPerk(); break;
       case 'orbUp': this.upgradeOrbPerk(); break;
+      case 'turret': this.turretSkill(); break;
+      case 'laser': this.laserSkill(); break;
+      case 'bomb': this.bombSkill(); break;
       default: break;
     }
   }
@@ -353,36 +418,52 @@ class CDefense extends Component {
   regenPerk(){
     regen = Math.max(1,Math.floor(1000/(regenTime+200)));
     regenTime = Math.floor(2*(regenTime/3));
-    console.log(regen + " " + regenTime)
   }
   upgradeOrbPerk(){
     orbitalLevel++;
     for(var i = 0; i < orbitArray.length; i++)
       orbitArray[i].upgrade();
   }
-
   aoeExplosion(x, y, time){
     aoeX = x;
     aoeY = y;
     aoeTime = time + 5;
   }
 
+  turretSkill(){
+    skill = 'turret';
+    maxCd = 3;
+    cdRegen = 750;
+    skillLevel++;
+    availableSkills = ['tup1','tup2','tup3'];
+    this.adjustCdDisplay();
+  }
+  laserSkill(){
+    skill = 'laser';
+    availableSkills = ['lUp1','lUp2','lUp3'];
+  }
+  bombSkill(){
+    skill = 'bomb';
+    availableSkills = ['bUp1', 'bUp2','bUp3'];
+  }
 
-  makeVisible(){
-    divStyle = {
-      ...divStyle,
-      visibility: 'visible',
-      opacity: 1,
-    }
-    this.forceUpdate();
-  }
-  makeHidden(){
-    divStyle = {
-      ...divStyle,
-      visibility: 'hidden',
-      opacity: 0,
+  placeTurret(){
+    if(cd !== 0){
+      cd--;
+      this.adjustCdDisplay();
+      turretArray.push(new Turret(ctx, x, y, skillLevel))
     }
   }
+  shootLaser(){
+    if(cd === maxCd){
+
+    }
+  }
+  dropBomb(){
+
+  }
+
+/////////////////////////////////////////////////////////////////////////////
 
   // Recursive method
   animate() {
@@ -397,13 +478,20 @@ class CDefense extends Component {
 
     // Regen
     if(time%(regenTime+50) === 0 && regen > 0){
-      console.log(regenTime)
       if(hp < maxHp){
         hp += regen;
         textArray.push(new Txt(ctx,'+'+regen, 14+(11*hp), 20, (regen*2)+16, 'green', time+100));
         if(hp > maxHp)
           hp = maxHp;
         this.adjustHpDisplay();
+      }
+    }
+
+    // cdRegen
+    if(skill !== '' && time%cdRegen === 0){
+      if(cd < maxCd){
+        cd++;
+        this.adjustCdDisplay();
       }
     }
 
@@ -419,6 +507,29 @@ class CDefense extends Component {
       }
     }
 
+    // Turret
+    if(turretArray.length > 0){
+      for(i = turretArray.length-1; i >= 0; i--){
+        let t = turretArray[i];
+        t.update(time);
+        let ba = t.state.bulletArray;
+        for(var j = ba.length-1; j >= 0; j--){
+          if(this.collisionDetection(enemyArray, ba[j].state.x, ba[j].state.y, ba[j].state.width, ba[j].state.height, t.state.damage, t.state.pierce, false)){
+            ba.splice(j,1);
+          }
+        }
+        if(t.state.timeout === 0){
+          t.setTimeout(time);
+        } else if(t.state.timeout < time){
+          turretArray.splice(i,1);
+        }
+      }
+    }
+    for(i = enemyArray.length-1; i >= 0; i--){
+      var eArray = enemyArray[i].state;
+      this.collisionDetection(turretArray, eArray.x, eArray.y, eArray.width, eArray.height, eArray.damage, true, false);
+    }
+
     // Starting a new wave
     if(enemyArray.length === 0 && !waveStarted){
       waveStartTime = time + waveBannerDisplayTime;
@@ -432,12 +543,12 @@ class CDefense extends Component {
 
     // Orbital
     if(orbitArray.length > 0){
-      for(var i = 0; i < orbitArray.length; i++){
+      for(i = 0; i < orbitArray.length; i++){
         let o = orbitArray[i];
         o.update(x, y, time/10);
         if(o.state.timeout < time){
           o.state.color = o.state.originalColor;
-          if(this.damageEnemy(o.state.x, o.state.y, o.state.width, o.state.height, o.state.damage, true)){
+          if(this.collisionDetection(enemyArray, o.state.x, o.state.y, o.state.width, o.state.height, o.state.damage, true, true)){
             o.setTimeout(time);
           }
         }
@@ -457,11 +568,13 @@ class CDefense extends Component {
     ctx.fillText("Kills: " + kills, 120, 25);
     ctx.fillText("Time: " + time, 240, 25);
     time++;
-
     // Hp Display
     ctx.fillStyle = "lightgreen";
     ctx.font = "20px courier";
     ctx.fillText(hpDisplay, 10, 50);
+    // cd Display
+    ctx.fillStyle = "lightblue";
+    ctx.fillText(cdDisplay, 10, 75);
 
     // Create Text/Dmg number
     if(textArray.length > 0){

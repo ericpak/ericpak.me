@@ -1,6 +1,3 @@
-import {Component} from "react";
-import classNames from "classnames";
-
 var colorArray = [
   'rgba(255,255,0,1)',
   'rgba(0,255,0,1)',
@@ -10,13 +7,8 @@ var colorArray = [
   'rgba(255,255,255,1)',
 ];
 
-class Orbital extends Component {
-  getClassName() {
-    return classNames("Orbital");
-  }
-
+class Orbital {
   constructor(ctx, level) {
-    super();
     this.state = {
       ctx: ctx,
       level: level,
@@ -42,7 +34,7 @@ class Orbital extends Component {
   }
 
   setTimeout(time){
-    this.state.timeout = time + 150;
+    this.state.timeout = time + 100;
     this.state.color = this.state.color.substring(0, this.state.color.length-2) + "0.5)"
   }
 
