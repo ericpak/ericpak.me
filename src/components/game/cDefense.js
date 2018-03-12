@@ -4,6 +4,7 @@ import Square from "./square";
 import Txt from "./txt";
 import Orbital from "./orbital";
 import Turret from "./turret";
+import Star from "./star";
 
 const navFooterHeight = 44;
 
@@ -16,6 +17,8 @@ var divStyle = {
 }
 
 // Game variables
+var stars = [];
+var numStars = 100;
 var x = 0;
 var y = 0;
 var time = 0;
@@ -97,6 +100,13 @@ class CDefense extends Component {
     ctx = canvas.getContext("2d");
     ctx.fillStyle = "rgba(0, 0, 0, 1)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+  	// Create all the stars
+  	for(var i = 0; i < numStars; i++) {
+  		var x = Math.round(Math.random() * canvas.width);
+  		var y = Math.round(Math.random() * canvas.height);
+  		var star = new Star(ctx, x, y, Math.floor(Math.random()*10)+1);
+  		stars.push(star);
+  	}
 
     // Start screen
     ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
@@ -137,8 +147,8 @@ class CDefense extends Component {
     // Default Perks
     availablePerks = ['aoe', 'pierce', 'maxhp', 'dmg +1', 'orbital', 'regen'];
     availableSkills = ['turret', 'laser', 'bomb'];
-    hp = 3;
-    maxHp = 3;
+    hp = 5;
+    maxHp = 5;
     aoeSize = 0;
     hasPierce = false;
     damage = 1;
@@ -414,6 +424,7 @@ class CDefense extends Component {
     if(orbitArray.length === 0)
       availablePerks.push('orbUp')
     orbitArray.push(new Orbital(ctx, orbitalLevel))
+    orbitArray.push(new Orbital(ctx, orbitalLevel))
   }
   regenPerk(){
     regen = Math.max(1,Math.floor(1000/(regenTime+200)));
@@ -440,7 +451,11 @@ class CDefense extends Component {
   }
   laserSkill(){
     skill = 'laser';
+    maxCd = 10;
+    cdRegen = 100;
+    skillLevel++;
     availableSkills = ['lUp1','lUp2','lUp3'];
+    this.adjustCdDisplay();
   }
   bombSkill(){
     skill = 'bomb';
@@ -463,9 +478,10 @@ class CDefense extends Component {
 
   }
 
-/////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////
+  // Animate
+  ///////////////////////////////////////////////////////////////////////
 
-  // Recursive method
   animate() {
     window.requestAnimationFrame(() => {
       if(!gameover && !waitForPerk && !firstTime){
@@ -473,8 +489,11 @@ class CDefense extends Component {
       }
     });
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "rgba(0, 0, 0, 1)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Stars
+    for(var i = 0; i < stars.length; i++){
+      stars[i].draw();
+    }
 
     // Regen
     if(time%(regenTime+50) === 0 && regen > 0){
@@ -496,7 +515,7 @@ class CDefense extends Component {
     }
 
     // Take Damage
-    for(var i = 0; i < enemyArray.length; i++){
+    for(i = 0; i < enemyArray.length; i++){
       enemyArray[i].update();
       if(enemyArray[i].state.x <= 0){
         hp-= enemyArray[i].state.damage;
