@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import classNames from "classnames";
 import Square from "./square";
 import Txt from "./txt";
-import Orbit from "./orbit";
+import Orbital from "./orbital";
 
 const navFooterHeight = 44;
 
@@ -46,6 +46,8 @@ var aoeSize = 0;
 var hasPierce = false;
 var damage = 1;
 var regen = 0;
+var orbitalLevel = 1;
+var regenTime = 1425;
 
 // aoe variables
 var aoeX = 0;
@@ -85,17 +87,12 @@ class CDefense extends Component {
 
   reset(){
     this.setDefaults();
-
-    this.orbitalPerk();
-    this.orbitalPerk();
-    this.orbitalPerk();
-    this.orbitalPerk();
-
     this.adjustHpDisplay();
-    if(gameover || firstTime || waitForPerk)
+    if(gameover || firstTime || waitForPerk){
       gameover = false;
       waitForPerk = false;
       this.animate();
+    }
   }
 
   setDefaults(){
@@ -116,6 +113,8 @@ class CDefense extends Component {
     hasPierce = false;
     damage = 1;
     regen = 0;
+    orbitalLevel = 1;
+    regenTime = 1000;
   }
 
   ///////////////////////////////////////////////////////////////////////
@@ -323,6 +322,7 @@ class CDefense extends Component {
       case 'dmg +1': this.dmgPerk(); break;
       case 'orbital': this.orbitalPerk(); break;
       case 'regen': this.regenPerk(); break;
+      case 'orbUp': this.upgradeOrbPerk(); break;
       default: break;
     }
   }
@@ -346,19 +346,27 @@ class CDefense extends Component {
     damage++;
   }
   orbitalPerk(){
-    // Orbit(ctx, width, height, dx, dy, radius, hp, damage, color)
-    orbitArray.push(new Orbit(ctx, 5, 5, Math.random()*1, Math.random()*1, Math.random()*50+50, 1, 1, 'yellow'))
+    if(orbitArray.length === 0)
+      availablePerks.push('orbUp')
+    orbitArray.push(new Orbital(ctx, orbitalLevel))
   }
   regenPerk(){
-    regen++;
+    regen = Math.max(1,Math.floor(1000/(regenTime+200)));
+    regenTime = Math.floor(2*(regenTime/3));
+    console.log(regen + " " + regenTime)
   }
-
+  upgradeOrbPerk(){
+    orbitalLevel++;
+    for(var i = 0; i < orbitArray.length; i++)
+      orbitArray[i].upgrade();
+  }
 
   aoeExplosion(x, y, time){
     aoeX = x;
     aoeY = y;
     aoeTime = time + 5;
   }
+
 
   makeVisible(){
     divStyle = {
@@ -379,7 +387,7 @@ class CDefense extends Component {
   // Recursive method
   animate() {
     window.requestAnimationFrame(() => {
-      if(!gameover && !waitForPerk){
+      if(!gameover && !waitForPerk && !firstTime){
         this.animate();
       }
     });
@@ -388,21 +396,14 @@ class CDefense extends Component {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Regen
-    if(time%1000 === 0 && regen > 0){
+    if(time%(regenTime+50) === 0 && regen > 0){
+      console.log(regenTime)
       if(hp < maxHp){
         hp += regen;
         textArray.push(new Txt(ctx,'+'+regen, 14+(11*hp)+Math.random()*20, 100 + Math.random()*20, (regen*2)+16, 'green', time+100));
         if(hp > maxHp)
           hp = maxHp;
         this.adjustHpDisplay();
-      }
-    }
-
-    // Orbital
-    if(orbitArray.length > 0){
-      for(var i = 0; i < orbitArray.length; i++){
-        orbitArray[i].update(x, y, time/10);
-
       }
     }
 
@@ -427,6 +428,20 @@ class CDefense extends Component {
     if(waveStartTime === time){
       this.newWave();
       waveStarted = false;
+    }
+
+    // Orbital
+    if(orbitArray.length > 0){
+      for(var i = 0; i < orbitArray.length; i++){
+        let o = orbitArray[i];
+        o.update(x, y, time/10);
+        if(o.state.timeout < time){
+          o.state.color = o.state.originalColor;
+          if(this.damageEnemy(o.state.x, o.state.y, o.state.width, o.state.height, o.state.damage, true)){
+            o.setTimeout(time);
+          }
+        }
+      }
     }
 
     // Aoe Explosion
