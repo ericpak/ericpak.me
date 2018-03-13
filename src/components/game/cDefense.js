@@ -5,6 +5,7 @@ import Txt from "./txt";
 import Orbital from "./orbital";
 import Turret from "./turret";
 import Star from "./star";
+import Explosion from "./explosion";
 
 const navFooterHeight = 44;
 
@@ -218,7 +219,9 @@ class CDefense extends Component {
           hit = true;
           textArray.push(new Txt(ctx, dmg, x, y, damage+11, 'red', time+100));
           if(array[i].state.hp <= 0){
-            array.splice(i,1);
+            //explosionArray.push(new Explosion(ctx, array[i].state.x, array[i].state.y, array[i].state.width, array[i].state.height));
+            //array.splice(i,1);
+            array[i].death(time);
             if(isEnemy)
               kills++;
           }
@@ -514,15 +517,18 @@ class CDefense extends Component {
       }
     }
 
-    // Take Damage
+    // Take Damage / Enemy Update
     for(i = 0; i < enemyArray.length; i++){
-      enemyArray[i].update();
+      enemyArray[i].update(time);
       if(enemyArray[i].state.x <= 0){
         hp-= enemyArray[i].state.damage;
         enemyArray.splice(i,1);
         this.adjustHpDisplay();
         if(hp <= 0)
           gameover = true;
+      }
+      if(enemyArray[i].state.dead && enemyArray[i].state.timeout < time){
+        enemyArray.splice(i,1);
       }
     }
 

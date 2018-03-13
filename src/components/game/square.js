@@ -1,3 +1,5 @@
+import Explosion from "./explosion";
+
 class Square{
   constructor(ctx, x, y, width, height, dx, dy, hp, damage, color) {
     this.state = {
@@ -11,6 +13,9 @@ class Square{
       hp: hp,
       damage: damage,
       color: color,
+      dead: false,
+      explosion: undefined,
+      timeout:0,
     }
   }
 
@@ -19,9 +24,18 @@ class Square{
     this.state.ctx.fillRect(this.state.x, this.state.y, this.state.width, this.state.height);
   }
 
-  update(){
-    this.state.x += this.state.dx;
+  death(time){
+    this.state.dead = true;
+    this.state.explosion = new Explosion(this.state.ctx, this.state.x, this.state.y, this.state.width, this.state.height);
+    this.state.timeout = time+100;
+  }
+
+  update(time){
     this.draw();
+    if(this.state.dead)
+      this.state.explosion.update(time);
+    else
+      this.state.x += this.state.dx;
   }
 }
 
