@@ -5,7 +5,7 @@ import Txt from "./txt";
 import Orbital from "./orbital";
 import Turret from "./turret";
 import Star from "./star";
-import Explosion from "./explosion";
+import Laser from "./laser";
 
 const navFooterHeight = 44;
 
@@ -62,6 +62,8 @@ var cd = 0;
 var maxCd = 0;
 var cdRegen = 0;
 var skillLevel = 0;
+
+var laser = undefined;
 
 // aoe variables
 var aoeX = 0;
@@ -130,6 +132,7 @@ class CDefense extends Component {
       waitForPerk = false;
       this.animate();
     }
+    this.laserSkill();
   }
 
   setDefaults(){
@@ -145,6 +148,7 @@ class CDefense extends Component {
     kills = 0;
     wave = 1;
     cdDisplay = "";
+    laser = undefined;
     // Default Perks
     availablePerks = ['aoe', 'pierce', 'maxhp', 'dmg +1', 'orbital', 'regen'];
     availableSkills = ['turret', 'laser', 'bomb'];
@@ -187,7 +191,7 @@ class CDefense extends Component {
       }
     } else {
       this.aoeExplosion(e.nativeEvent.offsetX, e.nativeEvent.offsetY, time);
-      this.hitDetection(enemyArray, e.nativeEvent.offsetX-aoeSize, e.nativeEvent.offsetY-aoeSize, 2*aoeSize, 2*aoeSize, damage, hasPierce, true);
+      this.hitDetection(enemyArray, e.nativeEvent.offsetX-aoeSize, e.nativeEvent.offsetY-aoeSize, 2*aoeSize, 2*aoeSize, damage, hasPierce, true, false);
       if(gameover || firstTime){
         if(e.nativeEvent.offsetX >= startSquare.state.x && e.nativeEvent.offsetX <= startSquare.state.x + startSquare.state.width){
           if(e.nativeEvent.offsetY >= startSquare.state.y && e.nativeEvent.offsetY <= startSquare.state.y + startSquare.state.height){
@@ -210,7 +214,7 @@ class CDefense extends Component {
     }
   }
 
-  hitDetection(array, x, y, width, height, dmg, pierce, isEnemy){
+  hitDetection(array, x, y, width, height, dmg, hasPierce, isEnemy, isLaser){
     var hit = false;
     for(var i = 0; i < array.length; i++){
       if(!array[i].state.dead){
@@ -218,15 +222,16 @@ class CDefense extends Component {
           if(y + height >= array[i].state.y && y <= array[i].state.y + array[i].state.height){
             array[i].state.hp -= dmg;
             hit = true;
-            textArray.push(new Txt(ctx, dmg, x, y, damage+11, 'red', time+100));
+            if(isLaser)
+              textArray.push(new Txt(ctx, dmg, array[i].state.x, array[i].state.y, damage+11,'red', time+100));
+            else
+              textArray.push(new Txt(ctx, dmg, x, y, damage+11, 'red', time+100));
             if(array[i].state.hp <= 0){
-              //explosionArray.push(new Explosion(ctx, array[i].state.x, array[i].state.y, array[i].state.width, array[i].state.height));
-              //array.splice(i,1);
               array[i].death(time);
               if(isEnemy)
                 kills++;
             }
-            if(!pierce){
+            if(!hasPierce){
               break;
             }
           }
@@ -272,7 +277,7 @@ class CDefense extends Component {
     }
     // Wave 2
     if((wave)%10 === 1 || (wave)%10 >= 6){
-      let numberOfEnimies = 10;
+      let numberOfEnimies = 30;
       for(i = 0; i < (wave * numberOfEnimies); i++)
         this.tankEnemy();
     }
@@ -333,7 +338,7 @@ class CDefense extends Component {
   }
 
   basicEnemy(){this.createEnemy(0, 40, 40, 1, 1, 1, 1, 'blue')}
-  tankEnemy(){this.createEnemy(canvas.width/3, 60, 60, 1, .5, 2, 1, 'green')}
+  tankEnemy(){this.createEnemy(canvas.width/3, 60, 60, .5, .2, 2, 1, 'green')}
   fastEnemy(){this.createEnemy(0, 40, 40, 2, 2, 1, 1, 'purple')}
   smallEnemy(){this.createEnemy(0, 20, 20, 1, 1, 1, 1, 'yellow')}
   bossEnemy(){this.createEnemy(0, 80, 80, .5, .5, 20, 5, 'white')}
@@ -361,7 +366,7 @@ class CDefense extends Component {
     var slot1;
     var slot2;
     var slot3;
-    if(wave%5===0){
+    if(wave%2===0){
       slot1 = availableSkills[Math.floor(Math.random() * availableSkills.length)];
       slot2 = availableSkills[Math.floor(Math.random() * availableSkills.length)];
       while(slot2 === slot1){slot2 = availableSkills[Math.floor(Math.random() * availableSkills.length)]}
@@ -448,6 +453,7 @@ class CDefense extends Component {
 
   turretSkill(){
     skill = 'turret';
+    cd = 1;
     maxCd = 3;
     cdRegen = 750;
     skillLevel++;
@@ -456,8 +462,9 @@ class CDefense extends Component {
   }
   laserSkill(){
     skill = 'laser';
+    cd = 5;
     maxCd = 10;
-    cdRegen = 100;
+    cdRegen = 150;
     skillLevel++;
     availableSkills = ['lUp1','lUp2','lUp3'];
     this.adjustCdDisplay();
@@ -471,12 +478,14 @@ class CDefense extends Component {
     if(cd !== 0){
       cd--;
       this.adjustCdDisplay();
-      turretArray.push(new Turret(ctx, x, y, skillLevel))
+      turretArray.push(new Turret(ctx, x, y, skillLevel));
     }
   }
   shootLaser(){
     if(cd === maxCd){
-
+      cd = 0;
+      this.adjustCdDisplay();
+      laser = new Laser(ctx, x, y, skillLevel, canvas.width);
     }
   }
   dropBomb(){
@@ -541,7 +550,7 @@ class CDefense extends Component {
         t.update(time);
         let ba = t.state.bulletArray;
         for(var j = ba.length-1; j >= 0; j--){
-          if(this.hitDetection(enemyArray, ba[j].state.x, ba[j].state.y, ba[j].state.width, ba[j].state.height, t.state.damage, t.state.pierce, false)){
+          if(this.hitDetection(enemyArray, ba[j].state.x, ba[j].state.y, ba[j].state.width, ba[j].state.height, t.state.damage, t.state.pierce, true, false)){
             ba.splice(j,1);
           }
         }
@@ -555,7 +564,7 @@ class CDefense extends Component {
     }
     for(i = enemyArray.length-1; i >= 0; i--){
       var eArray = enemyArray[i].state;
-      this.hitDetection(turretArray, eArray.x, eArray.y, eArray.width, eArray.height, eArray.damage, true, false);
+      this.hitDetection(turretArray, eArray.x, eArray.y, eArray.width, eArray.height, eArray.damage, true, false, false);
     }
 
     // Starting a new wave
@@ -576,7 +585,7 @@ class CDefense extends Component {
         o.update(x, y, time/10);
         if(o.state.timeout < time){
           o.state.color = o.state.originalColor;
-          if(this.hitDetection(enemyArray, o.state.x, o.state.y, o.state.width, o.state.height, o.state.damage, true, true)){
+          if(this.hitDetection(enemyArray, o.state.x, o.state.y, o.state.width, o.state.height, o.state.damage, true, true, false)){
             o.setTimeout(time);
           }
         }
@@ -587,6 +596,18 @@ class CDefense extends Component {
     if(aoeTime > time){
       ctx.fillStyle = "rgba(255, 99, 71, 0.5)";
       ctx.fillRect(aoeX - aoeSize, aoeY - aoeSize, 2 * aoeSize, 2 * aoeSize);
+    }
+
+    // Laser
+    if(laser !== undefined){
+      if(laser.state.timeout === 0)
+        laser.setTimeout(time);
+      laser.update(time);
+      if(laser.state.timeout - time === 200 || laser.state.timeout - time === 170 || laser.state.timeout - time === 140 || laser.state.timeout - time === 110 || laser.state.timeout - time === 80 || laser.state.timeout - time === 50){
+        this.hitDetection(enemyArray, laser.state.x, laser.state.y-laser.state.hitHeight/2, laser.state.hitWidth, laser.state.hitHeight, laser.state.damage, true, true, true);
+      }
+      if(laser.state.timeout !== 0 && laser.state.timeout < time)
+        laser = undefined;
     }
 
     // HUD
