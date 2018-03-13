@@ -187,7 +187,7 @@ class CDefense extends Component {
       }
     } else {
       this.aoeExplosion(e.nativeEvent.offsetX, e.nativeEvent.offsetY, time);
-      this.collisionDetection(enemyArray, e.nativeEvent.offsetX-aoeSize, e.nativeEvent.offsetY-aoeSize, 2*aoeSize, 2*aoeSize, damage, hasPierce, true);
+      this.hitDetection(enemyArray, e.nativeEvent.offsetX-aoeSize, e.nativeEvent.offsetY-aoeSize, 2*aoeSize, 2*aoeSize, damage, hasPierce, true);
       if(gameover || firstTime){
         if(e.nativeEvent.offsetX >= startSquare.state.x && e.nativeEvent.offsetX <= startSquare.state.x + startSquare.state.width){
           if(e.nativeEvent.offsetY >= startSquare.state.y && e.nativeEvent.offsetY <= startSquare.state.y + startSquare.state.height){
@@ -210,23 +210,25 @@ class CDefense extends Component {
     }
   }
 
-  collisionDetection(array, x, y, width, height, dmg, pierce, isEnemy){
+  hitDetection(array, x, y, width, height, dmg, pierce, isEnemy){
     var hit = false;
-    for(var i = array.length - 1; i >= 0; i--){
-      if(x + width >= array[i].state.x && x <= array[i].state.x + array[i].state.width){
-        if(y + height >= array[i].state.y && y <= array[i].state.y + array[i].state.height){
-          array[i].state.hp -= dmg;
-          hit = true;
-          textArray.push(new Txt(ctx, dmg, x, y, damage+11, 'red', time+100));
-          if(array[i].state.hp <= 0){
-            //explosionArray.push(new Explosion(ctx, array[i].state.x, array[i].state.y, array[i].state.width, array[i].state.height));
-            //array.splice(i,1);
-            array[i].death(time);
-            if(isEnemy)
-              kills++;
-          }
-          if(!pierce){
-            break;
+    for(var i = 0; i < array.length; i++){
+      if(!array[i].state.dead){
+        if(x + width >= array[i].state.x && x <= array[i].state.x + array[i].state.width){
+          if(y + height >= array[i].state.y && y <= array[i].state.y + array[i].state.height){
+            array[i].state.hp -= dmg;
+            hit = true;
+            textArray.push(new Txt(ctx, dmg, x, y, damage+11, 'red', time+100));
+            if(array[i].state.hp <= 0){
+              //explosionArray.push(new Explosion(ctx, array[i].state.x, array[i].state.y, array[i].state.width, array[i].state.height));
+              //array.splice(i,1);
+              array[i].death(time);
+              if(isEnemy)
+                kills++;
+            }
+            if(!pierce){
+              break;
+            }
           }
         }
       }
@@ -269,7 +271,7 @@ class CDefense extends Component {
         this.basicEnemy();
     }
     // Wave 2
-    if((wave)%10 === 2 || (wave)%10 >= 6){
+    if((wave)%10 === 1 || (wave)%10 >= 6){
       let numberOfEnimies = 10;
       for(i = 0; i < (wave * numberOfEnimies); i++)
         this.tankEnemy();
@@ -518,11 +520,11 @@ class CDefense extends Component {
     }
 
     // Take Damage / Enemy Update
-    for(i = 0; i < enemyArray.length; i++){
+    for(i = enemyArray.length-1; i >= 0; i--){
       enemyArray[i].update(time);
-      if(enemyArray[i].state.x <= 0){
+      if(enemyArray[i].state.x <= 0 && !enemyArray[i].state.dead){
         hp-= enemyArray[i].state.damage;
-        enemyArray.splice(i,1);
+        enemyArray[i].death(time);
         this.adjustHpDisplay();
         if(hp <= 0)
           gameover = true;
@@ -539,20 +541,21 @@ class CDefense extends Component {
         t.update(time);
         let ba = t.state.bulletArray;
         for(var j = ba.length-1; j >= 0; j--){
-          if(this.collisionDetection(enemyArray, ba[j].state.x, ba[j].state.y, ba[j].state.width, ba[j].state.height, t.state.damage, t.state.pierce, false)){
+          if(this.hitDetection(enemyArray, ba[j].state.x, ba[j].state.y, ba[j].state.width, ba[j].state.height, t.state.damage, t.state.pierce, false)){
             ba.splice(j,1);
           }
         }
-        if(t.state.timeout === 0){
+        if(t.state.timeout === 0)
           t.setTimeout(time);
-        } else if(t.state.timeout < time){
+        else if(t.state.timeout < time && !t.state.dead)
+          t.death(time);
+        else if(t.state.timeout < time && t.state.dead)
           turretArray.splice(i,1);
-        }
       }
     }
     for(i = enemyArray.length-1; i >= 0; i--){
       var eArray = enemyArray[i].state;
-      this.collisionDetection(turretArray, eArray.x, eArray.y, eArray.width, eArray.height, eArray.damage, true, false);
+      this.hitDetection(turretArray, eArray.x, eArray.y, eArray.width, eArray.height, eArray.damage, true, false);
     }
 
     // Starting a new wave
@@ -573,7 +576,7 @@ class CDefense extends Component {
         o.update(x, y, time/10);
         if(o.state.timeout < time){
           o.state.color = o.state.originalColor;
-          if(this.collisionDetection(enemyArray, o.state.x, o.state.y, o.state.width, o.state.height, o.state.damage, true, true)){
+          if(this.hitDetection(enemyArray, o.state.x, o.state.y, o.state.width, o.state.height, o.state.damage, true, true)){
             o.setTimeout(time);
           }
         }
