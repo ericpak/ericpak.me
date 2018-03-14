@@ -18,13 +18,13 @@ var divStyle = {
 }
 
 // Game variables
-var stars = [];
-var numStars = 100;
-var x = 0;
-var y = 0;
-var time = 0;
-var hpDisplay = "[III]";
-var cdDisplay = "";
+var stars;
+var x;
+var y;
+var time;
+var hpDisplay;
+var cdDisplay;
+var defaultCdDisplay = "     [";
 var kills = 0;
 var firstTime = true;
 var wave = 1;
@@ -39,7 +39,7 @@ var slotArray = [];
 var textArray = [];
 var orbitArray = [];
 var turretArray = [];
-var availablePerks = ['aoe', 'pierce', 'maxhp', 'dmg +1', 'orbital', 'regen'];
+var availablePerks = ['aoe', 'pierce', 'maxhp', 'dmg +1', 'orbital', 'shield']; //'regen'
 var availableSkills = ['turret', 'laser', 'stasis'];
 var skill = '';
 var gameover = false;
@@ -48,8 +48,14 @@ var gameover = false;
 var waveBannerDisplayTime = 300;
 
 // Perk variables
-var hp = 3;
-var maxHp = 3;
+var hp = 5;
+var maxHp = 5;
+var shield = {
+  current: 0,
+  max: 0,
+  timeout: 0,
+  display: '',
+}
 var aoeSize = 0;
 var hasPierce = false;
 var damage = 1;
@@ -72,7 +78,7 @@ var stasisField = {
   damage: 1,
   slowAmount: 50, // 0 is no effect, 100 is stopped, above 100 is moving backwards.
   stunChance: .25, // 1 is 100%, .5 is 50% ...
-  damageChance: .002, // 1 is 100%, .5 is 50% ...
+  damageChance: .004, // 1 is 100%, .5 is 50% ...
 }
 
 var laser = undefined;
@@ -116,11 +122,15 @@ class CDefense extends Component {
     ctx.fillStyle = "rgba(0, 0, 0, 1)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   	// Create all the stars
-  	for(var i = 0; i < numStars; i++) {
+    stars = {
+      array: [],
+      amount: 40,
+    };
+  	for(var i = 0; i < stars.amount; i++) {
   		var x = Math.round(Math.random() * canvas.width);
   		var y = Math.round(Math.random() * canvas.height);
   		var star = new Star(ctx, x, y, Math.floor(Math.random()*10)+4);
-  		stars.push(star);
+  		stars.array.push(star);
   	}
 
     // Start screen
@@ -144,7 +154,6 @@ class CDefense extends Component {
       waitForPerk = false;
       this.animate();
     }
-    this.stasisSkill();
   }
 
   setDefaults(){
@@ -162,10 +171,16 @@ class CDefense extends Component {
     cdDisplay = "";
     laser = undefined;
     // Default Perks
-    availablePerks = ['aoe', 'pierce', 'maxhp', 'dmg +1', 'orbital', 'regen'];
-    availableSkills = ['turret', 'laser', 'stasis'];
+    availablePerks = ['aoe', 'increase the size of your click', 'pierce', 'allows you to hit multiple enemies', 'maxhp', 'increases your maximum health by x2', 'dmg +1', 'increase click damage by 1', 'orbital', 'summons orbitals to orbit around your mouse', 'shield','Energy shield that recharges after not getting hit'];//'regen', 'allows you to regen your life over time'];
+    availableSkills = ['turret', 'Press space to spawn a turret', 'laser', 'Press space to shoot a laser', 'stasis', 'Press space, then click to spawn a stasis field or press space again to cancel'];
     hp = 5;
     maxHp = 5;
+    shield = {
+      current: 0,
+      max: 0,
+      timeout: 0,
+      display: '',
+    }
     aoeSize = 0;
     hasPierce = false;
     damage = 1;
@@ -177,6 +192,18 @@ class CDefense extends Component {
     maxCd = 0;
     cdRegen = 0;
     skillLevel = 0;
+    stasisField = {
+      indicatorOn: false,
+      width: 300,
+      height: 300,
+      x: 0,
+      y: 0,
+      timeout: 0,
+      damage: 1,
+      slowAmount: 50,
+      stunChance: .25,
+      damageChance: .002,
+    }
   }
 
   ///////////////////////////////////////////////////////////////////////
@@ -272,6 +299,44 @@ class CDefense extends Component {
   }
 
   ///////////////////////////////////////////////////////////////////////
+  // Enemies
+  ///////////////////////////////////////////////////////////////////////
+
+  // Basic Enemy Creator
+  createEnemy(xAdjust, height, width, maxVelocity, minVelocity, hp, damage, yVelocity, color){
+    let x = Math.random() * (canvas.width - xAdjust) + canvas.width;
+    let y = Math.random() * (canvas.height - navFooterHeight - height * 2) + height;
+    let dx = (Math.random() - 1) * maxVelocity - minVelocity;
+    let dy = (Math.random() - 0.5) * yVelocity + 0.5 * yVelocity;
+    enemyArray.push(new Square(ctx, x, y, width, height, dx, dy, hp, damage, color));
+  }
+
+  // xAdjust, height, width, maxVelocity, minVelociy, hp, damage, yVelocity,color
+  basicEnemy(){this.createEnemy(0, 40, 40, 1, 1, 1, 1, 0, 'blue')};
+  tankEnemy(){this.createEnemy(canvas.width/2, 60, 60, .7, .5, 5, 1, 0, 'green')};
+  fastEnemy(){this.createEnemy(0, 40, 40, 2, 2, 1, 1, 0, 'purple')};
+  smallEnemy(){this.createEnemy(0, 20, 20, 1, 1, 1, 1, 0, 'yellow')};
+  bossEnemy(){this.createEnemy(0, 80, 80, .5, .5, 20, 5, 0, 'grey')};
+  zagEnemy(){this.createEnemy(0, 40, 40, 1, 1, 1, 1, 1, 'orange')};
+  teleportEnemy(){this.createEnemy(0, 40, 40, 1, 1, 1, 1, 0, 'white')};
+  stealthEnemy(){this.createEnemy(0, 40, 40, 1, 1, 1, 1, 0, 'black')};
+
+  spawnEnemy(type, amount){
+    for(var i = 0; i < amount; i++){
+      switch(type){
+        case 'tank': this.tankEnemy(); break;
+        case 'fast': this.fastEnemy(); break;
+        case 'small': this.smallEnemy(); break;
+        case 'boss': this.bossEnemy(); break;
+        case 'zag': this.zagEnemy(); break;
+        case 'teleport': this.teleportEnemy(); break;
+        case 'stealth': this.stealthEnemy(); break;
+        default: this.basicEnemy(); break;
+      }
+    }
+  }
+
+  ///////////////////////////////////////////////////////////////////////
   // Waves
   ///////////////////////////////////////////////////////////////////////
 
@@ -299,45 +364,78 @@ class CDefense extends Component {
   // New Wave mechanics
   newWave(){
     this.newPerkSkill();
-    // Wave 1 or 5+
-    if((wave)%10 === 1 || (wave)%10 >= 5){
-      let numberOfEnimies = 10;
-      for(var i = 0; i < (wave * numberOfEnimies); i++)
-        this.basicEnemy();
+    // Wave 1
+    if((wave)%10 === 1){
+      this.spawnEnemy('basic',20);
     }
     // Wave 2
-    if((wave)%10 === 2 || (wave)%10 >= 6){
-      let numberOfEnimies = 30;
-      for(i = 0; i < (wave * numberOfEnimies); i++)
-        this.tankEnemy();
+    if((wave)%10 === 2){
+      this.spawnEnemy('tank',20);
+      this.spawnEnemy('basic',20);
     }
     // Wave 3
-    if((wave)%10 === 3 || (wave)%10 >= 7){
-      let numberOfEnimies = 10;
-      for(i = 0; i < (wave * numberOfEnimies); i++)
-        this.fastEnemy();
+    if((wave)%10 === 3){
+      this.spawnEnemy('tank',20);
+      this.spawnEnemy('small',20);
     }
     // Wave 4
-    if((wave)%10 === 4 || (wave)%10 >= 8){
-      let numberOfEnimies = 10;
-      for(i = 0; i < (wave * numberOfEnimies); i++)
-        this.smallEnemy();
+    if((wave)%10 === 4){
+      this.spawnEnemy('fast',30);
+      this.spawnEnemy('tank',10);
+      this.spawnEnemy('basic',10);
+    }
+    // Wave 5
+    if((wave)%10 === 5){
+      this.spawnEnemy('fast',10);
+      this.spawnEnemy('small',10);
+      this.spawnEnemy('basic',20);
+      this.spawnEnemy('boss',15);
+      this.spawnEnemy('tank',20);
+    }
+    // Wave 6
+    if((wave)%10 === 6){
+      this.spawnEnemy('basic',30);
+      this.spawnEnemy('tank',20);
+      this.spawnEnemy('stealth',10);
+    }
+    // Wave 7
+    if((wave)%10 === 7){
+      this.spawnEnemy('tank',30);
+      this.spawnEnemy('zag',20);
+      this.spawnEnemy('fast',20);
+    }
+    // Wave 8
+    if((wave)%10 === 8){
+      this.spawnEnemy('basic',20);
+      this.spawnEnemy('small',20);
+      this.spawnEnemy('teleport',30);
+    }
+    // Wave 9
+    if((wave)%10 === 9){
+      this.spawnEnemy('small',20);
+      this.spawnEnemy('zag',30);
+      this.spawnEnemy('fast',10);
     }
     // Boss Wave
-    if((wave)%10 === 0 || (wave)%10 === 5){
-      let numberOfEnimies = 10;
-      for(i = 0; i < (wave * numberOfEnimies); i++)
-        this.bossEnemy();
+    if((wave)%10 === 0){
+      this.spawnEnemy('basic',20);
+      this.spawnEnemy('stealth',5);
+      this.spawnEnemy('zag',30);
+      this.spawnEnemy('fast',20);
+      this.spawnEnemy('small',20);
+      this.spawnEnemy('tank',20);
+      this.spawnEnemy('boss',20);
+      this.spawnEnemy('teleport',20);
     }
     wave++;
   }
 
   ///////////////////////////////////////////////////////////////////////
-  // Hp / Cd HUD
+  // Hp / Cd / Shield HUD
   ///////////////////////////////////////////////////////////////////////
 
   adjustHpDisplay(){
-    hpDisplay = "[";
+    hpDisplay = "    Hp[";
     for(var i = 0; i < hp; i++)
       hpDisplay += "I";
     for(i = 0; i < (maxHp - hp); i++)
@@ -346,7 +444,7 @@ class CDefense extends Component {
   }
   adjustCdDisplay(){
     if(maxCd > 0){
-      cdDisplay = "[";
+      cdDisplay = defaultCdDisplay;
       for(var i = 0; i < cd; i++)
         cdDisplay += "I";
       for(i = 0; i < (maxCd - cd); i++)
@@ -354,26 +452,16 @@ class CDefense extends Component {
       cdDisplay += "]";
     }
   }
-  ///////////////////////////////////////////////////////////////////////
-  // Enemies
-  ///////////////////////////////////////////////////////////////////////
-
-  // Basic Enemy Creator
-  createEnemy(xAdjust, height, width, maxVelocity, minVelocity, hp, damage, color){
-    let x = Math.random() * (canvas.width - xAdjust) + canvas.width;
-    let y = Math.random() * (canvas.height - navFooterHeight - height * 2) + height;
-    let dx = (Math.random() - 1) * maxVelocity - minVelocity;
-    let dy = (Math.random() - 0.5) * maxVelocity;
-    enemyArray.push(new Square(ctx, x, y, width, height, dx, dy, hp, damage, color));
+  adjustShieldDisplay(){
+    if(shield.max > 0){
+      shield.display = "Shield[";
+      for(var i = 0; i < shield.current; i++)
+        shield.display += "I";
+      for(i = 0; i < (shield.max - shield.current); i++)
+        shield.display += " ";
+      shield.display += "]";
+    }
   }
-
-  basicEnemy(){this.createEnemy(0, 40, 40, 1, 1, 1, 1, 'blue')}
-  tankEnemy(){this.createEnemy(canvas.width/3, 60, 60, .5, .2, 2, 1, 'green')}
-  fastEnemy(){this.createEnemy(0, 40, 40, 2, 2, 1, 1, 'purple')}
-  smallEnemy(){this.createEnemy(0, 20, 20, 1, 1, 1, 1, 'yellow')}
-  bossEnemy(){this.createEnemy(0, 80, 80, .5, .5, 20, 5, 'white')}
-
-
 
   ///////////////////////////////////////////////////////////////////////
   // Perks / Skills
@@ -394,20 +482,52 @@ class CDefense extends Component {
     let width = 120;
     let height = width;
     var slot1;
+    var desc1;
     var slot2;
+    var desc2;
     var slot3;
+    var desc3;
+    var randNum;
     if(wave%5===0){
-      slot1 = availableSkills[Math.floor(Math.random() * availableSkills.length)];
-      slot2 = availableSkills[Math.floor(Math.random() * availableSkills.length)];
-      while(slot2 === slot1){slot2 = availableSkills[Math.floor(Math.random() * availableSkills.length)]}
-      slot3 = availableSkills[Math.floor(Math.random() * availableSkills.length)];
-      while(slot3 === slot1 || slot3 === slot2){slot3 = availableSkills[Math.floor(Math.random() * availableSkills.length)]}
+      randNum = Math.floor(Math.random()*availableSkills.length/2)*2;
+      slot1 = availableSkills[randNum];
+      desc1 = availableSkills[randNum+1];
+      randNum = Math.floor(Math.random()*availableSkills.length/2)*2;
+      slot2 = availableSkills[randNum];
+      desc2 = availableSkills[randNum+1];
+      while(slot2 === slot1){
+        randNum = Math.floor(Math.random()*availableSkills.length/2)*2;
+        slot2 = availableSkills[randNum];
+        desc2 = availableSkills[randNum+1];
+      }
+      randNum = Math.floor(Math.random()*availableSkills.length/2)*2;
+      slot3 = availableSkills[randNum];
+      desc3 = availableSkills[randNum+1];
+      while(slot3 === slot1 || slot3 === slot2){
+        randNum = Math.floor(Math.random()*availableSkills.length/2)*2;
+        slot3 = availableSkills[randNum]
+        desc3 = availableSkills[randNum+1];
+      }
     } else{
-      slot1 = availablePerks[Math.floor(Math.random() * availablePerks.length)];
-      slot2 = availablePerks[Math.floor(Math.random() * availablePerks.length)];
-      while(slot2 === slot1){slot2 = availablePerks[Math.floor(Math.random() * availablePerks.length)]}
-      slot3 = availablePerks[Math.floor(Math.random() * availablePerks.length)];
-      while(slot3 === slot1 || slot3 === slot2){slot3 = availablePerks[Math.floor(Math.random() * availablePerks.length)]}
+      randNum = Math.floor(Math.random()*availablePerks.length/2)*2;
+      slot1 = availablePerks[randNum];
+      desc1 = availablePerks[randNum+1];
+      randNum = Math.floor(Math.random()*availablePerks.length/2)*2;
+      slot2 = availablePerks[randNum];
+      desc2 = availablePerks[randNum+1];
+      while(slot2 === slot1){
+        randNum = Math.floor(Math.random()*availablePerks.length/2)*2;
+        slot2 = availablePerks[randNum];
+        desc2 = availablePerks[randNum+1];
+      }
+      randNum = Math.floor(Math.random()*availablePerks.length/2)*2;
+      slot3 = availablePerks[randNum];
+      desc3 = availablePerks[randNum+1];
+      while(slot3 === slot1 || slot3 === slot2){
+        randNum = Math.floor(Math.random()*availablePerks.length/2)*2;
+        slot3 = availablePerks[randNum];
+        desc3 = availablePerks[randNum+1];
+      }
     }
 
     // Display chosen random perks/skills
@@ -415,6 +535,14 @@ class CDefense extends Component {
     slotArray.push(new Square(ctx, ((canvas.width/4)*2-(width/2)), canvas.height/2, width, width, 0, 0, 1, 0, 'green'), slot2);
     slotArray.push(new Square(ctx, ((canvas.width/4)*3-(width/2)), canvas.height/2, width, width, 0, 0, 1, 0, 'blue'), slot3);
     slotArray[0].update();
+
+    ctx.fillStyle = 'yellow';
+    ctx.fillRect(canvas.width/4-width/2, canvas.height - 280, canvas.width-canvas.width/2 + width, 50);
+    ctx.fillStyle = 'green';
+    ctx.fillRect(canvas.width/4-width/2, canvas.height - 190, canvas.width-canvas.width/2 + width, 50);
+    ctx.fillStyle = 'blue';
+    ctx.fillRect(canvas.width/4-width/2, canvas.height - 100, canvas.width-canvas.width/2 + width, 50);
+
     ctx.fillStyle = "black";
     ctx.fillText(slot1, (canvas.width/4)-(width/2), (canvas.height/2 + height));
     slotArray[2].update();
@@ -423,6 +551,12 @@ class CDefense extends Component {
     slotArray[4].update();
     ctx.fillStyle = "black";
     ctx.fillText(slot3, (canvas.width/4)*3-(width/2), (canvas.height/2 + height));
+
+    ctx.fillStyle = "black";
+    ctx.font = "20px verdana";
+    ctx.fillText(desc1, canvas.width/4-width/2, canvas.height - 240);
+    ctx.fillText(desc2, canvas.width/4-width/2, canvas.height - 150);
+    ctx.fillText(desc3, canvas.width/4-width/2, canvas.height - 60);
   }
 
   // Perk Switch Statement
@@ -431,6 +565,7 @@ class CDefense extends Component {
       case 'aoe': this.aoePerk(); break;
       case 'pierce': this.piercePerk(); break;
       case 'maxhp': this.maxhpPerk(); break;
+      case 'shield': this.energyShieldPerk(); break;
       case 'dmg +1': this.dmgPerk(); break;
       case 'orbital': this.orbitalPerk(); break;
       case 'regen': this.regenPerk(); break;
@@ -446,16 +581,27 @@ class CDefense extends Component {
   aoePerk(){
     aoeSize += 10;
     if(aoeSize > 120)
-      availablePerks.splice(availablePerks.indexOf('aoe'), 1);
+      availablePerks.splice(availablePerks.indexOf('aoe'), 2);
   }
   piercePerk(){
     hasPierce = true;
-    availablePerks.splice(availablePerks.indexOf('pierce'), 1);
+    availablePerks.splice(availablePerks.indexOf('pierce'), 2);
   }
   maxhpPerk(){
     hp += maxHp;
     maxHp += maxHp;
     this.adjustHpDisplay();
+    if(maxHp >= 20){
+      availablePerks.splice(availablePerks.indexOf('maxhp'), 2);
+    }
+  }
+  energyShieldPerk(){
+    shield.current += 3;
+    shield.max += 3;
+    this.adjustShieldDisplay();
+    if(shield.max >= 15){
+      availablePerks.splice(availablePerks.indexOf('shield'), 2);
+    }
   }
   dmgPerk(){
     damage++;
@@ -463,8 +609,8 @@ class CDefense extends Component {
   orbitalPerk(){
     if(orbitArray.length === 0)
       availablePerks.push('orbUp')
-    orbitArray.push(new Orbital(ctx, orbitalLevel))
-    orbitArray.push(new Orbital(ctx, orbitalLevel))
+    orbitArray.push(new Orbital(ctx, orbitalLevel));
+    orbitArray.push(new Orbital(ctx, orbitalLevel));
   }
   regenPerk(){
     regen = Math.max(1,Math.floor(1000/(regenTime+200)));
@@ -480,6 +626,11 @@ class CDefense extends Component {
     aoeY = y;
     aoeTime = time + 5;
   }
+  energyShieldPerk(){
+    shield.current += 3;
+    shield.max += 3;
+    this.adjustShieldDisplay();
+  }
 
   turretSkill(){
     skill = 'turret';
@@ -487,7 +638,8 @@ class CDefense extends Component {
     maxCd = 3;
     cdRegen = 750;
     skillLevel++;
-    availableSkills = ['tup1','tup2','tup3'];
+    defaultCdDisplay = '  Mana[';
+    availableSkills = ['upgrade1', 'desc1', 'upgrade2', 'desc2', 'upgrade3', 'desc3'];
     this.adjustCdDisplay();
   }
   laserSkill(){
@@ -496,7 +648,8 @@ class CDefense extends Component {
     maxCd = 10;
     cdRegen = 150;
     skillLevel++;
-    availableSkills = ['lUp1','lUp2','lUp3'];
+    defaultCdDisplay = '    Cd[';
+    availableSkills = ['upgrade1', 'desc1', 'upgrade2', 'desc2', 'upgrade3', 'desc3'];
     this.adjustCdDisplay();
   }
   stasisSkill(){
@@ -505,7 +658,8 @@ class CDefense extends Component {
     maxCd = 5;
     cdRegen = 500;
     skillLevel++;
-    availableSkills = ['bUp1', 'bUp2','bUp3'];
+    defaultCdDisplay = '    Cd[';
+    availableSkills = ['upgrade1', 'desc1', 'upgrade2', 'desc2', 'upgrade3', 'desc3'];
     this.adjustCdDisplay();
   }
 
@@ -557,8 +711,8 @@ class CDefense extends Component {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Stars
-    for(var i = 0; i < stars.length; i++){
-      stars[i].update();
+    for(var i = 0; i < stars.array.length; i++){
+      stars.array[i].update();
     }
 
     // Regen
@@ -569,6 +723,19 @@ class CDefense extends Component {
         if(hp > maxHp)
           hp = maxHp;
         this.adjustHpDisplay();
+      }
+    }
+
+    // Shield Regen
+    if(shield.max > 0 && shield.timeout < time){
+      console.log('shield');
+      if(shield.current < shield.max){
+        console.log('less');
+        if(time%50 === 0){
+          console.log('regen');
+          shield.current += 1;
+          this.adjustShieldDisplay();
+        }
       }
     }
 
@@ -585,9 +752,23 @@ class CDefense extends Component {
       this.stasisFieldCalc(enemyArray[i]);
       enemyArray[i].update(time);
       if(enemyArray[i].state.x <= 0 && !enemyArray[i].state.dead){
-        hp-= enemyArray[i].state.damage;
+        let dmg = enemyArray[i].state.damage;
+        if(shield.current != 0){
+          let s = shield.current;
+          shield.current -= dmg;
+          shield.timeout = time + 500;
+          if(shield.current < 0){
+            shield.current = 0;
+            dmg = dmg - s;
+          }
+          else {
+            dmg = 0;
+          }
+        }
+        hp-= dmg;
         enemyArray[i].death(time);
         this.adjustHpDisplay();
+        this.adjustShieldDisplay();
         if(hp <= 0)
           gameover = true;
       }
@@ -677,17 +858,24 @@ class CDefense extends Component {
     // HUD
     ctx.fillStyle = "white";
     ctx.font = "20px verdana";
-    ctx.fillText("Wave: " + (wave-1), 10, 25);
-    ctx.fillText("Kills: " + kills, 120, 25);
-    ctx.fillText("Time: " + time, 240, 25);
+    ctx.fillText("Wave: " + (wave-1), 60, 25);
+    ctx.fillText("Kills: " + kills, 170, 25);
+    ctx.fillText("Time: " + time, 290, 25);
     time++;
     // Hp Display
     ctx.fillStyle = "lightgreen";
     ctx.font = "20px courier";
     ctx.fillText(hpDisplay, 10, 50);
-    // cd Display
+    // Shield Display
     ctx.fillStyle = "lightblue";
-    ctx.fillText(cdDisplay, 10, 75);
+    ctx.font = "20px courier";
+    ctx.fillText(shield.display, 10, 75);
+    // cd Display
+    ctx.fillStyle = "rgb(238,196,20)";
+    if(shield.max > 0)
+      ctx.fillText(cdDisplay, 10, 100);
+    else
+      ctx.fillText(cdDisplay, 10, 75);
 
     // Create Text/Dmg number
     if(textArray.length > 0){

@@ -30,5 +30,6 @@ body{
   top: $navHeight;
   margin: 0 auto;
   min-height: calc(100vh - #{$navHeight - $footerHeight} - 123px);
+  z-index: 1;
   @include animation(fadein 2s);
 }

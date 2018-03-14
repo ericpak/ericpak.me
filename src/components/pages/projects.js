@@ -59,6 +59,9 @@ class Projects extends Component {
     var header = document.getElementsByClassName("Header")[0].style;
     header.position = "absolute";
     header.height = "100vh";
+
+    var footer = document.getElementsByClassName("Footer")[0].style;
+    footer.position = "relative";
   }
 
   componentWillMount(){

@@ -20,6 +20,9 @@ class HomePage extends Component {
     var header = document.getElementsByClassName("Header")[0].style;
     header.position = "relative";
     header.height = (window.innerHeight - navFooterHeight) + "px";
+
+    var footer = document.getElementsByClassName("Footer")[0].style;
+    footer.position = "relative";
   }
 
   render() {

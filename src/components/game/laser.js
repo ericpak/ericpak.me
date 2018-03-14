@@ -24,7 +24,7 @@ class Laser {
       damage: 15*level,
       width: width,
       timeout: 0,
-      height: 120,
+      height: 150,
       hitWidth: 0,
       hitHeight: 0,
     }

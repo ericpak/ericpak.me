@@ -22,6 +22,10 @@ class Game extends Component {
     header.position = "absolute";
     header.height = "100vh";
 
+    var footer = document.getElementsByClassName("Footer")[0].style;
+    footer.position = "absolute";
+    footer.top = '0';
+
     this._cDefense.makeVisible();
   }
 
