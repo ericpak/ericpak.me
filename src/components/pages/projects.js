@@ -7,6 +7,9 @@ import redBeanie from "../../Assets/media/images/ericpak/redBeanie.png";
 import hi from "../../Assets/media/images/ericpak/hi.png";
 import mtBear from "../../Assets/media/images/ericpak/mountainBear3.png";
 import toolbar from "../../Assets/media/images/ericpak/toolbar.png";
+import gameDay1 from "../../Assets/media/images/game/gameDev_day1.png";
+import gameDay3 from "../../Assets/media/images/game/gameDev_day3.png";
+import gameDay5 from "../../Assets/media/images/game/gameDev_day5.png";
 
 import snap from "../../Assets/media/images/snap/SNAP.png";
 import snap_moby from "../../Assets/media/images/snap/moby_dick.png";
@@ -70,7 +73,7 @@ class Projects extends Component {
               image: hi,
               imageAlt: 'Hi',
               imageTitle: 'Hi',
-              description: 'The front page of my website!',
+              description: "The front page of my website! It's also a paint Canvas!",
             },
             {
               image: redBeanie,
@@ -88,7 +91,25 @@ class Projects extends Component {
               image: toolbar,
               imageAlt: 'Toolbar',
               imageTitle: 'toolbar',
-              description: 'The toolbars for the canvas',
+              description: 'The toolbars for the canvases.',
+            },
+            {
+              image: gameDay1,
+              imageAlt: 'Game Development Day 1',
+              imageTitle: 'gameDay1',
+              description: 'The first day of the Development of the game! Worked on basic functionality and game framework!',
+            },
+            {
+              image: gameDay3,
+              imageAlt: 'Game Development Day 3',
+              imageTitle: 'gameDay3',
+              description: 'On Day 3 of Game Development i added a turret with bullets, and the perk system!.',
+            },
+            {
+              image: gameDay5,
+              imageAlt: 'Game Development Day 5',
+              imageTitle: 'gameDay5',
+              description: 'On day 5 of Game Dev i added stars, explosions, and lasers!',
             },
           ],
         },

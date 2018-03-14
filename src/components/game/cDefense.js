@@ -40,7 +40,7 @@ var textArray = [];
 var orbitArray = [];
 var turretArray = [];
 var availablePerks = ['aoe', 'pierce', 'maxhp', 'dmg +1', 'orbital', 'regen'];
-var availableSkills = ['turret', 'laser', 'bomb'];
+var availableSkills = ['turret', 'laser', 'stasis'];
 var skill = '';
 var gameover = false;
 
@@ -62,6 +62,18 @@ var cd = 0;
 var maxCd = 0;
 var cdRegen = 0;
 var skillLevel = 0;
+var stasisField = {
+  indicatorOn: false,
+  width: 300,
+  height: 300,
+  x: 0,
+  y: 0,
+  timeout: 0,
+  damage: 1,
+  slowAmount: 50, // 0 is no effect, 100 is stopped, above 100 is moving backwards.
+  stunChance: .25, // 1 is 100%, .5 is 50% ...
+  damageChance: .002, // 1 is 100%, .5 is 50% ...
+}
 
 var laser = undefined;
 
@@ -132,7 +144,7 @@ class CDefense extends Component {
       waitForPerk = false;
       this.animate();
     }
-    this.laserSkill();
+    this.stasisSkill();
   }
 
   setDefaults(){
@@ -151,7 +163,7 @@ class CDefense extends Component {
     laser = undefined;
     // Default Perks
     availablePerks = ['aoe', 'pierce', 'maxhp', 'dmg +1', 'orbital', 'regen'];
-    availableSkills = ['turret', 'laser', 'bomb'];
+    availableSkills = ['turret', 'laser', 'stasis'];
     hp = 5;
     maxHp = 5;
     aoeSize = 0;
@@ -202,18 +214,27 @@ class CDefense extends Component {
         }
       }
     }
+    if(stasisField.indicatorOn){
+      cd = 0;
+      this.adjustCdDisplay();
+      stasisField.indicatorOn = false;
+      stasisField.x = x - stasisField.width/2;
+      stasisField.y = y - stasisField.height/2;
+      stasisField.timeout = time + 1000;
+    }
   }
   _onKeyDown(e){
     if(skill !== '' && e.key === ' '){
       switch(skill){
         case 'turret': this.placeTurret(); break;
         case 'laser': this.shootLaser(); break;
-        case 'bomb': this.dropBomb(); break;
+        case 'stasis': this.stasisField(); break;
         default: break;
       }
     }
   }
 
+  // This method needs to be refactored to be cleaner and more modular
   hitDetection(array, x, y, width, height, dmg, hasPierce, isEnemy, isLaser){
     var hit = false;
     for(var i = 0; i < array.length; i++){
@@ -239,6 +260,15 @@ class CDefense extends Component {
       }
     }
     return hit;
+  }
+
+  hitDetect(unit1, unit2){
+    if(unit1.x + unit1.width > unit2.x && unit1.x < unit2.x + unit2.width){
+      if(unit1.y + unit1.height > unit2.y && unit1.y < unit2.y + unit2.height){
+        return true;
+      }
+    }
+    return false;
   }
 
   ///////////////////////////////////////////////////////////////////////
@@ -276,7 +306,7 @@ class CDefense extends Component {
         this.basicEnemy();
     }
     // Wave 2
-    if((wave)%10 === 1 || (wave)%10 >= 6){
+    if((wave)%10 === 2 || (wave)%10 >= 6){
       let numberOfEnimies = 30;
       for(i = 0; i < (wave * numberOfEnimies); i++)
         this.tankEnemy();
@@ -366,7 +396,7 @@ class CDefense extends Component {
     var slot1;
     var slot2;
     var slot3;
-    if(wave%2===0){
+    if(wave%5===0){
       slot1 = availableSkills[Math.floor(Math.random() * availableSkills.length)];
       slot2 = availableSkills[Math.floor(Math.random() * availableSkills.length)];
       while(slot2 === slot1){slot2 = availableSkills[Math.floor(Math.random() * availableSkills.length)]}
@@ -407,14 +437,14 @@ class CDefense extends Component {
       case 'orbUp': this.upgradeOrbPerk(); break;
       case 'turret': this.turretSkill(); break;
       case 'laser': this.laserSkill(); break;
-      case 'bomb': this.bombSkill(); break;
+      case 'stasis': this.stasisSkill(); break;
       default: break;
     }
   }
 
   // Perk Methods
   aoePerk(){
-    aoeSize += 20;
+    aoeSize += 10;
     if(aoeSize > 120)
       availablePerks.splice(availablePerks.indexOf('aoe'), 1);
   }
@@ -469,9 +499,14 @@ class CDefense extends Component {
     availableSkills = ['lUp1','lUp2','lUp3'];
     this.adjustCdDisplay();
   }
-  bombSkill(){
-    skill = 'bomb';
+  stasisSkill(){
+    skill = 'stasis';
+    cd = 3;
+    maxCd = 5;
+    cdRegen = 500;
+    skillLevel++;
     availableSkills = ['bUp1', 'bUp2','bUp3'];
+    this.adjustCdDisplay();
   }
 
   placeTurret(){
@@ -488,8 +523,25 @@ class CDefense extends Component {
       laser = new Laser(ctx, x, y, skillLevel, canvas.width);
     }
   }
-  dropBomb(){
-
+  stasisField(){
+    if(cd === maxCd)
+      stasisField.indicatorOn = !stasisField.indicatorOn;
+  }
+  stasisFieldCalc(unit){
+    if(stasisField.timeout > time && !unit.state.dead){
+      if(this.hitDetect(unit.state, stasisField)){
+        if(Math.random() < stasisField.stunChance)
+          unit.state.x = unit.state.x - unit.state.dx;
+        else
+          unit.state.x = unit.state.x - stasisField.slowAmount*unit.state.dx/100;
+        if(Math.random() < stasisField.damageChance){
+          unit.state.hp -= stasisField.damage;
+          textArray.push(new Txt(ctx, stasisField.damage, unit.state.x, unit.state.y, stasisField.damage+11,'red', time+100));
+          if(unit.state.hp <= 0)
+            unit.death(time);
+        }
+      }
+    }
   }
 
   ///////////////////////////////////////////////////////////////////////
@@ -528,8 +580,9 @@ class CDefense extends Component {
       }
     }
 
-    // Take Damage / Enemy Update
+    // Take Damage / Stasis Field Effect / Enemy Update
     for(i = enemyArray.length-1; i >= 0; i--){
+      this.stasisFieldCalc(enemyArray[i]);
       enemyArray[i].update(time);
       if(enemyArray[i].state.x <= 0 && !enemyArray[i].state.dead){
         hp-= enemyArray[i].state.damage;
@@ -592,10 +645,21 @@ class CDefense extends Component {
       }
     }
 
-    // Aoe Explosion
+    // Click aoe indicator
     if(aoeTime > time){
       ctx.fillStyle = "rgba(255, 99, 71, 0.5)";
       ctx.fillRect(aoeX - aoeSize, aoeY - aoeSize, 2 * aoeSize, 2 * aoeSize);
+    }
+
+    // Stasis Field Aoe indicator
+    if(stasisField.indicatorOn){
+      ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
+      ctx.fillRect(x - stasisField.width/2, y - stasisField.height/2, stasisField.width, stasisField.height);
+    }
+    // Stasis Field
+    if(stasisField.timeout > time){
+      ctx.fillStyle = "rgba(100, 100, 255, 0.5)";
+      ctx.fillRect(stasisField.x, stasisField.y, stasisField.width, stasisField.height);
     }
 
     // Laser
