@@ -127,7 +127,7 @@ class gameoverScreen {
 
 
     // Activated Perks
-    ctx.fillStyle = "black";
+    ctx.fillStyle = "white";
     ctx.font = "20px verdana";
     var yadjust = 0;
     var perkValues = Object.values(activatedPerks);
@@ -220,7 +220,7 @@ class gameoverScreen {
     ctx.fillRect(0, ((canvas.height/2) - wtime), canvas.width, (2 * wtime));
     ctx.fillStyle = "rgba(0, 0, 0,"+ (0.7 * wtime) + ")";
     ctx.font = "80px verdana";
-    if(wave%10 === 0)
+    if(wave === 10)
       ctx.fillText("Boss Wave", ((canvas.width/2) - 50), canvas.height/2);
     else
       ctx.fillText("Wave " + wave, ((canvas.width/2)), canvas.height/2);

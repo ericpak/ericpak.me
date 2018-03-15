@@ -6,7 +6,8 @@ import Orbital from "./orbital";
 import Turret from "./turret";
 import Star from "./star";
 import Laser from "./laser";
-import gameScreen from "./gameScreen";
+import GameScreen from "./gameScreen";
+import Boss from "./boss";
 
 const navFooterHeight = 44;
 
@@ -45,6 +46,8 @@ var availablePerks;
 var availableSkills;
 var skill;
 var gameover;
+
+var bossSpawn;
 
 // Wave Banner DisplayTime
 const waveBannerDisplayTime = 300;
@@ -124,7 +127,7 @@ class CDefense extends Component {
   	}
 
     // Start screen
-    startSquare = gameScreen.startScreen(ctx, canvas, startSquare);
+    startSquare = GameScreen.startScreen(ctx, canvas, startSquare);
   }
 
   reset(){
@@ -135,6 +138,7 @@ class CDefense extends Component {
       waitForPerk = false;
       this.animate();
     }
+    this.turretSkill();
   }
 
   setDefaults(){
@@ -161,6 +165,7 @@ class CDefense extends Component {
     wave = 1;
     cdDisplay = "";
     laser = undefined;
+    bossSpawn = undefined;
     // Default Perks
     availablePerks = [
       'aoe', 'increase the size of your click',
@@ -363,6 +368,13 @@ class CDefense extends Component {
     }
   }
 
+  spawnBoss(){
+    enemyArray.push(new Boss(ctx, canvas, wave, 'bay'));
+    enemyArray.push(new Boss(ctx, canvas, wave, 'body'));
+    enemyArray.push(new Boss(ctx, canvas, wave, 'front'));
+    enemyArray.push(new Boss(ctx, canvas, wave, 'back'));
+  }
+
   ///////////////////////////////////////////////////////////////////////
   // Waves
   ///////////////////////////////////////////////////////////////////////
@@ -372,49 +384,51 @@ class CDefense extends Component {
     this.newPerkSkill();
     if(wave <= 10){
       if(wave === 1){
-        this.spawnEnemy('basic',20);
+        wave = 10;
+        this.spawnBoss(1);
+        // this.spawnEnemy('basic',20);
       }
-      if(wave === 2){
+      else if(wave === 2){
         this.spawnEnemy('tank',20);
         this.spawnEnemy('basic',20);
       }
-      if(wave === 3){
+      else if(wave === 3){
         this.spawnEnemy('tank',20);
         this.spawnEnemy('small',20);
       }
-      if(wave === 4){
+      else if(wave === 4){
         this.spawnEnemy('tank',10);
         this.spawnEnemy('basic',10);
         this.spawnEnemy('fast',30);
       }
-      if(wave === 5){
+      else if(wave === 5){
         this.spawnEnemy('miniboss',15);
         this.spawnEnemy('tank',20);
         this.spawnEnemy('basic',20);
         this.spawnEnemy('fast',10);
         this.spawnEnemy('small',10);
       }
-      if(wave === 6){
+      else if(wave === 6){
         this.spawnEnemy('tank',20);
         this.spawnEnemy('basic',30);
         this.spawnEnemy('stealth',10);
       }
-      if(wave === 7){
+      else if(wave === 7){
         this.spawnEnemy('tank',30);
         this.spawnEnemy('zag',20);
         this.spawnEnemy('fast',20);
       }
-      if(wave === 8){
+      else if(wave === 8){
         this.spawnEnemy('basic',20);
         this.spawnEnemy('small',20);
         this.spawnEnemy('teleport',30);
       }
-      if(wave === 9){
+      else if(wave === 9){
         this.spawnEnemy('zag',30);
         this.spawnEnemy('small',20);
         this.spawnEnemy('fast',10);
       }
-      if(wave === 10){
+      else if(wave === 10){
         availablePerks.push('lifeSteal');
         availablePerks.push('Gain a life on enemy kill');
         this.spawnEnemy('miniboss',20);
@@ -494,7 +508,6 @@ class CDefense extends Component {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
     ctx.font = "40px verdana";
-    ctx.fillText("Choose a Perk", ((canvas.width/2) - 140), canvas.height/2 - 140);
 
     // Randomize which perks/skills are available
     let width = 120;
@@ -507,6 +520,16 @@ class CDefense extends Component {
     var desc3;
     var randNum;
     if(wave%5===0){
+      ctx.fillStyle = 'lightgrey';
+      ctx.fillText("Choose a Skill", ((canvas.width/2) - 140), 300);
+      ctx.fillRect(canvas.width/4-width/2-3, canvas.height/2-3, width+6, width+6);
+      ctx.fillRect(canvas.width/4*2-width/2-3, canvas.height/2-3, width+6, width+6);
+      ctx.fillRect(canvas.width/4*3-width/2-3, canvas.height/2-3, width+6, width+6);
+
+      // ctx.fillRect(canvas.width/4-width, canvas.height/2-2*width-50, width*2, width*2);
+      // ctx.fillRect(canvas.width/4*2-width, canvas.height/2-2*width-50, width*2, width*2);
+      // ctx.fillRect(canvas.width/4*3-width, canvas.height/2-2*width-50, width*2, width*2);
+
       randNum = Math.floor(Math.random()*availableSkills.length/2)*2;
       slot1 = availableSkills[randNum];
       desc1 = availableSkills[randNum+1];
@@ -526,7 +549,27 @@ class CDefense extends Component {
         slot3 = availableSkills[randNum]
         desc3 = availableSkills[randNum+1];
       }
+      // ctx.fillStyle = 'black';
+      // switch(slot1){
+      //   case 'laser': ctx.fillText('laser Preview',canvas.width/4-width, canvas.height/2-2*width-50); break;
+      //   case 'stasis': ctx.fillText('stasis Preview',canvas.width/4-width, canvas.height/2-2*width-50); break;
+      //   case 'turret': ctx.fillText('turret Preview',canvas.width/4-width, canvas.height/2-2*width-50); break;
+      //   default: break;
+      // }
+      // switch(slot2){
+      //   case 'laser': ctx.fillText('laser Preview',canvas.width/4*2-width, canvas.height/2-2*width-50); break;
+      //   case 'stasis': ctx.fillText('stasis Preview',canvas.width/4*2-width, canvas.height/2-2*width-50); break;
+      //   case 'turret': ctx.fillText('turret Preview',canvas.width/4*2-width, canvas.height/2-2*width-50); break;
+      //   default: break;
+      // }
+      // switch(slot3){
+      //   case 'laser': ctx.fillText('laser Preview',canvas.width/4*3-width, canvas.height/2-2*width-50); break;
+      //   case 'stasis': ctx.fillText('stasis Preview',canvas.width/4*3-width, canvas.height/2-2*width-50); break;
+      //   case 'turret': ctx.fillText('turret Preview',canvas.width/4*3-width, canvas.height/2-2*width-50); break;
+      //   default: break;
+      // }
     } else{
+      ctx.fillText("Choose a Perk", ((canvas.width/2) - 140), canvas.height/2 - 140);
       randNum = Math.floor(Math.random()*availablePerks.length/2)*2;
       slot1 = availablePerks[randNum];
       desc1 = availablePerks[randNum+1];
@@ -839,7 +882,7 @@ class CDefense extends Component {
     // Take Damage / Stasis Field Effect / Enemy Update
     for(i = enemyArray.length-1; i >= 0; i--){
       this.stasisFieldCalc(enemyArray[i]);
-      enemyArray[i].update(time);
+       bossSpawn = enemyArray[i].update(time);
       if(enemyArray[i].state.x <= 0 && !enemyArray[i].state.dead){
         let dmg = enemyArray[i].state.damage;
         if(shield.current !== 0){
@@ -864,6 +907,11 @@ class CDefense extends Component {
       if(enemyArray[i].state.dead && enemyArray[i].state.timeout < time){
         enemyArray.splice(i,1);
       }
+    }
+    // Adding Boss Spawn
+    if(bossSpawn !== undefined){
+      enemyArray.push(bossSpawn);
+      bossSpawn = undefined;
     }
 
     // Turret
@@ -895,7 +943,7 @@ class CDefense extends Component {
       waveStartTime = time + waveBannerDisplayTime;
       waveStarted = true;
     }
-    if(waveStartTime > time){gameScreen.waveBanner(ctx, canvas, wave, waveStartTime - time)}
+    if(waveStartTime > time){GameScreen.waveBanner(ctx, canvas, wave, waveStartTime - time)}
     if(waveStartTime === time){
       this.newWave();
       waveStarted = false;
@@ -977,7 +1025,7 @@ class CDefense extends Component {
 
     // gameover screen
     if(gameover){
-      startSquare = gameScreen.gameover(ctx, canvas, kills, wave, startSquare, activatedPerks, activatedSkills);
+      startSquare = GameScreen.gameover(ctx, canvas, kills, wave, startSquare, activatedPerks, activatedSkills);
     }
   }
 
