@@ -30,24 +30,24 @@ class Boss{
       this.state.width = 200;
       this.state.height = 100;
       this.state.x = canvas.width + 100;
-      this.state.hp = 2*wave;
+      this.state.hp = 20*wave;
     } else if(part === 'front'){
       this.state.width = 151;
       this.state.height = 100;
       this.state.y = canvas.height/2-50;
-      this.state.hp = 3*wave;
+      this.state.hp = 30*wave;
     } else if(part === 'body'){
       this.state.width = 250;
       this.state.height = 150;
       this.state.x = canvas.width + 150;
       this.state.y = canvas.height/2-100;
-      this.state.hp = 4*wave;
+      this.state.hp = 40*wave;
     } else if(part === 'back'){
       this.state.width = 25;
       this.state.height = 75;
       this.state.x = canvas.width + 399;
       this.state.y = canvas.height/2-75;
-      this.state.hp = 2*wave;
+      this.state.hp = 20*wave;
       this.state.explosion = new Explosion(this.state.ctx, this.state.x, this.state.y+15, this.state.width+50, this.state.height-30);
     }
   }
@@ -101,7 +101,7 @@ class Boss{
     this.state.ctx.fillRect(this.state.x, this.state.y, 200, 100);
     this.state.ctx.fillStyle = 'black';
     this.state.ctx.fillRect(this.state.x+10, this.state.y+10, 180, 80);
-    if(!this.state.dead && time%100 === 0){
+    if(!this.state.dead && time%50 === 0){
       return this.spawnEnemy(Math.floor(Math.random()*7), 1);
     }
   }

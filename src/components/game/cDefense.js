@@ -384,9 +384,7 @@ class CDefense extends Component {
     this.newPerkSkill();
     if(wave <= 10){
       if(wave === 1){
-        wave = 10;
-        this.spawnBoss(1);
-        // this.spawnEnemy('basic',20);
+        this.spawnEnemy('basic',20);
       }
       else if(wave === 2){
         this.spawnEnemy('tank',20);
@@ -431,13 +429,14 @@ class CDefense extends Component {
       else if(wave === 10){
         availablePerks.push('lifeSteal');
         availablePerks.push('Gain a life on enemy kill');
-        this.spawnEnemy('miniboss',20);
-        this.spawnEnemy('tank',20);
-        this.spawnEnemy('basic',20);
-        this.spawnEnemy('zag',30);
-        this.spawnEnemy('small',20);
-        this.spawnEnemy('teleport',20);
-        this.spawnEnemy('fast',20);
+        this.spawnBoss(1);
+        this.spawnEnemy('miniboss',5);
+        this.spawnEnemy('tank',10);
+        this.spawnEnemy('basic',15);
+        this.spawnEnemy('zag',15);
+        this.spawnEnemy('small',15);
+        this.spawnEnemy('teleport',15);
+        this.spawnEnemy('fast',10);
         this.spawnEnemy('stealth',5);
       }
     }
@@ -703,7 +702,7 @@ class CDefense extends Component {
     shield.current += 3;
     shield.max += 3;
     this.adjustShieldDisplay();
-    if(shield.max >= 15){
+    if(shield.max >= 30){
       availablePerks.splice(availablePerks.indexOf('shield'), 2);
     }
   }
