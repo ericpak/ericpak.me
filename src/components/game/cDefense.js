@@ -69,6 +69,9 @@ var stasisField;
 
 var laser = undefined;
 
+var activatedPerks;
+var activatedSkills;
+
 // aoe variables
 var aoeX;
 var aoeY;
@@ -162,7 +165,7 @@ class CDefense extends Component {
       'aoe', 'increase the size of your click',
       'pierce', 'allows you to hit multiple enemies',
       'maxhp', 'increases your maximum health by x2',
-      'dmg +1', 'increase click damage by 1',
+      'damage', 'increase click damage by 1',
       'orbital', 'summons orbitals to orbit around your mouse',
       'shield','Energy shield that recharges after not getting hit'
     ]; //'regen', 'allows you to regen your life over time'];
@@ -185,6 +188,8 @@ class CDefense extends Component {
     regen = 0;
     orbitalLevel = 1;
     regenTime = 1425;
+    activatedPerks = {};
+    activatedSkills = {};
     // Default Skills
     cd = 0;
     maxCd = 0;
@@ -361,26 +366,26 @@ class CDefense extends Component {
       if(wave === 1){
         this.spawnEnemy('basic',20);
       }
-      if(wave === 2){
-        this.spawnEnemy('tank',20);
-        this.spawnEnemy('basic',20);
-      }
-      if(wave === 3){
-        this.spawnEnemy('tank',20);
-        this.spawnEnemy('small',20);
-      }
-      if(wave === 4){
-        this.spawnEnemy('tank',10);
-        this.spawnEnemy('basic',10);
-        this.spawnEnemy('fast',30);
-      }
-      if(wave === 5){
-        this.spawnEnemy('miniboss',15);
-        this.spawnEnemy('tank',20);
-        this.spawnEnemy('basic',20);
-        this.spawnEnemy('fast',10);
-        this.spawnEnemy('small',10);
-      }
+      // if(wave === 2){
+      //   this.spawnEnemy('tank',20);
+      //   this.spawnEnemy('basic',20);
+      // }
+      // if(wave === 3){
+      //   this.spawnEnemy('tank',20);
+      //   this.spawnEnemy('small',20);
+      // }
+      // if(wave === 4){
+      //   this.spawnEnemy('tank',10);
+      //   this.spawnEnemy('basic',10);
+      //   this.spawnEnemy('fast',30);
+      // }
+      // if(wave === 5){
+      //   this.spawnEnemy('miniboss',15);
+      //   this.spawnEnemy('tank',20);
+      //   this.spawnEnemy('basic',20);
+      //   this.spawnEnemy('fast',10);
+      //   this.spawnEnemy('small',10);
+      // }
       if(wave === 6){
         this.spawnEnemy('tank',20);
         this.spawnEnemy('basic',30);
@@ -533,6 +538,34 @@ class CDefense extends Component {
       }
     }
 
+    // Activated Perks
+    ctx.fillStyle = "black";
+    ctx.font = "20px verdana";
+    var yadjust = 0;
+    var perkValues = Object.values(activatedPerks);
+    var perkKeys = Object.keys(activatedPerks);
+    if(perkValues.length > 0)
+      ctx.fillText("Activated Perks", 20, 120);
+    for(var i = 0; i < perkValues.length; i++){
+      yadjust += 20;
+      ctx.fillText(perkKeys[i]+": ", 20, 140+yadjust);
+      ctx.fillText(perkValues[i], 120, 140+yadjust);
+    }
+
+    // Activated Skills
+    var skillValues = Object.values(activatedSkills);
+    var skillKeys = Object.keys(activatedSkills);
+    if(skillValues.length > 0){
+      yadjust += 40
+      ctx.fillText("Activated Skills", 20, 160+yadjust);
+      yadjust += 40
+    }
+    for(var i = 0; i < skillValues.length; i++){
+      yadjust += 20;
+      ctx.fillText(skillKeys[i]+": ", 20, 140+yadjust);
+      ctx.fillText(skillValues[i], 120, 140+yadjust);
+    }
+
     // Display chosen random perks/skills
     slotArray.push(new Square(ctx, ((canvas.width/4)-(width/2)), canvas.height/2, width, width, 0, 0, 1, 0, 'yellow'), slot1);
     slotArray.push(new Square(ctx, ((canvas.width/4)*2-(width/2)), canvas.height/2, width, width, 0, 0, 1, 0, 'green'), slot2);
@@ -546,6 +579,7 @@ class CDefense extends Component {
     ctx.fillStyle = 'blue';
     ctx.fillRect(canvas.width/4-width/2, canvas.height - 100, canvas.width-canvas.width/2 + width, 50);
 
+    ctx.font = "40px verdana";
     ctx.fillStyle = "black";
     ctx.fillText(slot1, (canvas.width/4)-(width/2), (canvas.height/2 + height));
     slotArray[2].update();
@@ -569,7 +603,7 @@ class CDefense extends Component {
       case 'pierce': this.piercePerk(); break;
       case 'maxhp': this.maxhpPerk(); break;
       case 'shield': this.energyShieldPerk(); break;
-      case 'dmg +1': this.dmgPerk(); break;
+      case 'damage': this.damagePerk(); break;
       case 'orbital': this.orbitalPerk(); break;
       case 'regen': this.regenPerk(); break;
       case 'orbUp': this.upgradeOrbPerk(); break;
@@ -582,23 +616,36 @@ class CDefense extends Component {
 
   // Perk Methods
   aoePerk(){
+    if(activatedPerks.aoe === undefined)
+      activatedPerks = { ...activatedPerks, aoe: 1 };
+    else
+      activatedPerks = { ...activatedPerks, aoe: activatedPerks.aoe+1 };
     aoeSize += 10;
     if(aoeSize > 120)
       availablePerks.splice(availablePerks.indexOf('aoe'), 2);
   }
   piercePerk(){
+    activatedPerks = { ...activatedPerks, pierce: true };
     hasPierce = true;
     availablePerks.splice(availablePerks.indexOf('pierce'), 2);
   }
   maxhpPerk(){
+    if(activatedPerks.maxhp === undefined)
+      activatedPerks = { ...activatedPerks, maxhp: 1 };
+    else
+      activatedPerks = { ...activatedPerks, maxhp: activatedPerks.maxhp+1 };
     hp += maxHp;
     maxHp += maxHp;
     this.adjustHpDisplay();
-    if(maxHp >= 20){
+    if(maxHp >= 40){
       availablePerks.splice(availablePerks.indexOf('maxhp'), 2);
     }
   }
   energyShieldPerk(){
+    if(activatedPerks.shield === undefined)
+      activatedPerks = { ...activatedPerks, shield: 1 };
+    else
+      activatedPerks = { ...activatedPerks, shield: activatedPerks.shield+1 };
     shield.current += 3;
     shield.max += 3;
     this.adjustShieldDisplay();
@@ -606,22 +653,38 @@ class CDefense extends Component {
       availablePerks.splice(availablePerks.indexOf('shield'), 2);
     }
   }
-  dmgPerk(){
+  damagePerk(){
+    if(activatedPerks.damage === undefined)
+      activatedPerks = { ...activatedPerks, damage: 1 };
+    else
+      activatedPerks = { ...activatedPerks, damage: activatedPerks.damage+1 };
     damage++;
   }
   orbitalPerk(){
+    if(activatedPerks.orbital === undefined)
+      activatedPerks = { ...activatedPerks, orbital: 1 };
+    else
+      activatedPerks = { ...activatedPerks, orbital: activatedPerks.orbital+1 };
     if(orbitArray.length === 0){
-      availablePerks.push('orbUp')
-      availablePerks.push('increase orb size and damage')
+      availablePerks.push('orbUp');
+      availablePerks.push('increase orb size and damage');
     }
     orbitArray.push(new Orbital(ctx, orbitalLevel));
     orbitArray.push(new Orbital(ctx, orbitalLevel));
   }
   regenPerk(){
+    if(activatedPerks.regen === undefined)
+      activatedPerks = { ...activatedPerks, regen: 1 };
+    else
+      activatedPerks = { ...activatedPerks, regen: activatedPerks.regen+1 };
     regen = Math.max(1,Math.floor(1000/(regenTime+200)));
     regenTime = Math.floor(2*(regenTime/3));
   }
   upgradeOrbPerk(){
+    if(activatedPerks.orbup === undefined)
+      activatedPerks = { ...activatedPerks, orbup: 1 };
+    else
+      activatedPerks = { ...activatedPerks, orbup: activatedPerks.orbup+1 };
     orbitalLevel++;
     for(var i = 0; i < orbitArray.length; i++)
       orbitArray[i].upgrade();
@@ -631,13 +694,12 @@ class CDefense extends Component {
     aoeY = y;
     aoeTime = time + 5;
   }
-  energyShieldPerk(){
-    shield.current += 3;
-    shield.max += 3;
-    this.adjustShieldDisplay();
-  }
 
   turretSkill(){
+    if(activatedSkills.turret === undefined)
+      activatedSkills = { ...activatedSkills, turret: 1 };
+    else
+      activatedSkills = { ...activatedSkills, turret: activatedSkills.turret+1 };
     skill = 'turret';
     cd = 1;
     maxCd = 3;
@@ -648,6 +710,10 @@ class CDefense extends Component {
     this.adjustCdDisplay();
   }
   laserSkill(){
+    if(activatedSkills.laser === undefined)
+      activatedSkills = { ...activatedSkills, laser: 1 };
+    else
+      activatedSkills = { ...activatedSkills, laser: activatedSkills.laser+1 };
     skill = 'laser';
     cd = 5;
     maxCd = 10;
@@ -658,6 +724,10 @@ class CDefense extends Component {
     this.adjustCdDisplay();
   }
   stasisSkill(){
+    if(activatedSkills.stasis === undefined)
+      activatedSkills = { ...activatedSkills, stasis: 1 };
+    else
+      activatedSkills = { ...activatedSkills, stasis: activatedSkills.stasis+1 };
     skill = 'stasis';
     cd = 3;
     maxCd = 5;
@@ -755,7 +825,7 @@ class CDefense extends Component {
       enemyArray[i].update(time);
       if(enemyArray[i].state.x <= 0 && !enemyArray[i].state.dead){
         let dmg = enemyArray[i].state.damage;
-        if(shield.current != 0){
+        if(shield.current !== 0){
           let s = shield.current;
           shield.current -= dmg;
           shield.timeout = time + 500;
@@ -890,7 +960,7 @@ class CDefense extends Component {
 
     // gameover screen
     if(gameover){
-      startSquare = gameScreen.gameover(ctx, canvas, kills, wave, startSquare);
+      startSquare = gameScreen.gameover(ctx, canvas, kills, wave, startSquare, activatedPerks, activatedSkills);
     }
   }
 

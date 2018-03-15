@@ -25,6 +25,7 @@ class Square{
   draw() {
     this.state.ctx.fillStyle = this.state.color;
     if(this.state.color === 'black'){
+      this.state.ctx.strokeStyle = 'black';
       this.state.ctx.strokeRect(this.state.x, this.state.y, this.state.width, this.state.height);
     }else{
       this.state.ctx.fillRect(this.state.x, this.state.y, this.state.width, this.state.height);

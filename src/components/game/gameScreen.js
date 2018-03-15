@@ -4,7 +4,7 @@ import Square from "./square";
 const waveBannerDisplayTime = 300;
 
 class gameoverScreen {
-    static gameover(ctx, canvas, kills, wave, startSquare){
+    static gameover(ctx, canvas, kills, wave, startSquare, activatedPerks, activatedSkills){
     ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     startSquare = new Square(ctx, ((canvas.width/2) - 80), (canvas.height - 60), 160, 50, 0, 0, 1, 1, 'rgba(255, 255, 255, 0.5)');
@@ -38,14 +38,14 @@ class gameoverScreen {
     if(kills.blue.toString().length < 10)
       ctx.fillText(kills.blue,canvas.width/5-8,canvas.height/5+120);
     else if(kills.blue.toString().length < 100)
-      ctx.fillText(kills.blue,canvas.width/5-22,canvas.height/5+120);
+      ctx.fillText(kills.blue,canvas.width/5-18,canvas.height/5+120);
     else
       ctx.fillText(kills.blue,canvas.width/5-27,canvas.height/5+120);
 
     if(kills.green.toString().length < 10)
       ctx.fillText(kills.green,2*canvas.width/5-8,canvas.height/5+120);
     else if(kills.green.toString().length < 100)
-      ctx.fillText(kills.green,2*canvas.width/5-14,canvas.height/5+120);
+      ctx.fillText(kills.green,2*canvas.width/5-18,canvas.height/5+120);
     else
       ctx.fillText(kills.green,2*canvas.width/5-27,canvas.height/5+120);
 
@@ -114,16 +114,45 @@ class gameoverScreen {
 
     ctx.fillStyle = 'black';
     // Grid Lines
-    // ctx.fillRect(3*canvas.width/10,0,1,1000);
-    // ctx.fillRect(12*canvas.width/26,0,1,1000);
-    // ctx.fillRect(14*canvas.width/26,0,1,1000);
-    // ctx.fillRect(7*canvas.width/10,0,1,1000);
-    //
-    // ctx.fillRect(0,canvas.height/5+100,1600,1);
-    // ctx.fillRect(0,2*canvas.height/5+100,1600,1);
+    ctx.fillRect(2*canvas.width/10,0,1,1000);
+    ctx.fillRect(4*canvas.width/10,0,1,1000);
+    ctx.fillRect(6*canvas.width/10,0,1,1000);
+    ctx.fillRect(8*canvas.width/10,0,1,1000);
+
+    ctx.fillRect(0,canvas.height/5+100,1600,1);
+    ctx.fillRect(0,2*canvas.height/5+100,1600,1);
 
     ctx.font = '40px verdana';
     ctx.fillText("Restart", ((canvas.width/2) - 78), (canvas.height - 21));
+
+
+    // Activated Perks
+    ctx.fillStyle = "black";
+    ctx.font = "20px verdana";
+    var yadjust = 0;
+    var perkValues = Object.values(activatedPerks);
+    var perkKeys = Object.keys(activatedPerks);
+    if(perkValues.length > 0)
+      ctx.fillText("Activated Perks", 20, 120);
+    for(var i = 0; i < perkValues.length; i++){
+      yadjust += 20;
+      ctx.fillText(perkKeys[i]+": ", 20, 140+yadjust);
+      ctx.fillText(perkValues[i], 120, 140+yadjust);
+    }
+
+    // Activated Skills
+    var skillValues = Object.values(activatedSkills);
+    var skillKeys = Object.keys(activatedSkills);
+    if(skillValues.length > 0){
+      yadjust += 40;
+      ctx.fillText("Activated Skills", 20, 160+yadjust);
+      yadjust += 40;
+    }
+    for(i = 0; i < skillValues.length; i++){
+      yadjust += 20;
+      ctx.fillText(skillKeys[i]+": ", 20, 140+yadjust);
+      ctx.fillText(skillValues[i], 120, 140+yadjust);
+    }
 
     return startSquare;
   }

@@ -35,7 +35,7 @@ class Orbital {
 
   setTimeout(time){
     this.state.timeout = time + 50;
-    this.state.color = this.state.color.substring(0, this.state.color.length-2) + "0.5)"
+    this.state.color = this.state.color.substring(0, this.state.color.length-2) + "0.5)";
   }
 
   upgrade(){
