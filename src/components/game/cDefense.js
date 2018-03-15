@@ -6,6 +6,7 @@ import Orbital from "./orbital";
 import Turret from "./turret";
 import Star from "./star";
 import Laser from "./laser";
+import gameScreen from "./gameScreen";
 
 const navFooterHeight = 44;
 
@@ -24,69 +25,54 @@ var y;
 var time;
 var hpDisplay;
 var cdDisplay;
-var defaultCdDisplay = "     [";
-var kills = 0;
+var defaultCdDisplay ;
+var kills;
+var killCount;
 var firstTime = true;
-var wave = 1;
-var waveStartTime = 0;
-var waveStarted = false;
-var waitForPerk = false;
-var canvas = undefined;
-var ctx = undefined;
-var startSquare = undefined;
-var enemyArray = [];
-var slotArray = [];
-var textArray = [];
-var orbitArray = [];
-var turretArray = [];
-var availablePerks = ['aoe', 'pierce', 'maxhp', 'dmg +1', 'orbital', 'shield']; //'regen'
-var availableSkills = ['turret', 'laser', 'stasis'];
-var skill = '';
-var gameover = false;
+var wave;
+var waveStartTime;
+var waveStarted;
+var waitForPerk;
+var canvas;
+var ctx;
+var startSquare;
+var enemyArray;
+var slotArray;
+var textArray;
+var orbitArray;
+var turretArray;
+var availablePerks;
+var availableSkills;
+var skill;
+var gameover;
 
 // Wave Banner DisplayTime
-var waveBannerDisplayTime = 300;
+const waveBannerDisplayTime = 300;
 
 // Perk variables
-var hp = 5;
-var maxHp = 5;
-var shield = {
-  current: 0,
-  max: 0,
-  timeout: 0,
-  display: '',
-}
-var aoeSize = 0;
-var hasPierce = false;
-var damage = 1;
-var regen = 0;
-var orbitalLevel = 1;
-var regenTime = 1425;
+var hp;
+var maxHp;
+var shield;
+var aoeSize;
+var hasPierce;
+var damage;
+var regen;
+var orbitalLevel;
+var regenTime;
 
 // Skill variables
-var cd = 0;
-var maxCd = 0;
-var cdRegen = 0;
-var skillLevel = 0;
-var stasisField = {
-  indicatorOn: false,
-  width: 300,
-  height: 300,
-  x: 0,
-  y: 0,
-  timeout: 0,
-  damage: 1,
-  slowAmount: 50, // 0 is no effect, 100 is stopped, above 100 is moving backwards.
-  stunChance: .25, // 1 is 100%, .5 is 50% ...
-  damageChance: .004, // 1 is 100%, .5 is 50% ...
-}
+var cd;
+var maxCd;
+var cdRegen;
+var skillLevel;
+var stasisField;
 
 var laser = undefined;
 
 // aoe variables
-var aoeX = 0;
-var aoeY = 0;
-var aoeTime = 0;
+var aoeX;
+var aoeY;
+var aoeTime;
 
 class CDefense extends Component {
   getClassName() {
@@ -134,16 +120,7 @@ class CDefense extends Component {
   	}
 
     // Start screen
-    ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    startSquare = new Square(ctx, ((canvas.width/2) - 75), ((canvas.height/2) + 50), 150, 50, 0, 0, 1, 1, 'rgba(255, 255, 255, 0.5)');
-    startSquare.update();
-    ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
-    ctx.font = "40px verdana";
-    ctx.fillText("Alpha version", ((canvas.width/2) - 140), canvas.height/2 - 140);
-    ctx.fillText("Click the squares to kill them", ((canvas.width/2) - 290), canvas.height/2);
-    ctx.fillText("Protect the left side", ((canvas.width/2) - 205), canvas.height/2 + 40);
-    ctx.fillText("Start", ((canvas.width/2) - 55), ((canvas.height/2) + 90));
+    startSquare = gameScreen.startScreen(ctx, canvas, startSquare);
   }
 
   reset(){
@@ -166,13 +143,34 @@ class CDefense extends Component {
     waveStarted = false;
     waitForPerk = false;
     time = 0;
-    kills = 0;
+    kills = {
+      blue: 0,
+      green: 0,
+      purple: 0,
+      yellow: 0,
+      grey: 0,
+      orange: 0,
+      white: 0,
+      black: 0,
+    };
+    killCount = 0;
     wave = 1;
     cdDisplay = "";
     laser = undefined;
     // Default Perks
-    availablePerks = ['aoe', 'increase the size of your click', 'pierce', 'allows you to hit multiple enemies', 'maxhp', 'increases your maximum health by x2', 'dmg +1', 'increase click damage by 1', 'orbital', 'summons orbitals to orbit around your mouse', 'shield','Energy shield that recharges after not getting hit'];//'regen', 'allows you to regen your life over time'];
-    availableSkills = ['turret', 'Press space to spawn a turret', 'laser', 'Press space to shoot a laser', 'stasis', 'Press space, then click to spawn a stasis field or press space again to cancel'];
+    availablePerks = [
+      'aoe', 'increase the size of your click',
+      'pierce', 'allows you to hit multiple enemies',
+      'maxhp', 'increases your maximum health by x2',
+      'dmg +1', 'increase click damage by 1',
+      'orbital', 'summons orbitals to orbit around your mouse',
+      'shield','Energy shield that recharges after not getting hit'
+    ]; //'regen', 'allows you to regen your life over time'];
+    availableSkills = [
+      'turret', 'Press space to spawn a turret',
+      'laser', 'Press space to shoot a laser',
+      'stasis', 'Press space, then click to spawn a stasis field or press space again to cancel'
+    ];
     hp = 5;
     maxHp = 5;
     shield = {
@@ -180,7 +178,7 @@ class CDefense extends Component {
       max: 0,
       timeout: 0,
       display: '',
-    }
+    };
     aoeSize = 0;
     hasPierce = false;
     damage = 1;
@@ -276,8 +274,10 @@ class CDefense extends Component {
               textArray.push(new Txt(ctx, dmg, x, y, damage+11, 'red', time+100));
             if(array[i].state.hp <= 0){
               array[i].death(time);
-              if(isEnemy)
-                kills++;
+              if(isEnemy){
+                killCount++;
+                this.addKill(array[i].state);
+              }
             }
             if(!hasPierce){
               break;
@@ -298,6 +298,20 @@ class CDefense extends Component {
     return false;
   }
 
+  addKill(unit){
+    switch(unit.color){
+      case 'blue': kills = {...kills, blue: kills.blue+1}; break;
+      case 'green': kills = {...kills, green: kills.green+1}; break;
+      case 'purple': kills = {...kills, purple: kills.purple+1}; break;
+      case 'yellow': kills = {...kills, yellow: kills.yellow+1}; break;
+      case 'grey': kills = {...kills, grey: kills.grey+1}; break;
+      case 'orange': kills = {...kills, orange: kills.orange+1}; break;
+      case 'white': kills = {...kills, white: kills.white+1}; break;
+      case 'black': kills = {...kills, black: kills.black+1}; break;
+      default: break;
+    }
+  }
+
   ///////////////////////////////////////////////////////////////////////
   // Enemies
   ///////////////////////////////////////////////////////////////////////
@@ -308,7 +322,7 @@ class CDefense extends Component {
     let y = Math.random() * (canvas.height - navFooterHeight - height * 2) + height;
     let dx = (Math.random() - 1) * maxVelocity - minVelocity;
     let dy = (Math.random() - 0.5) * yVelocity + 0.5 * yVelocity;
-    enemyArray.push(new Square(ctx, x, y, width, height, dx, dy, hp, damage, color));
+    enemyArray.push(new Square(ctx, x, y, width, height, dx, dy, hp*(Math.ceil(wave/10)), damage*(Math.ceil(wave/10)), color));
   }
 
   // xAdjust, height, width, maxVelocity, minVelociy, hp, damage, yVelocity,color
@@ -316,7 +330,7 @@ class CDefense extends Component {
   tankEnemy(){this.createEnemy(canvas.width/2, 60, 60, .7, .5, 5, 1, 0, 'green')};
   fastEnemy(){this.createEnemy(0, 40, 40, 2, 2, 1, 1, 0, 'purple')};
   smallEnemy(){this.createEnemy(0, 20, 20, 1, 1, 1, 1, 0, 'yellow')};
-  bossEnemy(){this.createEnemy(0, 80, 80, .5, .5, 20, 5, 0, 'grey')};
+  minibossEnemy(){this.createEnemy(0, 80, 80, .5, .5, 20, 5, 0, 'grey')};
   zagEnemy(){this.createEnemy(0, 40, 40, 1, 1, 1, 1, 1, 'orange')};
   teleportEnemy(){this.createEnemy(0, 40, 40, 1, 1, 1, 1, 0, 'white')};
   stealthEnemy(){this.createEnemy(0, 40, 40, 1, 1, 1, 1, 0, 'black')};
@@ -327,7 +341,7 @@ class CDefense extends Component {
         case 'tank': this.tankEnemy(); break;
         case 'fast': this.fastEnemy(); break;
         case 'small': this.smallEnemy(); break;
-        case 'boss': this.bossEnemy(); break;
+        case 'miniboss': this.minibossEnemy(); break;
         case 'zag': this.zagEnemy(); break;
         case 'teleport': this.teleportEnemy(); break;
         case 'stealth': this.stealthEnemy(); break;
@@ -340,92 +354,81 @@ class CDefense extends Component {
   // Waves
   ///////////////////////////////////////////////////////////////////////
 
-  // Display Wave Banner
-  waveBanner(time){
-    let wtime = time;
-    if(time >= (waveBannerDisplayTime/3)*2)
-      wtime = 0;
-    else if(time >= (waveBannerDisplayTime/2) && time < (waveBannerDisplayTime/3)*2)
-      wtime = 2*(((waveBannerDisplayTime/3)*2) - time);
-    else if(time >= waveBannerDisplayTime/6 && time < waveBannerDisplayTime/2)
-      wtime = 100;
-    else if(time < waveBannerDisplayTime/6)
-      wtime = time * 2;
-    ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-    ctx.fillRect(0, ((canvas.height/2) - wtime), canvas.width, (2 * wtime));
-    ctx.fillStyle = "rgba(0, 0, 0,"+ (0.7 * wtime) + ")";
-    ctx.font = "80px verdana";
-    if(wave%10 === 0)
-      ctx.fillText("Boss Wave", ((canvas.width/2) - 50), canvas.height/2);
-    else
-      ctx.fillText("Wave " + wave, ((canvas.width/2)), canvas.height/2);
-  }
-
   // New Wave mechanics
   newWave(){
     this.newPerkSkill();
-    // Wave 1
-    if((wave)%10 === 1){
-      this.spawnEnemy('basic',20);
+    if(wave <= 10){
+      if(wave === 1){
+        this.spawnEnemy('basic',20);
+      }
+      if(wave === 2){
+        this.spawnEnemy('tank',20);
+        this.spawnEnemy('basic',20);
+      }
+      if(wave === 3){
+        this.spawnEnemy('tank',20);
+        this.spawnEnemy('small',20);
+      }
+      if(wave === 4){
+        this.spawnEnemy('tank',10);
+        this.spawnEnemy('basic',10);
+        this.spawnEnemy('fast',30);
+      }
+      if(wave === 5){
+        this.spawnEnemy('miniboss',15);
+        this.spawnEnemy('tank',20);
+        this.spawnEnemy('basic',20);
+        this.spawnEnemy('fast',10);
+        this.spawnEnemy('small',10);
+      }
+      if(wave === 6){
+        this.spawnEnemy('tank',20);
+        this.spawnEnemy('basic',30);
+        this.spawnEnemy('stealth',10);
+      }
+      if(wave === 7){
+        this.spawnEnemy('tank',30);
+        this.spawnEnemy('zag',20);
+        this.spawnEnemy('fast',20);
+      }
+      if(wave === 8){
+        this.spawnEnemy('basic',20);
+        this.spawnEnemy('small',20);
+        this.spawnEnemy('teleport',30);
+      }
+      if(wave === 9){
+        this.spawnEnemy('zag',30);
+        this.spawnEnemy('small',20);
+        this.spawnEnemy('fast',10);
+      }
+      if(wave === 10){
+        this.spawnEnemy('miniboss',20);
+        this.spawnEnemy('tank',20);
+        this.spawnEnemy('basic',20);
+        this.spawnEnemy('zag',30);
+        this.spawnEnemy('small',20);
+        this.spawnEnemy('teleport',20);
+        this.spawnEnemy('fast',20);
+        this.spawnEnemy('stealth',5);
+      }
     }
-    // Wave 2
-    if((wave)%10 === 2){
-      this.spawnEnemy('tank',20);
-      this.spawnEnemy('basic',20);
-    }
-    // Wave 3
-    if((wave)%10 === 3){
-      this.spawnEnemy('tank',20);
-      this.spawnEnemy('small',20);
-    }
-    // Wave 4
-    if((wave)%10 === 4){
-      this.spawnEnemy('fast',30);
-      this.spawnEnemy('tank',10);
-      this.spawnEnemy('basic',10);
-    }
-    // Wave 5
-    if((wave)%10 === 5){
-      this.spawnEnemy('fast',10);
-      this.spawnEnemy('small',10);
-      this.spawnEnemy('basic',20);
-      this.spawnEnemy('boss',15);
-      this.spawnEnemy('tank',20);
-    }
-    // Wave 6
-    if((wave)%10 === 6){
-      this.spawnEnemy('basic',30);
-      this.spawnEnemy('tank',20);
-      this.spawnEnemy('stealth',10);
-    }
-    // Wave 7
-    if((wave)%10 === 7){
-      this.spawnEnemy('tank',30);
-      this.spawnEnemy('zag',20);
-      this.spawnEnemy('fast',20);
-    }
-    // Wave 8
-    if((wave)%10 === 8){
-      this.spawnEnemy('basic',20);
-      this.spawnEnemy('small',20);
-      this.spawnEnemy('teleport',30);
-    }
-    // Wave 9
-    if((wave)%10 === 9){
-      this.spawnEnemy('small',20);
-      this.spawnEnemy('zag',30);
-      this.spawnEnemy('fast',10);
-    }
-    // Boss Wave
-    if((wave)%10 === 0){
-      this.spawnEnemy('basic',20);
-      this.spawnEnemy('stealth',5);
-      this.spawnEnemy('zag',30);
-      this.spawnEnemy('fast',20);
-      this.spawnEnemy('small',20);
-      this.spawnEnemy('tank',20);
-      this.spawnEnemy('boss',20);
-      this.spawnEnemy('teleport',20);
+    else{
+      for(var i = 0; i < 70 + wave; i++){
+        let randNum = Math.floor(Math.random()*7);
+        if(randNum === 3 && Math.random() > 0.04*wave){
+          randNum = Math.floor(Math.random()*7);
+        }
+        switch(randNum){
+          case 0: this.tankEnemy(); break;
+          case 1: this.fastEnemy(); break;
+          case 2: this.smallEnemy(); break;
+          case 3: this.minibossEnemy(); break;
+          case 4: this.zagEnemy(); break;
+          case 5: this.teleportEnemy(); break;
+          case 6: this.stealthEnemy(); break;
+          default: this.basicEnemy(); break;
+        }
+      }
     }
     wave++;
   }
@@ -607,8 +610,10 @@ class CDefense extends Component {
     damage++;
   }
   orbitalPerk(){
-    if(orbitArray.length === 0)
+    if(orbitArray.length === 0){
       availablePerks.push('orbUp')
+      availablePerks.push('increase orb size and damage')
+    }
     orbitArray.push(new Orbital(ctx, orbitalLevel));
     orbitArray.push(new Orbital(ctx, orbitalLevel));
   }
@@ -638,7 +643,7 @@ class CDefense extends Component {
     maxCd = 3;
     cdRegen = 750;
     skillLevel++;
-    defaultCdDisplay = '  Mana[';
+    defaultCdDisplay = 'Charges[';
     availableSkills = ['upgrade1', 'desc1', 'upgrade2', 'desc2', 'upgrade3', 'desc3'];
     this.adjustCdDisplay();
   }
@@ -728,11 +733,8 @@ class CDefense extends Component {
 
     // Shield Regen
     if(shield.max > 0 && shield.timeout < time){
-      console.log('shield');
       if(shield.current < shield.max){
-        console.log('less');
         if(time%50 === 0){
-          console.log('regen');
           shield.current += 1;
           this.adjustShieldDisplay();
         }
@@ -806,7 +808,7 @@ class CDefense extends Component {
       waveStartTime = time + waveBannerDisplayTime;
       waveStarted = true;
     }
-    if(waveStartTime > time){this.waveBanner(waveStartTime - time)}
+    if(waveStartTime > time){gameScreen.waveBanner(ctx, canvas, wave, waveStartTime - time)}
     if(waveStartTime === time){
       this.newWave();
       waveStarted = false;
@@ -859,7 +861,7 @@ class CDefense extends Component {
     ctx.fillStyle = "white";
     ctx.font = "20px verdana";
     ctx.fillText("Wave: " + (wave-1), 60, 25);
-    ctx.fillText("Kills: " + kills, 170, 25);
+    ctx.fillText("Kills: " + killCount, 170, 25);
     ctx.fillText("Time: " + time, 290, 25);
     time++;
     // Hp Display
@@ -888,15 +890,7 @@ class CDefense extends Component {
 
     // gameover screen
     if(gameover){
-      ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      startSquare = new Square(ctx, ((canvas.width/2) - 80), ((canvas.height/2) + 25), 160, 50, 0, 0, 1, 1, 'rgba(255, 255, 255, 0.5)');
-      startSquare.update();
-      ctx.fillStyle = "rgba(0, 0, 0, 0.7)"
-      ctx.font = "100px verdana";
-      ctx.fillText("Game Over", ((canvas.width/2) - 285), canvas.height/2);
-      ctx.font = "40px verdana";
-      ctx.fillText("Restart", ((canvas.width/2) - 80), ((canvas.height/2) + 65));
+      startSquare = gameScreen.gameover(ctx, canvas, kills, wave, startSquare);
     }
   }
 
