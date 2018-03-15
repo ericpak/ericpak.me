@@ -59,6 +59,7 @@ var damage;
 var regen;
 var orbitalLevel;
 var regenTime;
+var lifeSteal;
 
 // Skill variables
 var cd;
@@ -190,6 +191,10 @@ class CDefense extends Component {
     regenTime = 1425;
     activatedPerks = {};
     activatedSkills = {};
+    lifeSteal = {
+      on: false,
+      amount: 0,
+    };
     // Default Skills
     cd = 0;
     maxCd = 0;
@@ -282,6 +287,9 @@ class CDefense extends Component {
               if(isEnemy){
                 killCount++;
                 this.addKill(array[i].state);
+                if(lifeSteal.on)
+                  hp = Math.min(maxHp, hp+=lifeSteal.amount);
+                  this.adjustHpDisplay();
               }
             }
             if(!hasPierce){
@@ -366,26 +374,26 @@ class CDefense extends Component {
       if(wave === 1){
         this.spawnEnemy('basic',20);
       }
-      // if(wave === 2){
-      //   this.spawnEnemy('tank',20);
-      //   this.spawnEnemy('basic',20);
-      // }
-      // if(wave === 3){
-      //   this.spawnEnemy('tank',20);
-      //   this.spawnEnemy('small',20);
-      // }
-      // if(wave === 4){
-      //   this.spawnEnemy('tank',10);
-      //   this.spawnEnemy('basic',10);
-      //   this.spawnEnemy('fast',30);
-      // }
-      // if(wave === 5){
-      //   this.spawnEnemy('miniboss',15);
-      //   this.spawnEnemy('tank',20);
-      //   this.spawnEnemy('basic',20);
-      //   this.spawnEnemy('fast',10);
-      //   this.spawnEnemy('small',10);
-      // }
+      if(wave === 2){
+        this.spawnEnemy('tank',20);
+        this.spawnEnemy('basic',20);
+      }
+      if(wave === 3){
+        this.spawnEnemy('tank',20);
+        this.spawnEnemy('small',20);
+      }
+      if(wave === 4){
+        this.spawnEnemy('tank',10);
+        this.spawnEnemy('basic',10);
+        this.spawnEnemy('fast',30);
+      }
+      if(wave === 5){
+        this.spawnEnemy('miniboss',15);
+        this.spawnEnemy('tank',20);
+        this.spawnEnemy('basic',20);
+        this.spawnEnemy('fast',10);
+        this.spawnEnemy('small',10);
+      }
       if(wave === 6){
         this.spawnEnemy('tank',20);
         this.spawnEnemy('basic',30);
@@ -407,6 +415,8 @@ class CDefense extends Component {
         this.spawnEnemy('fast',10);
       }
       if(wave === 10){
+        availablePerks.push('lifeSteal');
+        availablePerks.push('Gain a life on enemy kill');
         this.spawnEnemy('miniboss',20);
         this.spawnEnemy('tank',20);
         this.spawnEnemy('basic',20);
@@ -539,7 +549,7 @@ class CDefense extends Component {
     }
 
     // Activated Perks
-    ctx.fillStyle = "black";
+    ctx.fillStyle = "white";
     ctx.font = "20px verdana";
     var yadjust = 0;
     var perkValues = Object.values(activatedPerks);
@@ -610,6 +620,7 @@ class CDefense extends Component {
       case 'turret': this.turretSkill(); break;
       case 'laser': this.laserSkill(); break;
       case 'stasis': this.stasisSkill(); break;
+      case 'lifeSteal': this.lifeStealPerk(); break;
       default: break;
     }
   }
@@ -688,6 +699,12 @@ class CDefense extends Component {
     orbitalLevel++;
     for(var i = 0; i < orbitArray.length; i++)
       orbitArray[i].upgrade();
+  }
+  lifeStealPerk(){
+    activatedPerks = { ...activatedPerks, lifeSteal: true };
+    lifeSteal.on = true;
+    lifeSteal.amount = 1;
+    availablePerks.splice(availablePerks.indexOf('lifeSteal'), 2);
   }
   aoeExplosion(x, y, time){
     aoeX = x;

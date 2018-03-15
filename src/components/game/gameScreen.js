@@ -114,13 +114,13 @@ class gameoverScreen {
 
     ctx.fillStyle = 'black';
     // Grid Lines
-    ctx.fillRect(2*canvas.width/10,0,1,1000);
-    ctx.fillRect(4*canvas.width/10,0,1,1000);
-    ctx.fillRect(6*canvas.width/10,0,1,1000);
-    ctx.fillRect(8*canvas.width/10,0,1,1000);
-
-    ctx.fillRect(0,canvas.height/5+100,1600,1);
-    ctx.fillRect(0,2*canvas.height/5+100,1600,1);
+    // ctx.fillRect(2*canvas.width/10,0,1,1000);
+    // ctx.fillRect(4*canvas.width/10,0,1,1000);
+    // ctx.fillRect(6*canvas.width/10,0,1,1000);
+    // ctx.fillRect(8*canvas.width/10,0,1,1000);
+    //
+    // ctx.fillRect(0,canvas.height/5+100,1600,1);
+    // ctx.fillRect(0,2*canvas.height/5+100,1600,1);
 
     ctx.font = '40px verdana';
     ctx.fillText("Restart", ((canvas.width/2) - 78), (canvas.height - 21));
