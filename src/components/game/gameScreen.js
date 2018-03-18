@@ -5,7 +5,8 @@ const waveBannerDisplayTime = 300;
 
 class gameoverScreen {
     static gameover(ctx, canvas, kills, wave, startSquare, activatedPerks, activatedSkills){
-    ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "rgba(204, 204, 204, 1)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     startSquare = new Square(ctx, ((canvas.width/2) - 80), (canvas.height - 60), 160, 50, 0, 0, 1, 1, 'rgba(255, 255, 255, 0.5)');
     startSquare.update();
@@ -109,8 +110,8 @@ class gameoverScreen {
     ctx.fillText("Wave Score: " + waveScore, ((canvas.width/2) - 159), 2*canvas.height/3+50);
 
     ctx.font = "35px verdana";
-    ctx.fillStyle = 'red';
-    ctx.fillText("Total Score: " + totalScore, ((canvas.width/2) - 182), 2*canvas.height/3+150);
+    ctx.fillStyle = 'rgb(62,96,111)';
+    ctx.fillText("Total Score: " + totalScore, ((canvas.width/2) - 182), 2*canvas.height/3+120);
 
     ctx.fillStyle = 'black';
     // Grid Lines
@@ -198,8 +199,8 @@ class gameoverScreen {
     startSquare.update();
     ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
     ctx.font = "40px verdana";
-    ctx.fillText("Alpha version", ((canvas.width/2) - 140), canvas.height/2 - 140);
-    ctx.fillText("Click the squares to kill them", ((canvas.width/2) - 290), canvas.height/2);
+    ctx.fillText("Beta Version 0.1.0", ((canvas.width/2) - 180), canvas.height/2 - 140);
+    ctx.fillText("Click the squares to kill them", ((canvas.width/2) - 300), canvas.height/2);
     ctx.fillText("Protect the left side", ((canvas.width/2) - 205), canvas.height/2 + 40);
     ctx.fillText("Start", ((canvas.width/2) - 55), ((canvas.height/2) + 90));
     return startSquare;

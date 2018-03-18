@@ -8,6 +8,17 @@ import Star from "./star";
 import Laser from "./laser";
 import GameScreen from "./gameScreen";
 import Boss from "./boss";
+import * as firebase from 'firebase';
+
+var config = {
+  apiKey: "AIzaSyACtR_4xzuL2e0oLaEd1jfvciC0B7zAxeY",
+  authDomain: "crappy-arcade.firebaseapp.com",
+  databaseURL: "https://crappy-arcade.firebaseio.com",
+  projectId: "crappy-arcade",
+  storageBucket: "crappy-arcade.appspot.com",
+  messagingSenderId: "202015944962"
+};
+firebase.initializeApp(config);
 
 const navFooterHeight = 44;
 
@@ -81,6 +92,17 @@ var aoeX;
 var aoeY;
 var aoeTime;
 
+// firebase variables
+const cDefense = firebase.database().ref().child('cDefense');
+const highScoresRef = cDefense.child('highscores');
+
+var highScore = 0;
+var highScores;
+var highScoreSent = false;
+var hitEnter = false;
+var getInitials = false;
+var initial = '';
+
 class CDefense extends Component {
   getClassName() {
     return classNames("CDefense");
@@ -114,20 +136,30 @@ class CDefense extends Component {
     ctx = canvas.getContext("2d");
     ctx.fillStyle = "rgba(0, 0, 0, 1)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-  	// Create all the stars
+
+    // Create all the stars
     stars = {
       array: [],
       amount: 40,
     };
-  	for(var i = 0; i < stars.amount; i++) {
-  		var x = Math.round(Math.random() * canvas.width);
-  		var y = Math.round(Math.random() * canvas.height);
-  		var star = new Star(ctx, x, y, Math.floor(Math.random()*10)+4);
-  		stars.array.push(star);
-  	}
+    this.createStars(stars);
 
     // Start screen
     startSquare = GameScreen.startScreen(ctx, canvas, startSquare);
+
+    highScoresRef.orderByChild('score').limitToLast(5).on('value', this.setHighScores, this.errData);
+    highScoresRef.orderByChild('score').limitToLast(1).on('value', this.setHighScore);
+  }
+
+  setHighScore(data){
+    highScore = data.val()[Object.keys(data.val())].score;
+  }
+  setHighScores(data){
+    highScores = data.val();
+  }
+  errData(err){
+    console.log('Error!');
+    console.log(err);
   }
 
   reset(){
@@ -138,7 +170,15 @@ class CDefense extends Component {
       waitForPerk = false;
       this.animate();
     }
-    this.turretSkill();
+  }
+
+  createStars(stars){
+  	for(var i = 0; i < stars.amount; i++) {
+  		var x = Math.round(Math.random() * canvas.width);
+  		var y = Math.round(Math.random() * canvas.height);
+  		var star = new Star(ctx, x, y, Math.floor(Math.random()*10)+4);
+  		stars.array.push(star);
+  	}
   }
 
   setDefaults(){
@@ -160,6 +200,7 @@ class CDefense extends Component {
       orange: 0,
       white: 0,
       black: 0,
+      boss: 0,
     };
     killCount = 0;
     wave = 1;
@@ -217,6 +258,8 @@ class CDefense extends Component {
       stunChance: .25,
       damageChance: .002,
     }
+    highScoreSent = false;
+    hitEnter = false;
   }
 
   ///////////////////////////////////////////////////////////////////////
@@ -271,6 +314,22 @@ class CDefense extends Component {
         case 'stasis': this.stasisField(); break;
         default: break;
       }
+    }
+    if(getInitials && initial.length <= 3){
+      if(e.keyCode >= 65 && e.keyCode <= 90){
+        initial += e.key;
+        console.log(initial);
+        this.animate();
+      }
+    }
+    if(getInitials && initial.length > 0 && e.keyCode === 8){
+      initial = initial.slice(0,-1);
+      console.log(initial);
+      this.animate();
+    }
+    else if(getInitials && initial.length > 0 && e.keyCode === 13){
+      hitEnter=true;
+      this.animate();
     }
   }
 
@@ -833,6 +892,65 @@ class CDefense extends Component {
   }
 
   ///////////////////////////////////////////////////////////////////////
+  // HighScore
+  ///////////////////////////////////////////////////////////////////////
+
+  checkHighScore(){
+    var killScore = 0;
+    killScore += kills.blue*1;
+    killScore += kills.green*2;
+    killScore += kills.purple*3;
+    killScore += kills.yellow*2;
+    killScore += kills.grey*5;
+    killScore += kills.orange*2;
+    killScore += kills.white*2;
+    killScore += kills.black*3;
+    killScore += kills.boss*1000;
+
+    var waveScore = (wave-2)*100;
+    var totalScore = killScore + waveScore;
+    var score = this.displayHighScore();
+    if(totalScore > score && !highScoreSent){
+      getInitials = true;
+      if(hitEnter){
+        var highScore = {
+          initials: initial,
+          score: totalScore,
+        }
+        highScoresRef.push(highScore);
+        highScoreSent = true;
+      }
+      else {
+        ctx.fillStyle = "red";
+        ctx.font = "25px verdana";
+        ctx.fillText("New HighScores! Enter your initials: " + initial, (canvas.width/2 - 350), 2*canvas.height/3+ 180);
+        ctx.font = "12px verdana";
+        ctx.fillText("Press Enter to Submit", (canvas.width/2 - 70), 2*canvas.height/3+ 220);
+      }
+    }
+    this.displayHighScore();
+  }
+
+  displayHighScore(){
+    ctx.fillStyle = 'rgba(204,204,204,1)';
+    ctx.fillRect((canvas.width - 400), 2*canvas.height/3-100, 500,500);
+    ctx.font = "30px verdana";
+    ctx.fillStyle = "black";
+    var keys = Object.keys(highScores).sort(function(a,b){
+      return highScores[b].score - highScores[a].score;
+    });
+    ctx.fillText("HighScores", (canvas.width - 350), 2*canvas.height/3);
+    var score;
+    for(var i = 0; i < keys.length; i++){
+      var k = keys[i];
+      var initials = highScores[k].initials;
+      score = highScores[k].score;
+      ctx.fillText((i+1)+ " " + initials +": " + score, (canvas.width - 350), 2*canvas.height/3+50+50*i);
+    }
+    return score;
+  }
+
+  ///////////////////////////////////////////////////////////////////////
   // Animate
   ///////////////////////////////////////////////////////////////////////
 
@@ -997,6 +1115,7 @@ class CDefense extends Component {
     ctx.fillText("Wave: " + (wave-1), 60, 25);
     ctx.fillText("Kills: " + killCount, 170, 25);
     ctx.fillText("Time: " + time, 290, 25);
+    ctx.fillText("HighScore: " + highScore, canvas.width - 250, 25);
     time++;
     // Hp Display
     ctx.fillStyle = "lightgreen";
@@ -1025,6 +1144,7 @@ class CDefense extends Component {
     // gameover screen
     if(gameover){
       startSquare = GameScreen.gameover(ctx, canvas, kills, wave, startSquare, activatedPerks, activatedSkills);
+      this.checkHighScore();
     }
   }
 
