@@ -80,8 +80,8 @@ class ProjectItem extends Component {
           {this.props.project.images.map(this.renderImage.bind(this))}
           <div className="rightArrow" onClick={this.plusDivs.bind(this)}><span className="arrow">&#10095;</span></div>
           <div className="gallery_dots">{this.props.project.images.map(this.renderDots.bind(this))}</div>
-          <div>{this.props.project.images.map(this.renderImageDescription.bind(this))}</div>
         </div>
+        <div>{this.props.project.images.map(this.renderImageDescription.bind(this))}</div>
       </div>
     );
   }

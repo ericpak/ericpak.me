@@ -2,6 +2,8 @@ import Explosion from "./explosion";
 import Square from "./square";
 
 var dx = -0.3;
+var x;
+var y;
 var dead = {
   bay: false,
   front: false,
@@ -18,7 +20,7 @@ class Boss{
       part: part,
       x: canvas.width,
       y: canvas.height/2,
-      dx: -0.2,
+      dx: -0.3,
       hp: 20*wave,
       damage: 999,
       dead: false,
@@ -144,6 +146,8 @@ class Boss{
       if(this.state.timeout === 99999999)
         this.state.timeout = time +300;
     }
+    x = this.state.x;
+    y = this.state.y;
     return this.draw(time);
   }
 }

@@ -92,6 +92,13 @@ class gameoverScreen {
     else
       ctx.fillText(kills.black,4*canvas.width/5-27,2*canvas.height/5+120);
 
+    if(kills.boss.toString().length < 10)
+      ctx.fillText(kills.boss,canvas.width/5-8,3*canvas.height/5+120);
+    else if(kills.boss.toString().length < 100)
+      ctx.fillText(kills.boss,canvas.width/5-18,3*canvas.height/5+120);
+    else
+      ctx.fillText(kills.boss,canvas.width/5-27,3*canvas.height/5+120);
+
     var killScore = 0;
     killScore += kills.blue*1;
     killScore += kills.green*2;
@@ -101,6 +108,7 @@ class gameoverScreen {
     killScore += kills.orange*2;
     killScore += kills.white*2;
     killScore += kills.black*3;
+    killScore += kills.boss*250;
 
     var waveScore = (wave-2)*100;
     var totalScore = killScore + waveScore;

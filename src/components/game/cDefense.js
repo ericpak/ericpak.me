@@ -170,6 +170,7 @@ class CDefense extends Component {
       waitForPerk = false;
       this.animate();
     }
+    this.stasisSkill();
   }
 
   createStars(stars){
@@ -385,6 +386,7 @@ class CDefense extends Component {
       case 'orange': kills = {...kills, orange: kills.orange+1}; break;
       case 'white': kills = {...kills, white: kills.white+1}; break;
       case 'black': kills = {...kills, black: kills.black+1}; break;
+      case 'darkgrey': kills = {...kills, boss: kills.boss+1}; break;
       default: break;
     }
   }
@@ -399,7 +401,7 @@ class CDefense extends Component {
     let y = Math.random() * (canvas.height - navFooterHeight - height * 2) + height;
     let dx = (Math.random() - 1) * maxVelocity - minVelocity;
     let dy = (Math.random() - 0.5) * yVelocity + 0.5 * yVelocity;
-    enemyArray.push(new Square(ctx, x, y, width, height, dx, dy, hp*(Math.ceil(wave/10)), damage*(Math.ceil(wave/10)), color));
+    enemyArray.push(new Square(ctx, x, y, width, height, dx, dy, hp*(Math.ceil(wave/5)), damage*(Math.ceil(wave/5)), color));
   }
 
   // xAdjust, height, width, maxVelocity, minVelociy, hp, damage, yVelocity,color
@@ -443,7 +445,8 @@ class CDefense extends Component {
     this.newPerkSkill();
     if(wave <= 10){
       if(wave === 1){
-        this.spawnEnemy('basic',20);
+        this.spawnBoss();
+        // this.spawnEnemy('basic',20);
       }
       else if(wave === 2){
         this.spawnEnemy('tank',20);
@@ -515,6 +518,9 @@ class CDefense extends Component {
           case 6: this.stealthEnemy(); break;
           default: this.basicEnemy(); break;
         }
+      }
+      if(wave%10 === 0){
+        this.spawnBoss();
       }
     }
     wave++;
@@ -875,7 +881,7 @@ class CDefense extends Component {
       stasisField.indicatorOn = !stasisField.indicatorOn;
   }
   stasisFieldCalc(unit){
-    if(stasisField.timeout > time && !unit.state.dead){
+    if(stasisField.timeout > time && (!unit.state.dead||unit.state.color === 'darkgrey'||unit.state.color === 'rgb(77, 77, 77)')){
       if(this.hitDetect(unit.state, stasisField)){
         if(Math.random() < stasisField.stunChance)
           unit.state.x = unit.state.x - unit.state.dx;
@@ -892,10 +898,10 @@ class CDefense extends Component {
   }
 
   ///////////////////////////////////////////////////////////////////////
-  // HighScore
+  // Score
   ///////////////////////////////////////////////////////////////////////
 
-  checkHighScore(){
+  getScore(){
     var killScore = 0;
     killScore += kills.blue*1;
     killScore += kills.green*2;
@@ -905,12 +911,17 @@ class CDefense extends Component {
     killScore += kills.orange*2;
     killScore += kills.white*2;
     killScore += kills.black*3;
-    killScore += kills.boss*1000;
+    killScore += kills.boss*250;
 
     var waveScore = (wave-2)*100;
     var totalScore = killScore + waveScore;
-    var score = this.displayHighScore();
-    if(totalScore > score && !highScoreSent){
+    return totalScore;
+  }
+
+  checkHighScore(){
+    var totalScore = this.getScore();
+    var lowestHighscore = this.displayHighScore();
+    if(totalScore > lowestHighscore && !highScoreSent){
       getInitials = true;
       if(hitEnter){
         var highScore = {
@@ -947,7 +958,7 @@ class CDefense extends Component {
       score = highScores[k].score;
       ctx.fillText((i+1)+ " " + initials +": " + score, (canvas.width - 350), 2*canvas.height/3+50+50*i);
     }
-    return score;
+    return score; // returning the lowest highscore
   }
 
   ///////////////////////////////////////////////////////////////////////
@@ -1114,7 +1125,7 @@ class CDefense extends Component {
     ctx.font = "20px verdana";
     ctx.fillText("Wave: " + (wave-1), 60, 25);
     ctx.fillText("Kills: " + killCount, 170, 25);
-    ctx.fillText("Time: " + time, 290, 25);
+    ctx.fillText("Score: " + this.getScore(), 290, 25);
     ctx.fillText("HighScore: " + highScore, canvas.width - 250, 25);
     time++;
     // Hp Display

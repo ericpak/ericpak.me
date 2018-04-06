@@ -33,3 +33,9 @@ body{
   z-index: 1;
   @include animation(fadein 2s);
 }
+
+.project_description {
+  a{
+    color: $maroon;
+  }
+}
