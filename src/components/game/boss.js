@@ -28,7 +28,7 @@ class Boss{
       explosion: undefined,
       timeout:0,
     }
-    x = canvas.width/2;
+    x = canvas.width;
     y = canvas.height/2;
     if(part === 'bay'){
       this.state.width = 200;

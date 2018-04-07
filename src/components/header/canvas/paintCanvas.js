@@ -22,6 +22,10 @@ var divStyle = {
   opacity: 1,
 }
 
+// Drawing array to hold brush strokes
+var drawing = [];
+var currentPath = [];
+
 // Nav and footer height
 const navFooterHeight = 44;
 
@@ -60,8 +64,15 @@ class PaintCanvas extends Component {
   // Mousemove event listener
   _onMouseMove(e) {
     this.setState({ x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY });
-    if(mouse_down)
-      this.drawCircle();
+    if(mouse_down){
+      this.state.ctx.lineWidth = this.props.style.size;
+      this.state.ctx.lineTo(this.state.x, this.state.y);
+      this.state.ctx.stroke();
+      // this.state.ctx.closePath();
+      // this.state.ctx.beginPath();
+      // this.state.ctx.moveTo(this.state.x, this.state.y);
+      // this.drawCircle();
+    }
   }
 
   // If canvas mounts
@@ -128,21 +139,26 @@ class PaintCanvas extends Component {
 
   click(){
     mouse_down = true;
-    this.drawCircle();
+    var rgb = this.props.style.rgb;
+    var srgb = 'rgba('+rgb.r+', '+rgb.g+', '+rgb.b+', '+rgb.a+')';
+    this.state.ctx.beginPath();
+    this.state.ctx.strokeStyle = srgb;
+    // this.drawCircle();
   }
 
   unclick(e){
     mouse_down = false;
+    this.state.ctx.closePath();
   }
 
-  drawCircle(){
-    this.state.ctx.beginPath();
-    this.state.ctx.arc(this.state.x, this.state.y, this.props.style.size, 0, Math.PI*2, false);
-    var rgb = this.props.style.rgb
-    var srgb = 'rgba('+rgb.r+', '+rgb.g+', '+rgb.b+', '+rgb.a+')'
-    this.state.ctx.fillStyle = srgb;
-    this.state.ctx.fill();
-  }
+  // drawCircle(){
+  //   this.state.ctx.beginPath();
+  //   this.state.ctx.arc(this.state.x, this.state.y, this.props.style.size, 0, Math.PI*2, false);
+  //   var rgb = this.props.style.rgb;
+  //   var srgb = 'rgba('+rgb.r+', '+rgb.g+', '+rgb.b+', '+rgb.a+')';
+  //   this.state.ctx.fillStyle = srgb;
+  //   this.state.ctx.fill();
+  // }
 
   resizeWindow(){
     this.state.paintCanvas.width = window.innerWidth;
