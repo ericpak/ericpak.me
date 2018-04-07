@@ -28,6 +28,8 @@ class Boss{
       explosion: undefined,
       timeout:0,
     }
+    x = canvas.width/2;
+    y = canvas.height/2;
     if(part === 'bay'){
       this.state.width = 200;
       this.state.height = 100;
@@ -98,11 +100,23 @@ class Boss{
       case 'back': this.drawBack(time); break;
       default: break;
     }
+    if(dead.front && dead.body && dead.bay && dead.back){
+      this.state.explosion.state.x = this.state.x;
+      this.state.explosion.update(time);
+      if(this.state.timeout === 99999999)
+        this.state.timeout = time +300;
+    }
   }
   drawBay(time){
     this.state.ctx.fillRect(this.state.x, this.state.y, 200, 100);
     this.state.ctx.fillStyle = 'black';
     this.state.ctx.fillRect(this.state.x+10, this.state.y+10, 180, 80);
+    if(dead.front && dead.body && dead.bay && dead.back){
+      this.state.explosion.state.x = this.state.x;
+      this.state.explosion.update(time);
+      if(this.state.timeout === 99999999)
+        this.state.timeout = time +300;
+    }
     if(!this.state.dead && time%50 === 0){
       return this.spawnEnemy(Math.floor(Math.random()*7), 1);
     }
@@ -137,17 +151,22 @@ class Boss{
   }
 
   update(time){
-    this.state.x += dx;
+    if(this.state.part == "body")
+      x += dx;
     if(this.state.dead)
       this.state.color = 'rgb(77, 77, 77)';
-    if(dead.front && dead.body && dead.bay && dead.back){
-      this.state.explosion.state.x = this.state.x;
-      this.state.explosion.update(time);
-      if(this.state.timeout === 99999999)
-        this.state.timeout = time +300;
+    if(this.state.part === 'bay'){
+      this.state.x = x + 100;
+    } else if(this.state.part === 'front'){
+      this.state.x = x;
+      this.state.y = y-50;
+    } else if(this.state.part === 'body'){
+      this.state.x = x + 150;
+      this.state.y = y-100;
+    } else if(this.state.part === 'back'){
+      this.state.x = x + 399;
+      this.state.y = y-75;
     }
-    x = this.state.x;
-    y = this.state.y;
     return this.draw(time);
   }
 }

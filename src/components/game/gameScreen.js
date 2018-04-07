@@ -168,38 +168,38 @@ class gameoverScreen {
 
   static startScreen(ctx, canvas, startSquare){
     // Grid Lines
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-    ctx.fillRect(1*canvas.width/15,0,1,1000);
-    ctx.fillRect(2*canvas.width/15,0,1,1000);
-    ctx.fillRect(3*canvas.width/15,0,1,1000);
-    ctx.fillRect(4*canvas.width/15,0,1,1000);
-    ctx.fillRect(5*canvas.width/15,0,1,1000);
-    ctx.fillRect(6*canvas.width/15,0,1,1000);
-    ctx.fillRect(7*canvas.width/15,0,1,1000);
-    ctx.fillRect(8*canvas.width/15,0,1,1000);
-    ctx.fillRect(9*canvas.width/15,0,1,1000);
-    ctx.fillRect(10*canvas.width/15,0,1,1000);
-    ctx.fillRect(11*canvas.width/15,0,1,1000);
-    ctx.fillRect(12*canvas.width/15,0,1,1000);
-    ctx.fillRect(13*canvas.width/15,0,1,1000);
-    ctx.fillRect(14*canvas.width/15,0,1,1000);
-    ctx.fillRect(15*canvas.width/15,0,1,1000);
-
-    ctx.fillRect(0,1*canvas.height/15,1600,1);
-    ctx.fillRect(0,2*canvas.height/15,1600,1);
-    ctx.fillRect(0,3*canvas.height/15,1600,1);
-    ctx.fillRect(0,4*canvas.height/15,1600,1);
-    ctx.fillRect(0,5*canvas.height/15,1600,1);
-    ctx.fillRect(0,6*canvas.height/15,1600,1);
-    ctx.fillRect(0,7*canvas.height/15,1600,1);
-    ctx.fillRect(0,8*canvas.height/15,1600,1);
-    ctx.fillRect(0,9*canvas.height/15,1600,1);
-    ctx.fillRect(0,10*canvas.height/15,1600,1);
-    ctx.fillRect(0,11*canvas.height/15,1600,1);
-    ctx.fillRect(0,12*canvas.height/15,1600,1);
-    ctx.fillRect(0,13*canvas.height/15,1600,1);
-    ctx.fillRect(0,14*canvas.height/15,1600,1);
-    ctx.fillRect(0,15*canvas.height/15,1600,1);
+    // ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+    // ctx.fillRect(1*canvas.width/15,0,1,1000);
+    // ctx.fillRect(2*canvas.width/15,0,1,1000);
+    // ctx.fillRect(3*canvas.width/15,0,1,1000);
+    // ctx.fillRect(4*canvas.width/15,0,1,1000);
+    // ctx.fillRect(5*canvas.width/15,0,1,1000);
+    // ctx.fillRect(6*canvas.width/15,0,1,1000);
+    // ctx.fillRect(7*canvas.width/15,0,1,1000);
+    // ctx.fillRect(8*canvas.width/15,0,1,1000);
+    // ctx.fillRect(9*canvas.width/15,0,1,1000);
+    // ctx.fillRect(10*canvas.width/15,0,1,1000);
+    // ctx.fillRect(11*canvas.width/15,0,1,1000);
+    // ctx.fillRect(12*canvas.width/15,0,1,1000);
+    // ctx.fillRect(13*canvas.width/15,0,1,1000);
+    // ctx.fillRect(14*canvas.width/15,0,1,1000);
+    // ctx.fillRect(15*canvas.width/15,0,1,1000);
+    //
+    // ctx.fillRect(0,1*canvas.height/15,1600,1);
+    // ctx.fillRect(0,2*canvas.height/15,1600,1);
+    // ctx.fillRect(0,3*canvas.height/15,1600,1);
+    // ctx.fillRect(0,4*canvas.height/15,1600,1);
+    // ctx.fillRect(0,5*canvas.height/15,1600,1);
+    // ctx.fillRect(0,6*canvas.height/15,1600,1);
+    // ctx.fillRect(0,7*canvas.height/15,1600,1);
+    // ctx.fillRect(0,8*canvas.height/15,1600,1);
+    // ctx.fillRect(0,9*canvas.height/15,1600,1);
+    // ctx.fillRect(0,10*canvas.height/15,1600,1);
+    // ctx.fillRect(0,11*canvas.height/15,1600,1);
+    // ctx.fillRect(0,12*canvas.height/15,1600,1);
+    // ctx.fillRect(0,13*canvas.height/15,1600,1);
+    // ctx.fillRect(0,14*canvas.height/15,1600,1);
+    // ctx.fillRect(0,15*canvas.height/15,1600,1);
 
     ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);

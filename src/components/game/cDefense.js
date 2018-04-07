@@ -170,7 +170,7 @@ class CDefense extends Component {
       waitForPerk = false;
       this.animate();
     }
-    this.stasisSkill();
+    // this.stasisSkill();
   }
 
   createStars(stars){
@@ -445,8 +445,8 @@ class CDefense extends Component {
     this.newPerkSkill();
     if(wave <= 10){
       if(wave === 1){
-        this.spawnBoss();
-        // this.spawnEnemy('basic',20);
+        // this.spawnBoss();
+        this.spawnEnemy('basic',20);
       }
       else if(wave === 2){
         this.spawnEnemy('tank',20);
@@ -684,16 +684,16 @@ class CDefense extends Component {
     }
 
     // Display chosen random perks/skills
-    slotArray.push(new Square(ctx, ((canvas.width/4)-(width/2)), canvas.height/2, width, width, 0, 0, 1, 0, 'yellow'), slot1);
-    slotArray.push(new Square(ctx, ((canvas.width/4)*2-(width/2)), canvas.height/2, width, width, 0, 0, 1, 0, 'green'), slot2);
-    slotArray.push(new Square(ctx, ((canvas.width/4)*3-(width/2)), canvas.height/2, width, width, 0, 0, 1, 0, 'blue'), slot3);
+    slotArray.push(new Square(ctx, ((canvas.width/4)-(width/2)), canvas.height/2, width, width, 0, 0, 1, 0, '#e8e81e'), slot1);
+    slotArray.push(new Square(ctx, ((canvas.width/4)*2-(width/2)), canvas.height/2, width, width, 0, 0, 1, 0, '#098e0c'), slot2);
+    slotArray.push(new Square(ctx, ((canvas.width/4)*3-(width/2)), canvas.height/2, width, width, 0, 0, 1, 0, '#1653b7'), slot3);
     slotArray[0].update();
 
-    ctx.fillStyle = 'yellow';
+    ctx.fillStyle = '#e8e81e';
     ctx.fillRect(canvas.width/4-width/2, canvas.height - 280, canvas.width-canvas.width/2 + width, 50);
-    ctx.fillStyle = 'green';
+    ctx.fillStyle = '#098e0c';
     ctx.fillRect(canvas.width/4-width/2, canvas.height - 190, canvas.width-canvas.width/2 + width, 50);
-    ctx.fillStyle = 'blue';
+    ctx.fillStyle = '#1653b7';
     ctx.fillRect(canvas.width/4-width/2, canvas.height - 100, canvas.width-canvas.width/2 + width, 50);
 
     ctx.font = "40px verdana";
@@ -1010,7 +1010,7 @@ class CDefense extends Component {
     // Take Damage / Stasis Field Effect / Enemy Update
     for(i = enemyArray.length-1; i >= 0; i--){
       this.stasisFieldCalc(enemyArray[i]);
-       bossSpawn = enemyArray[i].update(time);
+      bossSpawn = enemyArray[i].update(time);
       if(enemyArray[i].state.x <= 0 && !enemyArray[i].state.dead){
         let dmg = enemyArray[i].state.damage;
         if(shield.current !== 0){
