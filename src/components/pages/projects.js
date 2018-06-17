@@ -146,9 +146,9 @@ class Projects extends Component {
           ],
         },
         {
-          title: 'Semantic Newtwork Analysis Pipeline',
+          title: 'Semantic Network Analysis Pipeline',
           technologies: ['Python', 'Java', 'NLTK', 'Javascript', 'PHP', 'HTML', 'Partiview', 'Gephi'],
-          description: 'Semantic Network Analysi Pipeline (SNAP) is a data visualization tool. By rendering many 2D networks as a 3D network visualization, a user can view changes in a network by seeing communities of nodes growing and shrinking over periods of time. With 3D representation, the user should be able to find patterns of growth and change in time within a given subject that would not be apparent when viewing a single document\'s semantic network at a time. SNAP is a website that ties together four modules for a user to upload raw timestamped text documents and perform: Natural Language Processing, Undirected Graph Network Generation, Network Analysis, and 3D Network Visualization. Each module takes the output of the preceding module as input.',
+          description: 'Semantic Network Analysis Pipeline (SNAP) is a data visualization tool. By rendering many 2D networks as a 3D network visualization, a user can view changes in a network by seeing communities of nodes growing and shrinking over periods of time. With 3D representation, the user should be able to find patterns of growth and change in time within a given subject that would not be apparent when viewing a single document\'s semantic network at a time. SNAP is a website that ties together four modules for a user to upload raw timestamped text documents and perform: Natural Language Processing, Undirected Graph Network Generation, Network Analysis, and 3D Network Visualization. Each module takes the output of the preceding module as input.',
           images: [
             {
               image: snap_frontend,
