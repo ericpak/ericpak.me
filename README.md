@@ -1,7 +1,7 @@
 __This is my older site which is no longer on ericpak.me__
 
-A personal portfolio webstie project made using React, Sass, Gulp, and hosted on Aws s3.
-Website can be found at [ericpak.me](http://ericpak.me).
+~~A personal portfolio webstie project made using React, Sass, Gulp, and hosted on Aws s3.
+Website can be found at [ericpak.me](http://ericpak.me).~~
 
 his project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
